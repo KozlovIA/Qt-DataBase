@@ -1,0 +1,1 @@
+pyside6-uic "MainForm.ui" -o "MainForm.py"
