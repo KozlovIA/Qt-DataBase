@@ -1,5 +1,12 @@
 Files
 MainForm.py
+ui_MainForm.py
 dist
 build
 main.spec
+main.lnk
+__pycache__
+copy.bat
+MainFormResize.ui
+ui_MainFormResize.py
+MainFormResize.py
