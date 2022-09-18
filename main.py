@@ -7,7 +7,7 @@ from PyQt6.QtCore import QThread
 
 gridLayoutStartResize()     # изменнение размеров основного слоя gridLayout в MainForm для корректного изменения размеров виджетов
 
-Form, Window = uic.loadUiType("MainFormResize.ui")
+Form, Window = uic.loadUiType("MainFormResize.ui")  # файл MainFormResize создается в функции gridLayoutStartResize, если поставить MainForm.ui, интерфейс не будет изменять размер в большую сторону
 
 # Настройка интерфейса
 app = QApplication([])
@@ -16,16 +16,22 @@ form = Form()
 form.setupUi(window)
 
 # Функции взаимодйствия
-def output_table():
+def output_table(db_name="VUZ"):
+    """Функция отображения таблицы"""
+    namesUI = ['Таблица ВУЗов', 'Таблица выставок', 'Таблица ГРНТИ']; table_names = ['VUZ', 'Vyst_mo', 'grntirub']; i = 0
+    for i in range(len(namesUI)):
+        if db_name == namesUI[i]:
+            db_name = table_names[i]
+            break
     db = db_connect()
     if not db:
-        form.info.setText("Ошибка подключения к базе данных.")
+        form.dbInfo.setText('Ошибка подключения к базе данных "' + str(namesUI[i]) + '"')
         return
-    form.info.setText("Подключено к базе данных.")
-    VUZ = QSqlTableModel()  # Создали объект таблицы
-    VUZ.setTable('VUZ')     # Привязали таблицу из базы данных
-    VUZ.select()        # Выбрали все строки из данной таблицы
-    form.tableView.setModel(VUZ)
+    form.dbInfo.setText('Подключено к базе данных "' + str(namesUI[i]) + '"')
+    db = QSqlTableModel()  # Создали объект таблицы
+    db.setTable(db_name)     # Привязали таблицу из базы данных
+    db.select()        # Выбрали все строки из данной таблицы
+    form.tableView.setModel(db)
     form.tableView.setSortingEnabled(True)
 
 end_of_work = False
@@ -47,10 +53,13 @@ class ResizeThread(QThread):
 resizeThread = ResizeThread()
 resizeThread.start()
 
-# взаимодействие с интерфесом
-form.output_db.clicked.connect(output_table)
-#form.pushButton.clicked.connect(widget_resize)
 
+output_table()
+# Взаимодействие с интерфесом
+# Передавать параметры в функции через кнопки можно с помощью лямбда функций form.pushButton.clicked.connect(lambda x: test("hello fucking Qt!"))
+#form.output_db.clicked.connect(output_table)
+#form.pushButton.clicked.connect(test)
+form.choiceTable.currentTextChanged.connect(lambda: output_table(db_name=form.choiceTable.currentText()))
 
 # Запуск приложения
 window.show()

@@ -63,19 +63,6 @@
      <property name="verticalSpacing">
       <number>7</number>
      </property>
-     <item row="0" column="0" colspan="3">
-      <widget class="QLabel" name="info">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="2">
       <spacer name="horizontalSpacer_4">
        <property name="orientation">
@@ -118,19 +105,6 @@
      <item row="2" column="0" colspan="3">
       <widget class="QTableView" name="tableView"/>
      </item>
-     <item row="4" column="1" rowspan="2">
-      <widget class="QPushButton" name="output_db">
-       <property name="text">
-        <string>Вывод БД</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>16</width>
-         <height>16</height>
-        </size>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="1">
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -157,11 +131,36 @@
        </property>
       </spacer>
      </item>
-     <item row="3" column="0">
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>PushButton</string>
+     <item row="0" column="1" colspan="2">
+      <widget class="QLabel" name="dbInfo">
+       <property name="enabled">
+        <bool>true</bool>
        </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QComboBox" name="choiceTable">
+       <item>
+        <property name="text">
+         <string>Таблица ВУЗов</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Таблица выставок</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Таблица ГРНТИ</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

@@ -22,7 +22,7 @@ def gridLayoutStartResize():
     """Начальное изменение размера сетки для дальнего шего нормального ресайза окна.
     Связано с тем, что gridLayout не получается сделать больше начального значения"""
     parameter_search = '   <widget class="QWidget" name="gridLayoutWidget">\n    <property name="geometry">\n     <rect>\n      <x>0</x>\n      <y>0</y>\n      <width>'
-    GUI_file = open('MainForm.ui', 'r')
+    GUI_file = open('MainForm.ui', 'r', encoding='utf-8')
     file_info = ''
     for line in GUI_file:
         file_info += line
@@ -34,7 +34,7 @@ def gridLayoutStartResize():
     '   <widget class="QWidget" name="gridLayoutWidget">\n    <property name="geometry">\n     <rect>\n      <x>0</x>\n      <y>0</y>\n      <width>8000</width>\n      <height>6000</height>'
     )
     GUI_file.close()
-    GUI_file = open('MainFormResize.ui', 'w')
+    GUI_file = open('MainFormResize.ui', 'w', encoding='utf-8')
     GUI_file.write(file_info)
     GUI_file.close()
 
