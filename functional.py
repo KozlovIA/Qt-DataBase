@@ -19,7 +19,7 @@ def db_connect():
 
 
 def gridLayoutStartResize():
-    """Начальное изменение размера сетки для дальнего шего нормального ресайза окна.
+    """Начальное изменение размера сетки для дальнейшего нормального ресайза окна.
     Связано с тем, что gridLayout не получается сделать больше начального значения"""
     parameter_search = '   <widget class="QWidget" name="gridLayoutWidget">\n    <property name="geometry">\n     <rect>\n      <x>0</x>\n      <y>0</y>\n      <width>'
     GUI_file = open('MainForm.ui', 'r', encoding='utf-8')

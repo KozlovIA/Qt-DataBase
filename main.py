@@ -16,20 +16,16 @@ form = Form()
 form.setupUi(window)
 
 # Функции взаимодйствия
-def output_table(db_name="VUZ"):
+def output_table(db_name="Таблица ВУЗов"):
     """Функция отображения таблицы"""
-    namesUI = ['Таблица ВУЗов', 'Таблица выставок', 'Таблица ГРНТИ']; table_names = ['VUZ', 'Vyst_mo', 'grntirub']; i = 0
-    for i in range(len(namesUI)):
-        if db_name == namesUI[i]:
-            db_name = table_names[i]
-            break
+    table_dict = {'Таблица ВУЗов': 'VUZ', 'Таблица выставок': 'Vyst_mo', 'Таблица ГРНТИ': 'grntirub'}
     db = db_connect()
     if not db:
-        form.dbInfo.setText('Ошибка подключения к базе данных "' + str(namesUI[i]) + '"')
+        form.dbInfo.setText('Ошибка подключения к базе данных "' + db_name + '"')
         return
-    form.dbInfo.setText('Подключено к базе данных "' + str(namesUI[i]) + '"')
+    form.dbInfo.setText('Подключено к базе данных "' + db_name + '"')
     db = QSqlTableModel()  # Создали объект таблицы
-    db.setTable(db_name)     # Привязали таблицу из базы данных
+    db.setTable(table_dict[db_name])     # Привязали таблицу из базы данных
     db.select()        # Выбрали все строки из данной таблицы
     form.tableView.setModel(db)
     form.tableView.setSortingEnabled(True)
