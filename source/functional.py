@@ -1,6 +1,9 @@
 # Файл с пользовательскими функциями для очищения от таковых файла main
 # Пока не знаю, как это будет коннектиться с интерфейсом и будет ли файл востребован
 from PyQt6.QtSql import *
+from PyQt6 import uic
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import QThread
 
 
 
@@ -37,4 +40,3 @@ def gridLayoutStartResize():
     GUI_file = open('MainFormResize.ui', 'w', encoding='utf-8')
     GUI_file.write(file_info)
     GUI_file.close()
-

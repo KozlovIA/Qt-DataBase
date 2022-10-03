@@ -148,7 +148,7 @@
       <widget class="QComboBox" name="choiceTable">
        <item>
         <property name="text">
-         <string>Таблица ВУЗов</string>
+         <string>Таблица НИР</string>
         </property>
        </item>
        <item>
@@ -161,6 +161,13 @@
          <string>Таблица ГРНТИ</string>
         </property>
        </item>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QPushButton" name="AddField">
+       <property name="text">
+        <string>Добавить</string>
+       </property>
       </widget>
      </item>
     </layout>

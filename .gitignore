@@ -10,3 +10,4 @@ copy.bat
 MainFormResize.ui
 ui_MainFormResize.py
 MainFormResize.py
+source\ui_EditWindow.py

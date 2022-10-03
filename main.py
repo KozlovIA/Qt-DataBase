@@ -1,9 +1,12 @@
+import sys
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication
-from functional import *
-from threading import Thread
+from sqlalchemy import false
+from source.functional import *
 from time import sleep
 from PyQt6.QtCore import QThread
+import source.editWindow as AddField_window
+from PySide6 import QtWidgets
 
 gridLayoutStartResize()     # изменнение размеров основного слоя gridLayout в MainForm для корректного изменения размеров виджетов
 
@@ -16,9 +19,9 @@ form = Form()
 form.setupUi(window)
 
 # Функции взаимодйствия
-def output_table(db_name="Таблица ВУЗов"):
+def output_table(db_name="Таблица НИР"):
     """Функция отображения таблицы"""
-    table_dict = {'Таблица ВУЗов': 'VUZ', 'Таблица выставок': 'Vyst_mo', 'Таблица ГРНТИ': 'grntirub'}
+    table_dict = {'Таблица НИР': 'VUZ', 'Таблица выставок': 'Vyst_mo', 'Таблица ГРНТИ': 'grntirub'}
     db = db_connect()
     if not db:
         form.dbInfo.setText('Ошибка подключения к базе данных "' + db_name + '"')
@@ -50,12 +53,23 @@ resizeThread = ResizeThread()
 resizeThread.start()
 
 
+def add_field_window():
+    global AddFieldWindow, AddFieldForm
+    Form, Window = uic.loadUiType("source/EditWindow.ui")  # файл MainFormResize создается в функции gridLayoutStartResize, если поставить MainForm.ui, интерфейс не будет изменять размер в большую сторону
+    # Настройка интерфейса
+    AddFieldWindow = Window()
+    AddFieldForm = Form()
+    AddFieldForm.setupUi(AddFieldWindow)
+    AddFieldWindow.show()
+    #window.setEnabled(False)   #  Чтобы нельзя было использовать главное окно в этот момент
+
+
+
 output_table()
 # Взаимодействие с интерфесом
 # Передавать параметры в функции через кнопки можно с помощью лямбда функций form.pushButton.clicked.connect(lambda x: test("hello fucking Qt!"))
-#form.output_db.clicked.connect(output_table)
-#form.pushButton.clicked.connect(test)
 form.choiceTable.currentTextChanged.connect(lambda: output_table(db_name=form.choiceTable.currentText()))
+form.AddField.clicked.connect(add_field_window)
 
 # Запуск приложения
 window.show()
