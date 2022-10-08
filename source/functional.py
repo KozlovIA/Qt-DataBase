@@ -20,6 +20,7 @@ def db_connect():
         print("Подключено к базе данных", db_name)
     return db
 
+db = db_connect()    # db - глобальная переменная ссылающаяся на базу данных, создается с модуле functional.py строка 23 после функции db_connect()
 
 def gridLayoutStartResize():
     """Начальное изменение размера сетки для дальнейшего нормального ресайза окна.
@@ -40,3 +41,19 @@ def gridLayoutStartResize():
     GUI_file = open('MainFormResize.ui', 'w', encoding='utf-8')
     GUI_file.write(file_info)
     GUI_file.close()
+
+
+def field_editing():
+    """Функция для редактирования строк в БД.
+    Параметров не принимает, база данных является константой"""
+    if not db.open():
+        return False
+    table_dict = {'Таблица НИР': 'VUZ', 'Таблица выставок': 'Vyst_mo', 'Таблица ГРНТИ': 'grntirub'}
+    table_name = 'Таблица НИР'
+    db_model = QSqlTableModel()  # Создали объект таблицы
+    db_model.setTable(table_dict[table_name])     # Привязали таблицу из базы данных
+    db_model.select()        # Выбрали все строки из данной таблицы
+    print(db_model)
+
+if __name__ == "__main__":
+    field_editing()

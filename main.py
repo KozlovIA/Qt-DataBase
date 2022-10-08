@@ -5,7 +5,6 @@ from sqlalchemy import false
 from source.functional import *
 from time import sleep
 from PyQt6.QtCore import QThread
-import source.editWindow as AddField_window
 from PySide6 import QtWidgets
 
 gridLayoutStartResize()     # изменнение размеров основного слоя gridLayout в MainForm для корректного изменения размеров виджетов
@@ -19,21 +18,23 @@ form = Form()
 form.setupUi(window)
 
 # Функции взаимодйствия
-def output_table(db_name="Таблица НИР"):
+def output_table(table_name="Таблица НИР"):
     """Функция отображения таблицы"""
     table_dict = {'Таблица НИР': 'VUZ', 'Таблица выставок': 'Vyst_mo', 'Таблица ГРНТИ': 'grntirub'}
-    db = db_connect()
-    if not db:
-        form.dbInfo.setText('Ошибка подключения к базе данных "' + db_name + '"')
+    #global db
+    #db = db_connect()
+    if not db:  # db - глобальная переменная ссылающаяся на базу данных, создается с модуле functional.py строка 23 после функции db_connect()
+        form.dbInfo.setText('Ошибка подключения к базе данных "' + table_name + '"')
         return
-    form.dbInfo.setText('Подключено к базе данных "' + db_name + '"')
-    db = QSqlTableModel()  # Создали объект таблицы
-    db.setTable(table_dict[db_name])     # Привязали таблицу из базы данных
-    db.select()        # Выбрали все строки из данной таблицы
-    form.tableView.setModel(db)
+    form.dbInfo.setText('Подключено к базе данных "' + table_name + '"')
+    db_model = QSqlTableModel()  # Создали объект таблицы
+    db_model.setTable(table_dict[table_name])     # Привязали таблицу из базы данных
+    db_model.select()        # Выбрали все строки из данной таблицы
+    form.tableView.setModel(db_model)
     form.tableView.setSortingEnabled(True)
 
-end_of_work = False
+
+end_of_work = False     # для завершения потока изменения размера окна
 
 
 class ResizeThread(QThread):
@@ -68,7 +69,7 @@ def add_field_window():
 output_table()
 # Взаимодействие с интерфесом
 # Передавать параметры в функции через кнопки можно с помощью лямбда функций form.pushButton.clicked.connect(lambda x: test("hello fucking Qt!"))
-form.choiceTable.currentTextChanged.connect(lambda: output_table(db_name=form.choiceTable.currentText()))
+form.choiceTable.currentTextChanged.connect(lambda: output_table(table_name=form.choiceTable.currentText()))
 form.AddField.clicked.connect(add_field_window)
 
 # Запуск приложения
