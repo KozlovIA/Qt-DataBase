@@ -1,11 +1,9 @@
 import sys
 from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication
-from sqlalchemy import false
 from source.functional import *
 from time import sleep
 from PyQt6.QtCore import QThread
-from PySide6 import QtWidgets
 
 gridLayoutStartResize()     # изменнение размеров основного слоя gridLayout в MainForm для корректного изменения размеров виджетов
 
@@ -55,13 +53,27 @@ resizeThread.start()
 
 
 def add_field_window():
-    global AddFieldWindow, AddFieldForm
+    global window_AddField, form_AddField
     Form, Window = uic.loadUiType("source/EditWindow.ui")  # файл MainFormResize создается в функции gridLayoutStartResize, если поставить MainForm.ui, интерфейс не будет изменять размер в большую сторону
     # Настройка интерфейса
-    AddFieldWindow = Window()
-    AddFieldForm = Form()
-    AddFieldForm.setupUi(AddFieldWindow)
-    AddFieldWindow.show()
+    window_AddField = Window()
+    form_AddField = Form()
+    form_AddField.setupUi(window_AddField)
+    univer_dict, grnti_code = SQLdata_acquisition_EditWindow()[0:2]
+    # Ввод корректных кодов ВУЗов
+    univer_code = list(univer_dict.keys()); #univer_code.sort()
+    univer_view = [str(code) + "\t" + univer_dict[code] for code in univer_code]   # хитрые пару строк, чтобы выводился и код и название
+    form_AddField.university_code_cb.addItems(univer_view)
+    # Ввод корректных кодов ГРНТИ
+    grnti_code = list(map(str, grnti_code))
+    form_AddField.GRNTI1_1_cb.addItems(grnti_code)
+    form_AddField.GRNTI1_2_cb.addItems(grnti_code)
+    form_AddField.GRNTI1_3_cb.addItems(grnti_code)
+    form_AddField.GRNTI2_1_cb.addItems(grnti_code)
+    form_AddField.GRNTI2_2_cb.addItems(grnti_code)
+    form_AddField.GRNTI2_3_cb.addItems(grnti_code)
+    window_AddField.show()
+    form_AddField.SaveButton.clicked.connect(window_AddField.close)
     #window.setEnabled(False)   #  Чтобы нельзя было использовать главное окно в этот момент
 
 

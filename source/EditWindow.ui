@@ -23,7 +23,11 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Редактирование</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>pencil-icon.png</normaloff>pencil-icon.png</iconset>
   </property>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
@@ -74,32 +78,32 @@
      <number>10</number>
     </property>
     <item row="6" column="1">
-     <widget class="QLineEdit" name="lineEdit_2"/>
+     <widget class="QLineEdit" name="Subject_le"/>
     </item>
     <item row="4" column="1">
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="7">
-       <widget class="QComboBox" name="comboBox_8"/>
-      </item>
+     <layout class="QGridLayout" name="GRNTI_layout">
       <item row="0" column="1">
-       <widget class="QComboBox" name="comboBox_4"/>
+       <widget class="QComboBox" name="GRNTI1_2_cb"/>
       </item>
-      <item row="0" column="6">
-       <widget class="QComboBox" name="comboBox_7"/>
+      <item row="0" column="2">
+       <widget class="QComboBox" name="GRNTI1_3_cb"/>
       </item>
-      <item row="0" column="5">
-       <widget class="QComboBox" name="comboBox_6"/>
+      <item row="2" column="0">
+       <widget class="QComboBox" name="GRNTI2_1_cb"/>
       </item>
-      <item row="0" column="3">
-       <widget class="QComboBox" name="comboBox_5"/>
+      <item row="2" column="2">
+       <widget class="QComboBox" name="GRNTI2_3_cb"/>
       </item>
       <item row="0" column="0">
-       <widget class="QComboBox" name="comboBox_3"/>
+       <widget class="QComboBox" name="GRNTI1_1_cb"/>
       </item>
-      <item row="0" column="4">
-       <widget class="Line" name="line_2">
+      <item row="2" column="1">
+       <widget class="QComboBox" name="GRNTI2_2_cb"/>
+      </item>
+      <item row="1" column="0" colspan="3">
+       <widget class="Line" name="line">
         <property name="orientation">
-         <enum>Qt::Vertical</enum>
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
@@ -120,7 +124,7 @@
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QLineEdit" name="lineEdit"/>
+     <widget class="QLineEdit" name="regNum_le"/>
     </item>
     <item row="8" column="0">
      <widget class="QLabel" name="BossName_lb">
@@ -130,7 +134,7 @@
      </widget>
     </item>
     <item row="11" column="1">
-     <widget class="QLineEdit" name="lineEdit_5"/>
+     <widget class="QLineEdit" name="Exhibitions_le"/>
     </item>
     <item row="6" column="0">
      <widget class="QLabel" name="Subject_lb">
@@ -140,30 +144,30 @@
      </widget>
     </item>
     <item row="9" column="1">
-     <widget class="QLineEdit" name="lineEdit_4"/>
+     <widget class="QLineEdit" name="BossName_le_2"/>
     </item>
     <item row="12" column="1">
-     <widget class="QLineEdit" name="lineEdit_6"/>
+     <widget class="QLineEdit" name="Exhibit_le"/>
     </item>
     <item row="8" column="1">
-     <widget class="QLineEdit" name="lineEdit_3"/>
+     <widget class="QLineEdit" name="BossName_le"/>
     </item>
     <item row="1" column="0">
-     <widget class="QLabel" name="typelb">
+     <widget class="QLabel" name="type_lb">
       <property name="text">
        <string>Тип</string>
       </property>
      </widget>
     </item>
     <item row="3" column="0">
-     <widget class="QLabel" name="rgNumlb">
+     <widget class="QLabel" name="regNum_lb">
       <property name="text">
        <string>Регистрационный номер</string>
       </property>
      </widget>
     </item>
     <item row="9" column="0">
-     <widget class="QLabel" name="BossTitle_lb">
+     <widget class="QLabel" name="C">
       <property name="text">
        <string>Статус руководителя</string>
       </property>
@@ -184,10 +188,10 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QComboBox" name="comboBox"/>
+     <widget class="QComboBox" name="university_code_cb"/>
     </item>
     <item row="1" column="1">
-     <widget class="QComboBox" name="comboBox_2">
+     <widget class="QComboBox" name="type_cb">
       <item>
        <property name="text">
         <string>E</string>
@@ -208,7 +212,7 @@
      </widget>
     </item>
     <item row="10" column="1">
-     <widget class="QComboBox" name="comboBox_9">
+     <widget class="QComboBox" name="TypeExhibit_cb">
       <item>
        <property name="text">
         <string>Е</string>

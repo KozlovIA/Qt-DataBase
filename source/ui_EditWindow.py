@@ -26,6 +26,9 @@ class Ui_Dialog(object):
         Dialog.resize(640, 510)
         Dialog.setMinimumSize(QSize(640, 510))
         Dialog.setMaximumSize(QSize(640, 510))
+        icon = QIcon()
+        icon.addFile(u"pencil-icon.png", QSize(), QIcon.Normal, QIcon.Off)
+        Dialog.setWindowIcon(icon)
         self.horizontalLayoutWidget = QWidget(Dialog)
         self.horizontalLayoutWidget.setObjectName(u"horizontalLayoutWidget")
         self.horizontalLayoutWidget.setGeometry(QRect(320, 440, 311, 61))
@@ -48,52 +51,52 @@ class Ui_Dialog(object):
         self.gridLayout = QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(10, 10, 10, 10)
-        self.lineEdit_2 = QLineEdit(self.gridLayoutWidget)
-        self.lineEdit_2.setObjectName(u"lineEdit_2")
+        self.Subject_le = QLineEdit(self.gridLayoutWidget)
+        self.Subject_le.setObjectName(u"Subject_le")
 
-        self.gridLayout.addWidget(self.lineEdit_2, 6, 1, 1, 1)
+        self.gridLayout.addWidget(self.Subject_le, 6, 1, 1, 1)
 
-        self.gridLayout_2 = QGridLayout()
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.comboBox_8 = QComboBox(self.gridLayoutWidget)
-        self.comboBox_8.setObjectName(u"comboBox_8")
+        self.GRNTI_layout = QGridLayout()
+        self.GRNTI_layout.setObjectName(u"GRNTI_layout")
+        self.GRNTI1_2_cb = QComboBox(self.gridLayoutWidget)
+        self.GRNTI1_2_cb.setObjectName(u"GRNTI1_2_cb")
 
-        self.gridLayout_2.addWidget(self.comboBox_8, 0, 7, 1, 1)
+        self.GRNTI_layout.addWidget(self.GRNTI1_2_cb, 0, 1, 1, 1)
 
-        self.comboBox_4 = QComboBox(self.gridLayoutWidget)
-        self.comboBox_4.setObjectName(u"comboBox_4")
+        self.GRNTI1_3_cb = QComboBox(self.gridLayoutWidget)
+        self.GRNTI1_3_cb.setObjectName(u"GRNTI1_3_cb")
 
-        self.gridLayout_2.addWidget(self.comboBox_4, 0, 1, 1, 1)
+        self.GRNTI_layout.addWidget(self.GRNTI1_3_cb, 0, 2, 1, 1)
 
-        self.comboBox_7 = QComboBox(self.gridLayoutWidget)
-        self.comboBox_7.setObjectName(u"comboBox_7")
+        self.GRNTI2_1_cb = QComboBox(self.gridLayoutWidget)
+        self.GRNTI2_1_cb.setObjectName(u"GRNTI2_1_cb")
 
-        self.gridLayout_2.addWidget(self.comboBox_7, 0, 6, 1, 1)
+        self.GRNTI_layout.addWidget(self.GRNTI2_1_cb, 2, 0, 1, 1)
 
-        self.comboBox_6 = QComboBox(self.gridLayoutWidget)
-        self.comboBox_6.setObjectName(u"comboBox_6")
+        self.GRNTI2_3_cb = QComboBox(self.gridLayoutWidget)
+        self.GRNTI2_3_cb.setObjectName(u"GRNTI2_3_cb")
 
-        self.gridLayout_2.addWidget(self.comboBox_6, 0, 5, 1, 1)
+        self.GRNTI_layout.addWidget(self.GRNTI2_3_cb, 2, 2, 1, 1)
 
-        self.comboBox_5 = QComboBox(self.gridLayoutWidget)
-        self.comboBox_5.setObjectName(u"comboBox_5")
+        self.GRNTI1_1_cb = QComboBox(self.gridLayoutWidget)
+        self.GRNTI1_1_cb.setObjectName(u"GRNTI1_1_cb")
 
-        self.gridLayout_2.addWidget(self.comboBox_5, 0, 3, 1, 1)
+        self.GRNTI_layout.addWidget(self.GRNTI1_1_cb, 0, 0, 1, 1)
 
-        self.comboBox_3 = QComboBox(self.gridLayoutWidget)
-        self.comboBox_3.setObjectName(u"comboBox_3")
+        self.GRNTI2_2_cb = QComboBox(self.gridLayoutWidget)
+        self.GRNTI2_2_cb.setObjectName(u"GRNTI2_2_cb")
 
-        self.gridLayout_2.addWidget(self.comboBox_3, 0, 0, 1, 1)
+        self.GRNTI_layout.addWidget(self.GRNTI2_2_cb, 2, 1, 1, 1)
 
-        self.line_2 = QFrame(self.gridLayoutWidget)
-        self.line_2.setObjectName(u"line_2")
-        self.line_2.setFrameShape(QFrame.VLine)
-        self.line_2.setFrameShadow(QFrame.Sunken)
+        self.line = QFrame(self.gridLayoutWidget)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.HLine)
+        self.line.setFrameShadow(QFrame.Sunken)
 
-        self.gridLayout_2.addWidget(self.line_2, 0, 4, 1, 1)
+        self.GRNTI_layout.addWidget(self.line, 1, 0, 1, 3)
 
 
-        self.gridLayout.addLayout(self.gridLayout_2, 4, 1, 1, 1)
+        self.gridLayout.addLayout(self.GRNTI_layout, 4, 1, 1, 1)
 
         self.Exhibit_lb = QLabel(self.gridLayoutWidget)
         self.Exhibit_lb.setObjectName(u"Exhibit_lb")
@@ -105,55 +108,55 @@ class Ui_Dialog(object):
 
         self.gridLayout.addWidget(self.codeVUZ_lb, 0, 0, 1, 1)
 
-        self.lineEdit = QLineEdit(self.gridLayoutWidget)
-        self.lineEdit.setObjectName(u"lineEdit")
+        self.regNum_le = QLineEdit(self.gridLayoutWidget)
+        self.regNum_le.setObjectName(u"regNum_le")
 
-        self.gridLayout.addWidget(self.lineEdit, 3, 1, 1, 1)
+        self.gridLayout.addWidget(self.regNum_le, 3, 1, 1, 1)
 
         self.BossName_lb = QLabel(self.gridLayoutWidget)
         self.BossName_lb.setObjectName(u"BossName_lb")
 
         self.gridLayout.addWidget(self.BossName_lb, 8, 0, 1, 1)
 
-        self.lineEdit_5 = QLineEdit(self.gridLayoutWidget)
-        self.lineEdit_5.setObjectName(u"lineEdit_5")
+        self.Exhibitions_le = QLineEdit(self.gridLayoutWidget)
+        self.Exhibitions_le.setObjectName(u"Exhibitions_le")
 
-        self.gridLayout.addWidget(self.lineEdit_5, 11, 1, 1, 1)
+        self.gridLayout.addWidget(self.Exhibitions_le, 11, 1, 1, 1)
 
         self.Subject_lb = QLabel(self.gridLayoutWidget)
         self.Subject_lb.setObjectName(u"Subject_lb")
 
         self.gridLayout.addWidget(self.Subject_lb, 6, 0, 1, 1)
 
-        self.lineEdit_4 = QLineEdit(self.gridLayoutWidget)
-        self.lineEdit_4.setObjectName(u"lineEdit_4")
+        self.BossName_le_2 = QLineEdit(self.gridLayoutWidget)
+        self.BossName_le_2.setObjectName(u"BossName_le_2")
 
-        self.gridLayout.addWidget(self.lineEdit_4, 9, 1, 1, 1)
+        self.gridLayout.addWidget(self.BossName_le_2, 9, 1, 1, 1)
 
-        self.lineEdit_6 = QLineEdit(self.gridLayoutWidget)
-        self.lineEdit_6.setObjectName(u"lineEdit_6")
+        self.Exhibit_le = QLineEdit(self.gridLayoutWidget)
+        self.Exhibit_le.setObjectName(u"Exhibit_le")
 
-        self.gridLayout.addWidget(self.lineEdit_6, 12, 1, 1, 1)
+        self.gridLayout.addWidget(self.Exhibit_le, 12, 1, 1, 1)
 
-        self.lineEdit_3 = QLineEdit(self.gridLayoutWidget)
-        self.lineEdit_3.setObjectName(u"lineEdit_3")
+        self.BossName_le = QLineEdit(self.gridLayoutWidget)
+        self.BossName_le.setObjectName(u"BossName_le")
 
-        self.gridLayout.addWidget(self.lineEdit_3, 8, 1, 1, 1)
+        self.gridLayout.addWidget(self.BossName_le, 8, 1, 1, 1)
 
-        self.typelb = QLabel(self.gridLayoutWidget)
-        self.typelb.setObjectName(u"typelb")
+        self.type_lb = QLabel(self.gridLayoutWidget)
+        self.type_lb.setObjectName(u"type_lb")
 
-        self.gridLayout.addWidget(self.typelb, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.type_lb, 1, 0, 1, 1)
 
-        self.rgNumlb = QLabel(self.gridLayoutWidget)
-        self.rgNumlb.setObjectName(u"rgNumlb")
+        self.regNum_lb = QLabel(self.gridLayoutWidget)
+        self.regNum_lb.setObjectName(u"regNum_lb")
 
-        self.gridLayout.addWidget(self.rgNumlb, 3, 0, 1, 1)
+        self.gridLayout.addWidget(self.regNum_lb, 3, 0, 1, 1)
 
-        self.BossTitle_lb = QLabel(self.gridLayoutWidget)
-        self.BossTitle_lb.setObjectName(u"BossTitle_lb")
+        self.C = QLabel(self.gridLayoutWidget)
+        self.C.setObjectName(u"C")
 
-        self.gridLayout.addWidget(self.BossTitle_lb, 9, 0, 1, 1)
+        self.gridLayout.addWidget(self.C, 9, 0, 1, 1)
 
         self.TypeExhibit_lb = QLabel(self.gridLayoutWidget)
         self.TypeExhibit_lb.setObjectName(u"TypeExhibit_lb")
@@ -165,30 +168,30 @@ class Ui_Dialog(object):
 
         self.gridLayout.addWidget(self.Exhibitions_lb, 11, 0, 1, 1)
 
-        self.comboBox = QComboBox(self.gridLayoutWidget)
-        self.comboBox.setObjectName(u"comboBox")
+        self.university_code_cb = QComboBox(self.gridLayoutWidget)
+        self.university_code_cb.setObjectName(u"university_code_cb")
 
-        self.gridLayout.addWidget(self.comboBox, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.university_code_cb, 0, 1, 1, 1)
 
-        self.comboBox_2 = QComboBox(self.gridLayoutWidget)
-        self.comboBox_2.addItem("")
-        self.comboBox_2.addItem("")
-        self.comboBox_2.setObjectName(u"comboBox_2")
+        self.type_cb = QComboBox(self.gridLayoutWidget)
+        self.type_cb.addItem("")
+        self.type_cb.addItem("")
+        self.type_cb.setObjectName(u"type_cb")
 
-        self.gridLayout.addWidget(self.comboBox_2, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.type_cb, 1, 1, 1, 1)
 
         self.GRNTI_lb = QLabel(self.gridLayoutWidget)
         self.GRNTI_lb.setObjectName(u"GRNTI_lb")
 
         self.gridLayout.addWidget(self.GRNTI_lb, 4, 0, 1, 1)
 
-        self.comboBox_9 = QComboBox(self.gridLayoutWidget)
-        self.comboBox_9.addItem("")
-        self.comboBox_9.addItem("")
-        self.comboBox_9.addItem("")
-        self.comboBox_9.setObjectName(u"comboBox_9")
+        self.TypeExhibit_cb = QComboBox(self.gridLayoutWidget)
+        self.TypeExhibit_cb.addItem("")
+        self.TypeExhibit_cb.addItem("")
+        self.TypeExhibit_cb.addItem("")
+        self.TypeExhibit_cb.setObjectName(u"TypeExhibit_cb")
 
-        self.gridLayout.addWidget(self.comboBox_9, 10, 1, 1, 1)
+        self.gridLayout.addWidget(self.TypeExhibit_cb, 10, 1, 1, 1)
 
 
         self.retranslateUi(Dialog)
@@ -197,25 +200,25 @@ class Ui_Dialog(object):
     # setupUi
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Dialog", None))
+        Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"\u0420\u0435\u0434\u0430\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435", None))
         self.SaveButton.setText(QCoreApplication.translate("Dialog", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
         self.CancelButton.setText(QCoreApplication.translate("Dialog", u"\u041e\u0442\u043c\u0435\u043d\u0438\u0442\u044c", None))
         self.Exhibit_lb.setText(QCoreApplication.translate("Dialog", u"\u042d\u043a\u0441\u043f\u043e\u043d\u0430\u0442", None))
         self.codeVUZ_lb.setText(QCoreApplication.translate("Dialog", u"\u041a\u043e\u0434 \u0412\u0423\u0417\u0430", None))
         self.BossName_lb.setText(QCoreApplication.translate("Dialog", u"\u041d\u0430\u0443\u0447\u043d\u044b\u0439 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c", None))
         self.Subject_lb.setText(QCoreApplication.translate("Dialog", u"\u041f\u0440\u0435\u0434\u043c\u0435\u0442", None))
-        self.typelb.setText(QCoreApplication.translate("Dialog", u"\u0422\u0438\u043f", None))
-        self.rgNumlb.setText(QCoreApplication.translate("Dialog", u"\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u043d\u043e\u043c\u0435\u0440", None))
-        self.BossTitle_lb.setText(QCoreApplication.translate("Dialog", u"\u0421\u0442\u0430\u0442\u0443\u0441 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044f", None))
+        self.type_lb.setText(QCoreApplication.translate("Dialog", u"\u0422\u0438\u043f", None))
+        self.regNum_lb.setText(QCoreApplication.translate("Dialog", u"\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u043d\u043e\u043c\u0435\u0440", None))
+        self.C.setText(QCoreApplication.translate("Dialog", u"\u0421\u0442\u0430\u0442\u0443\u0441 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044f", None))
         self.TypeExhibit_lb.setText(QCoreApplication.translate("Dialog", u"\u041d\u0430\u043b\u0438\u0447\u0438\u0435 \u044d\u043a\u0441\u043f\u043e\u043d\u0430\u0442\u0430", None))
         self.Exhibitions_lb.setText(QCoreApplication.translate("Dialog", u"\u0412\u044b\u0441\u0442\u0430\u0432\u043a\u0438", None))
-        self.comboBox_2.setItemText(0, QCoreApplication.translate("Dialog", u"E", None))
-        self.comboBox_2.setItemText(1, QCoreApplication.translate("Dialog", u"M", None))
+        self.type_cb.setItemText(0, QCoreApplication.translate("Dialog", u"E", None))
+        self.type_cb.setItemText(1, QCoreApplication.translate("Dialog", u"M", None))
 
         self.GRNTI_lb.setText(QCoreApplication.translate("Dialog", u"\u041a\u043e\u0434 \u0413\u0420\u041d\u0422\u0418", None))
-        self.comboBox_9.setItemText(0, QCoreApplication.translate("Dialog", u"\u0415", None))
-        self.comboBox_9.setItemText(1, QCoreApplication.translate("Dialog", u"\u041d", None))
-        self.comboBox_9.setItemText(2, QCoreApplication.translate("Dialog", u"\u041f", None))
+        self.TypeExhibit_cb.setItemText(0, QCoreApplication.translate("Dialog", u"\u0415", None))
+        self.TypeExhibit_cb.setItemText(1, QCoreApplication.translate("Dialog", u"\u041d", None))
+        self.TypeExhibit_cb.setItemText(2, QCoreApplication.translate("Dialog", u"\u041f", None))
 
     # retranslateUi
 

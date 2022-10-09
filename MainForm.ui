@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>814</width>
+    <width>809</width>
     <height>619</height>
    </rect>
   </property>
@@ -20,7 +20,11 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Организация научных выставок</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>source/database-icon.png</normaloff>source/database-icon.png</iconset>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonIconOnly</enum>
@@ -109,19 +113,6 @@
        </property>
       </spacer>
      </item>
-     <item row="4" column="0">
-      <spacer name="horizontalSpacer_5">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
      <item row="0" column="0">
       <widget class="QComboBox" name="choiceTable">
        <item>
@@ -183,6 +174,13 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="EditField">
+       <property name="text">
+        <string>Редактировать</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -191,7 +189,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>814</width>
+     <width>809</width>
      <height>22</height>
     </rect>
    </property>

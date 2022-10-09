@@ -43,6 +43,36 @@ def gridLayoutStartResize():
     GUI_file.close()
 
 
+def SQLdata_acquisition_EditWindow():
+    """Получение данных с таблиц для оформления EditWindow
+    Выходные данные: словарь с ключами - кодами ВУЗов и значениями - аббревиатурами ВУЗов,
+    список кодов ГРНТИ, словарь с регистрационными номерами по ключам кода ВУЗа"""
+    query = QSqlQuery()
+    query.exec(
+        """SELECT Код_ВУЗа, Аббревиатура, Рег_номер FROM Vyst_mo"""
+    )
+    university_dict = {}
+    regNum_dict = {};   # regNum_dict - словарь регистрационных номеров по ключу кода ВУЗа
+    while query.next():
+        current_code = query.value("Код_ВУЗа")
+        university_dict.update({current_code: query.value("Аббревиатура")})  # update заменяет старое значение по ключу, если оно существует или добавляет новое
+        if not (current_code in regNum_dict.keys()):
+            regNum_dict.update({current_code: list()})
+        regNum_dict[current_code].append(query.value("Рег_номер"))
+    # сортировка по ключам
+    university_dict = dict(sorted(university_dict.items()))
+    regNum_dict = dict(sorted(regNum_dict.items()))
+
+    query.exec(
+        """SELECT Код_рубрики FROM grntirub"""
+    )
+    grnti_code = []
+    while query.next():
+        grnti_code.append(query.value("Код_рубрики"))
+
+    return university_dict, grnti_code, regNum_dict
+
+
 def field_editing():
     """Функция для редактирования строк в БД.
     Параметров не принимает, база данных является константой"""
@@ -56,4 +86,5 @@ def field_editing():
     print(db_model)
 
 if __name__ == "__main__":
-    field_editing()
+    regNum = SQLdata_acquisition_EditWindow()[2]
+    print((regNum))
