@@ -73,18 +73,6 @@ def SQLdata_acquisition_EditWindow():
     return university_dict, grnti_code, regNum_dict
 
 
-def field_editing():
-    """Функция для редактирования строк в БД.
-    Параметров не принимает, база данных является константой"""
-    if not db.open():
-        return False
-    table_dict = {'Таблица НИР': 'VUZ', 'Таблица выставок': 'Vyst_mo', 'Таблица ГРНТИ': 'grntirub'}
-    table_name = 'Таблица НИР'
-    db_model = QSqlTableModel()  # Создали объект таблицы
-    db_model.setTable(table_dict[table_name])     # Привязали таблицу из базы данных
-    db_model.select()        # Выбрали все строки из данной таблицы
-    print(db_model)
-
 if __name__ == "__main__":
     regNum = SQLdata_acquisition_EditWindow()[2]
     print((regNum))
