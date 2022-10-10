@@ -1,10 +1,9 @@
 import sys
 from PyQt6 import uic, QtGui
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QMessageBox
 from source.functional import *
 from time import sleep
 from PyQt6.QtCore import QThread
-from PySide6.QtWidgets import QMessageBox
 
 gridLayoutStartResize()     # изменнение размеров основного слоя gridLayout в MainForm для корректного изменения размеров виджетов
 
@@ -84,10 +83,10 @@ def add_field_window(Edit=False):
         selected = form.tableView.currentIndex().row()
         if selected == -1:
             msg = QMessageBox()
-            msg.setWindowTitle("Ошибка!")
-            #msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
+            msg.setWindowTitle("Внимание!")
+            msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
             msg.setText("Для редактирования выберете строку!")
-            msg.setIcon(QMessageBox.Warning)
+            msg.setIcon(QMessageBox.Icon.Warning)
             #msg.icon("source/warning.icon")
             msg.exec()
             return
