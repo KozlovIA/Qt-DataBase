@@ -1,4 +1,3 @@
-import sys
 from PyQt6 import uic, QtGui
 from PyQt6.QtWidgets import QApplication, QMessageBox
 from source.functional import *
@@ -22,12 +21,13 @@ def output_table(table_name="Таблица НИР"):
     #global db
     #db = db_connect()
     if table_name == "Таблица НИР":
-        form.AddField.setEnabled(True); form.EditField.setEnabled(True)
-    else: form.AddField.setEnabled(False); form.EditField.setEnabled(False)
+        form.AddField.setEnabled(True); form.EditField.setEnabled(True); form.deleteButton.setEnabled(True)
+    else: form.AddField.setEnabled(False); form.EditField.setEnabled(False); form.deleteButton.setEnabled(False)
     if not db:  # db - глобальная переменная ссылающаяся на базу данных, создается с модуле functional.py строка 23 после функции db_connect()
         form.dbInfo.setText('Ошибка подключения к базе данных "' + table_name + '"')
         return
     form.dbInfo.setText('Подключено к базе данных "' + table_name + '"')
+    global db_model
     db_model = QSqlTableModel()  # Создали объект таблицы
     db_model.setTable(table_dict[table_name])     # Привязали таблицу из базы данных
     db_model.select()        # Выбрали все строки из данной таблицы
@@ -54,7 +54,7 @@ class ResizeThread(QThread):
 resizeThread = ResizeThread()
 resizeThread.start()
 
-def saveSQL_data(Edit):#, orig_univer_code, orig_regNum):
+def saveSQL_data(Edit, orig_univer_code, orig_regNum):
     univer_code_name = form_AddField.university_code_cb.currentText()
     univer_code_name = univer_code_name.split('\t')
     subject = form_AddField.Subject_le.text()
@@ -86,12 +86,12 @@ def saveSQL_data(Edit):#, orig_univer_code, orig_regNum):
         "Наличие_экспоната": TypeExhibit,
         "Выставки": Exhibitions,
         "Экспонат": Exhibit,
-        "Научный_Руководитель": BossName,
+        "Научный_руководитель": BossName,
         "Статус_руководителя": BossStatus
     }
-    editingSQL_NIR(Edit=False, parameters_dict=data_dict)
-
-
+    editingSQL_NIR(Edit=Edit, parameters_dict=data_dict, orig_univer_code=orig_univer_code, orig_regNum=orig_regNum)
+    window_AddField.close()
+    window.setEnabled(True)
 
 
     
@@ -100,7 +100,7 @@ def saveSQL_data(Edit):#, orig_univer_code, orig_regNum):
 def add_field_window(Edit=False):
     """Функция создания окна для добавления или редактирования строк в Таблице НИР"""
     global window_AddField, form_AddField
-    Form, Window = uic.loadUiType("source/EditWindow.ui")  # файл MainFormResize создается в функции gridLayoutStartResize, если поставить MainForm.ui, интерфейс не будет изменять размер в большую сторону
+    Form, Window = uic.loadUiType("source/EditWindow.ui")
     # Настройка интерфейса
     window_AddField = Window()
     form_AddField = Form()
@@ -123,40 +123,44 @@ def add_field_window(Edit=False):
     form_AddField.GRNTI2_1_cb.addItems(grnti_code)
     form_AddField.GRNTI2_2_cb.addItems(all_code)
     form_AddField.GRNTI2_3_cb.addItems(all_code)
-    form_AddField.CancelButton.clicked.connect(window_AddField.close)
-    form_AddField.SaveButton.clicked.connect(lambda: saveSQL_data(Edit=Edit))
+    orig_univerCode = orig_regNum = ''
     if Edit:
-        selected = form.tableView.currentIndex().row()
+        # Если это окно редактирования, а не добавления, то мы выводим существующую информацию
+        selected = form.tableView.currentIndex().row()  # текущая отмеченная строка
         if selected == -1:
             msg = QMessageBox()
             msg.setWindowTitle("Внимание!")
             msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
             msg.setText("Для редактирования выберете строку!")
             msg.setIcon(QMessageBox.Icon.Warning)
-            #msg.icon("source/warning.icon")
             msg.exec()
             return
         list_values = [form.tableView.model().index(selected, i).data() for i in range(11)]
-        form_AddField.university_code_cb.setCurrentText(str(list_values[0]) + "\t" + list_values[1])    # Устанавливает значение по текущесу тексту, только если такой элемент уже есть в списке QComboBox
+        # для дальнейшего передачи как параметра, сохраняем код ВУЗа и регистрационный номер, чтобы использовать их как метки для редактирования
+        orig_univerCode = list_values[0]; orig_regNum = str(list_values[3])
+        form_AddField.university_code_cb.setCurrentText(str(list_values[0]) + "\t" + list_values[1])    # Устанавливает значение по текущему тексту, только если такой элемент уже есть в списке QComboBox
         form_AddField.Subject_le.setText(str(list_values[2]))
         form_AddField.regNum_le.setText(str(list_values[3]))
         # ГРНТИ
-        GRNTI = str(list_values[4])
-        if ',' in GRNTI:
-            GRNTI = GRNTI.split(',')
-        elif ';' in GRNTI:
-            GRNTI = GRNTI.split(';')
-        if str(type(GRNTI)) == "<class 'list'>" and len(GRNTI) > 1:
-            GRNTI[0] = GRNTI[0].split('.'); GRNTI[1] = GRNTI[1].split('.')
-            form_AddField.GRNTI1_1_cb.setCurrentText(GRNTI[0][0]);  form_AddField.GRNTI2_1_cb.setCurrentText(GRNTI[1][0])
-            form_AddField.GRNTI1_2_cb.setCurrentText(GRNTI[0][1]);  form_AddField.GRNTI2_2_cb.setCurrentText(GRNTI[1][1])
-            if len(GRNTI[0]) == 3:  form_AddField.GRNTI1_3_cb.setCurrentText(GRNTI[0][2])
-            if len(GRNTI[1]) == 3:  form_AddField.GRNTI2_3_cb.setCurrentText(GRNTI[1][2])
-        else:
-            GRNTI = GRNTI.split('.')
-            form_AddField.GRNTI1_1_cb.setCurrentText(GRNTI[0])
-            form_AddField.GRNTI1_2_cb.setCurrentText(GRNTI[1])
-            if len(GRNTI) == 3: form_AddField.GRNTI1_3_cb.setCurrentText(GRNTI[2])
+        try:
+            GRNTI = str(list_values[4])
+            if ',' in GRNTI:
+                GRNTI = GRNTI.split(',')
+            elif ';' in GRNTI:
+                GRNTI = GRNTI.split(';')
+            if str(type(GRNTI)) == "<class 'list'>" and len(GRNTI) > 1:
+                GRNTI[0] = GRNTI[0].split('.'); GRNTI[1] = GRNTI[1].split('.')
+                form_AddField.GRNTI1_1_cb.setCurrentText(GRNTI[0][0]);  form_AddField.GRNTI2_1_cb.setCurrentText(GRNTI[1][0])
+                form_AddField.GRNTI1_2_cb.setCurrentText(GRNTI[0][1]);  form_AddField.GRNTI2_2_cb.setCurrentText(GRNTI[1][1])
+                if len(GRNTI[0]) == 3:  form_AddField.GRNTI1_3_cb.setCurrentText(GRNTI[0][2])
+                if len(GRNTI[1]) == 3:  form_AddField.GRNTI2_3_cb.setCurrentText(GRNTI[1][2])
+            else:
+                GRNTI = GRNTI.split('.')
+                form_AddField.GRNTI1_1_cb.setCurrentText(GRNTI[0])
+                form_AddField.GRNTI1_2_cb.setCurrentText(GRNTI[1])
+                if len(GRNTI) == 3: form_AddField.GRNTI1_3_cb.setCurrentText(GRNTI[2])
+        except:
+            pass
 
         form_AddField.type_cb.setCurrentText(str(list_values[5]))
         form_AddField.TypeExhibit_cb.setCurrentText(str(list_values[6]))
@@ -165,10 +169,46 @@ def add_field_window(Edit=False):
         form_AddField.BossName_le.setText(str(list_values[9]))
         form_AddField.BossStatus_le.setText(str(list_values[10]))
         
+    form_AddField.CancelButton.clicked.connect(lambda: window_AddField.close() and window.setEnabled(True))    # Не уверен, что подобный вызов 2-х функций корректное занятие, но оно работает
+    form_AddField.SaveButton.clicked.connect(lambda: saveSQL_data(Edit=Edit, orig_univer_code=orig_univerCode, orig_regNum=orig_regNum))   # Тут и осуществляется вызов функции для записи данных
 
     window_AddField.show()
+    # проблема при нажатии на крестик, окно не становится Enabled 
     #window.setEnabled(False)   #  Чтобы нельзя было использовать главное окно в этот момент
 
+
+def delete_row():
+    """Удаляет выбранную строку"""
+    selected = form.tableView.selectedIndexes()  # текущие отмеченные строки
+    index_set = set(index.row() for index in selected)
+    if len(selected) == 0:
+        msg = QMessageBox()
+        msg.setWindowTitle("Внимание!")
+        msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
+        msg.setText("Для удаления выберете строку!")
+        msg.setIcon(QMessageBox.Icon.Warning)
+        msg.exec()
+        return
+    # инфа о нажатиях QMessageBox https://coderlessons.com/tutorials/python-technologies/izuchite-pyqt/pyqt-qmessagebox
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Icon.Information)
+    if len(index_set) > 1: str_ = "строки"
+    else: str_ = "строку"
+    msg.setText(f"Вы действительно хотите удалить {str_}?")
+    msg.setWindowTitle("Удаление")
+    msg.setWindowIcon(QtGui.QIcon("source/delete-icon.png"))
+    msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
+    global reply; reply="Cancel"
+    msg.buttonClicked.connect(msgbtn)
+    msg.exec()
+    if reply == "OK":
+        for index in index_set:
+            db_model.removeRow(index)
+    del reply
+	
+def msgbtn(i):
+    global reply
+    reply = i.text()
 
 
 output_table()
@@ -177,6 +217,8 @@ output_table()
 form.choiceTable.currentTextChanged.connect(lambda: output_table(table_name=form.choiceTable.currentText()))
 form.AddField.clicked.connect(add_field_window)
 form.EditField.clicked.connect(lambda: add_field_window(Edit=True))
+form.deleteButton.clicked.connect(delete_row)
+form.UpdateButton.clicked.connect(lambda: output_table(table_name=form.choiceTable.currentText()))
 
 # Запуск приложения
 window.show()

@@ -45,7 +45,7 @@
       <height>571</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0" columnstretch="0,0,0">
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetNoConstraint</enum>
      </property>
@@ -67,8 +67,31 @@
      <property name="verticalSpacing">
       <number>7</number>
      </property>
-     <item row="5" column="2">
-      <spacer name="horizontalSpacer_3">
+     <item row="4" column="0">
+      <widget class="QPushButton" name="AddField">
+       <property name="text">
+        <string>Добавить</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="3">
+      <widget class="QTableView" name="tableView">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="gridStyle">
+        <enum>Qt::SolidLine</enum>
+       </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="2">
+      <spacer name="horizontalSpacer_4">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -80,12 +103,18 @@
        </property>
       </spacer>
      </item>
-     <item row="3" column="0">
-      <widget class="QPushButton" name="AddField">
-       <property name="text">
-        <string>Добавить</string>
+     <item row="6" column="1">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-      </widget>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item row="0" column="1" colspan="2">
       <widget class="QLabel" name="dbInfo">
@@ -100,18 +129,19 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="1">
+      <widget class="QPushButton" name="deleteButton">
+       <property name="text">
+        <string>Удалить</string>
+       </property>
+      </widget>
+     </item>
      <item row="4" column="2">
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QPushButton" name="EditField">
+       <property name="text">
+        <string>Редактировать</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
+      </widget>
      </item>
      <item row="0" column="0">
       <widget class="QComboBox" name="choiceTable">
@@ -132,7 +162,14 @@
        </item>
       </widget>
      </item>
-     <item row="5" column="0">
+     <item row="7" column="1">
+      <widget class="QPushButton" name="UpdateButton">
+       <property name="text">
+        <string>Обновить</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -145,41 +182,18 @@
        </property>
       </spacer>
      </item>
-     <item row="3" column="1">
-      <spacer name="horizontalSpacer">
+     <item row="7" column="2">
+      <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
-         <height>40</height>
+         <height>20</height>
         </size>
        </property>
       </spacer>
-     </item>
-     <item row="2" column="0" colspan="3">
-      <widget class="QTableView" name="tableView">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <property name="gridStyle">
-        <enum>Qt::SolidLine</enum>
-       </property>
-       <property name="sortingEnabled">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QPushButton" name="EditField">
-       <property name="text">
-        <string>Редактировать</string>
-       </property>
-      </widget>
      </item>
     </layout>
    </widget>

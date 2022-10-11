@@ -49,16 +49,17 @@ def SQLdata_acquisition_EditWindow():
     список кодов ГРНТИ, словарь с регистрационными номерами по ключам кода ВУЗа"""
     query = QSqlQuery()
     query.exec(
-        """SELECT Код_ВУЗа, Аббревиатура, Рег_номер FROM Vyst_mo"""
+        #"""SELECT Код_ВУЗа, Аббревиатура, Рег_номер FROM Vyst_mo"""
+        """SELECT Код_ВУЗа, Аббревиатура FROM VUZ"""
     )
     university_dict = {}
     regNum_dict = {};   # regNum_dict - словарь регистрационных номеров по ключу кода ВУЗа
     while query.next():
         current_code = query.value("Код_ВУЗа")
         university_dict.update({current_code: query.value("Аббревиатура")})  # update заменяет старое значение по ключу, если оно существует или добавляет новое
-        if not (current_code in regNum_dict.keys()):
+        """ if not (current_code in regNum_dict.keys()):
             regNum_dict.update({current_code: list()})
-        regNum_dict[current_code].append(query.value("Рег_номер"))
+        regNum_dict[current_code].append(query.value("Рег_номер")) """
     # сортировка по ключам
     university_dict = dict(sorted(university_dict.items()))
     regNum_dict = dict(sorted(regNum_dict.items()))
@@ -80,19 +81,22 @@ def editingSQL_NIR(Edit=False, parameters_dict=False, orig_univer_code=False, or
     if Edit:
         values = ""
         for key in parameters_dict.keys():
-            values += key + "=" + str(parameters_dict[key]) + ", "
+            if key == "Код_ВУЗа":   values += key + '=' + parameters_dict[key] + ', '
+            else:   values += key + '="' + str(parameters_dict[key]) + '", '
         values = values[0:len(values)-2]
         query.exec(
-            """UPDATE Vyst_mo SET {values} WHERE Код_ВУЗа={orig_univer_code} AND Рег_номер={orig_regNum}"""
-    )
+            f"""UPDATE Vyst_mo SET {values} WHERE Код_ВУЗа={orig_univer_code} AND Рег_номер="{orig_regNum}" """
+        )
+        print(f"""UPDATE Vyst_mo SET {values} WHERE Код_ВУЗа={orig_univer_code} AND Рег_номер="{orig_regNum}" """)
     else:
         keys = '('
-        values = ""
+        values = "("
         for key in parameters_dict.keys():
             keys += key + ", "
-            values += str(parameters_dict[key]) + ", "
+            if key == "Код_ВУЗа":   values += str(parameters_dict[key]) + ', '
+            else:   values += '"' + str(parameters_dict[key]) + '", '
         keys = keys[0:len(keys)-2]; keys += ')'
         values = values[0:len(values)-2] + ')'
         query.exec(
-            """INSERT INTO Vyst_mo {keys} VALUES {values}"""
+            f"""INSERT INTO Vyst_mo {keys} VALUES {values}"""
         )
