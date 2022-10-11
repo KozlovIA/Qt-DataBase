@@ -73,6 +73,26 @@ def SQLdata_acquisition_EditWindow():
     return university_dict, grnti_code, regNum_dict
 
 
-if __name__ == "__main__":
-    regNum = SQLdata_acquisition_EditWindow()[2]
-    print((regNum))
+def editingSQL_NIR(Edit=False, parameters_dict=False, orig_univer_code=False, orig_regNum=False):
+    """Редактирование полей таблицы НИР"""
+    query = QSqlQuery()
+    
+    if Edit:
+        values = ""
+        for key in parameters_dict.keys():
+            values += key + "=" + str(parameters_dict[key]) + ", "
+        values = values[0:len(values)-2]
+        query.exec(
+            """UPDATE Vyst_mo SET {values} WHERE Код_ВУЗа={orig_univer_code} AND Рег_номер={orig_regNum}"""
+    )
+    else:
+        keys = '('
+        values = ""
+        for key in parameters_dict.keys():
+            keys += key + ", "
+            values += str(parameters_dict[key]) + ", "
+        keys = keys[0:len(keys)-2]; keys += ')'
+        values = values[0:len(values)-2] + ')'
+        query.exec(
+            """INSERT INTO Vyst_mo {keys} VALUES {values}"""
+        )

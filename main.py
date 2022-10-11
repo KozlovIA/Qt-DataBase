@@ -21,6 +21,9 @@ def output_table(table_name="Таблица НИР"):
     table_dict = {'Таблица НИР': 'Vyst_mo', 'Таблица ВУЗов': 'VUZ', 'Таблица ГРНТИ': 'grntirub'}
     #global db
     #db = db_connect()
+    if table_name == "Таблица НИР":
+        form.AddField.setEnabled(True); form.EditField.setEnabled(True)
+    else: form.AddField.setEnabled(False); form.EditField.setEnabled(False)
     if not db:  # db - глобальная переменная ссылающаяся на базу данных, создается с модуле functional.py строка 23 после функции db_connect()
         form.dbInfo.setText('Ошибка подключения к базе данных "' + table_name + '"')
         return
@@ -51,6 +54,48 @@ class ResizeThread(QThread):
 resizeThread = ResizeThread()
 resizeThread.start()
 
+def saveSQL_data(Edit):#, orig_univer_code, orig_regNum):
+    univer_code_name = form_AddField.university_code_cb.currentText()
+    univer_code_name = univer_code_name.split('\t')
+    subject = form_AddField.Subject_le.text()
+    reg_num = form_AddField.regNum_le.text()
+    GRNTI = ""
+    if form_AddField.GRNTI1_1_cb.currentText() != '-':
+        GRNTI = form_AddField.GRNTI1_1_cb.currentText() + '.' + form_AddField.GRNTI1_2_cb.currentText()
+    if form_AddField.GRNTI1_3_cb.currentText() != '-':
+        GRNTI = GRNTI + '.' + form_AddField.GRNTI1_3_cb.currentText()
+    if form_AddField.GRNTI2_1_cb.currentText() != '-':
+        if GRNTI != "": GRNTI += ';'
+        GRNTI = GRNTI + form_AddField.GRNTI2_1_cb.currentText() + '.' + form_AddField.GRNTI2_2_cb.currentText()
+    if form_AddField.GRNTI2_3_cb.currentText() != '-':
+        GRNTI = GRNTI + '.' + form_AddField.GRNTI2_3_cb.currentText()
+    type_EM = form_AddField.type_cb.currentText()
+    TypeExhibit = form_AddField.TypeExhibit_cb.currentText()
+    Exhibitions = form_AddField.Exhibitions_le.text()
+    Exhibit = form_AddField.Exhibit_le.text()
+    BossName = form_AddField.BossName_le.text()
+    BossStatus = form_AddField.BossStatus_le.text()
+
+    data_dict = {
+        "Код_ВУЗа": univer_code_name[0],
+        "Аббревиатура": univer_code_name[1],
+        "Предмет": subject,
+        "Рег_номер": reg_num,
+        "ГРНТИ": GRNTI,
+        "Тип": type_EM,
+        "Наличие_экспоната": TypeExhibit,
+        "Выставки": Exhibitions,
+        "Экспонат": Exhibit,
+        "Научный_Руководитель": BossName,
+        "Статус_руководителя": BossStatus
+    }
+    editingSQL_NIR(Edit=False, parameters_dict=data_dict)
+
+
+
+
+    
+
 
 def add_field_window(Edit=False):
     """Функция создания окна для добавления или редактирования строк в Таблице НИР"""
@@ -78,7 +123,8 @@ def add_field_window(Edit=False):
     form_AddField.GRNTI2_1_cb.addItems(grnti_code)
     form_AddField.GRNTI2_2_cb.addItems(all_code)
     form_AddField.GRNTI2_3_cb.addItems(all_code)
-    form_AddField.SaveButton.clicked.connect(window_AddField.close)
+    form_AddField.CancelButton.clicked.connect(window_AddField.close)
+    form_AddField.SaveButton.clicked.connect(lambda: saveSQL_data(Edit=Edit))
     if Edit:
         selected = form.tableView.currentIndex().row()
         if selected == -1:
