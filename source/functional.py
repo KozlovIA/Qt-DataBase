@@ -87,7 +87,6 @@ def editingSQL_NIR(Edit=False, parameters_dict=False, orig_univer_code=False, or
         query.exec(
             f"""UPDATE Vyst_mo SET {values} WHERE Код_ВУЗа={orig_univer_code} AND Рег_номер="{orig_regNum}" """
         )
-        print(f"""UPDATE Vyst_mo SET {values} WHERE Код_ВУЗа={orig_univer_code} AND Рег_номер="{orig_regNum}" """)
     else:
         keys = '('
         values = "("
@@ -99,4 +98,11 @@ def editingSQL_NIR(Edit=False, parameters_dict=False, orig_univer_code=False, or
         values = values[0:len(values)-2] + ')'
         query.exec(
             f"""INSERT INTO Vyst_mo {keys} VALUES {values}"""
+        )
+
+def SQT_Query(SQLquery):
+    """Функция принимающая на вход SQL запрос и выполняющая его"""
+    query = QSqlQuery()
+    query.exec(
+            f"""{SQLquery}"""
         )

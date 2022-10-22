@@ -77,62 +77,15 @@
     <property name="bottomMargin">
      <number>10</number>
     </property>
-    <item row="5" column="0">
-     <widget class="QLabel" name="GRNTI_lb">
+    <item row="7" column="0">
+     <widget class="QLabel" name="TypeExhibit_lb">
       <property name="text">
-       <string>ГРНТИ</string>
+       <string>Наличие экспоната</string>
       </property>
      </widget>
     </item>
-    <item row="5" column="2">
-     <layout class="QGridLayout" name="GRNTI_layout">
-      <item row="1" column="0" colspan="3">
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QComboBox" name="GRNTI2_3_cb"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QComboBox" name="GRNTI2_1_cb"/>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="GRNTI2_2_cb"/>
-      </item>
-      <item row="0" column="2">
-       <widget class="QComboBox" name="GRNTI1_3_cb"/>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="GRNTI1_2_cb"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QComboBox" name="GRNTI1_1_cb"/>
-      </item>
-     </layout>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="Subject_lb">
-      <property name="text">
-       <string>Предмет</string>
-      </property>
-     </widget>
-    </item>
-    <item row="12" column="0">
-     <widget class="QLabel" name="BossStatus_lb">
-      <property name="text">
-       <string>Статус руководителя</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="0">
-     <widget class="QLabel" name="Exhibitions_lb">
-      <property name="text">
-       <string>Выставки</string>
-      </property>
-     </widget>
+    <item row="3" column="2">
+     <widget class="QLineEdit" name="Subject_le"/>
     </item>
     <item row="6" column="2">
      <widget class="QComboBox" name="type_cb">
@@ -148,10 +101,90 @@
       </item>
      </widget>
     </item>
-    <item row="7" column="0">
-     <widget class="QLabel" name="TypeExhibit_lb">
+    <item row="3" column="0">
+     <widget class="QLabel" name="Subject_lb">
       <property name="text">
-       <string>Наличие экспоната</string>
+       <string>Предмет</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="codeVUZ_lb">
+      <property name="text">
+       <string>Код ВУЗа</string>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="2">
+     <widget class="QLineEdit" name="BossStatus_le"/>
+    </item>
+    <item row="11" column="0">
+     <widget class="QLabel" name="BossName_lb">
+      <property name="text">
+       <string>Научный руководитель</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLabel" name="Exhibit_lb">
+      <property name="text">
+       <string>Экспонат</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QComboBox" name="university_code_cb"/>
+    </item>
+    <item row="9" column="0">
+     <widget class="QLabel" name="Exhibitions_lb">
+      <property name="text">
+       <string>Выставки</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="GRNTI_lb">
+      <property name="text">
+       <string>ГРНТИ</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="2">
+     <widget class="QLineEdit" name="regNum_le">
+      <property name="maxLength">
+       <number>6</number>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="0">
+     <widget class="QLabel" name="BossStatus_lb">
+      <property name="text">
+       <string>Статус руководителя</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLineEdit" name="GRNTI_1_le">
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="GRNTI_2_le">
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="type_lb">
+      <property name="text">
+       <string>Тип</string>
       </property>
      </widget>
     </item>
@@ -177,42 +210,6 @@
     <item row="11" column="2">
      <widget class="QLineEdit" name="BossName_le"/>
     </item>
-    <item row="0" column="2">
-     <widget class="QComboBox" name="university_code_cb"/>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="codeVUZ_lb">
-      <property name="text">
-       <string>Код ВУЗа</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="type_lb">
-      <property name="text">
-       <string>Тип</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="2">
-     <widget class="QLineEdit" name="Exhibitions_le"/>
-    </item>
-    <item row="3" column="2">
-     <widget class="QLineEdit" name="Subject_le"/>
-    </item>
-    <item row="4" column="2">
-     <widget class="QLineEdit" name="regNum_le"/>
-    </item>
-    <item row="12" column="2">
-     <widget class="QLineEdit" name="BossStatus_le"/>
-    </item>
-    <item row="11" column="0">
-     <widget class="QLabel" name="BossName_lb">
-      <property name="text">
-       <string>Научный руководитель</string>
-      </property>
-     </widget>
-    </item>
     <item row="4" column="0">
      <widget class="QLabel" name="regNum_lb">
       <property name="text">
@@ -220,15 +217,11 @@
       </property>
      </widget>
     </item>
-    <item row="10" column="0">
-     <widget class="QLabel" name="Exhibit_lb">
-      <property name="text">
-       <string>Экспонат</string>
-      </property>
-     </widget>
+    <item row="9" column="2">
+     <widget class="QTextEdit" name="Exhibitions_te"/>
     </item>
     <item row="10" column="2">
-     <widget class="QLineEdit" name="Exhibit_le"/>
+     <widget class="QTextEdit" name="Exhibit_te"/>
     </item>
    </layout>
   </widget>

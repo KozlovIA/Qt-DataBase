@@ -1,8 +1,11 @@
 from PyQt6 import uic, QtGui
-from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMessageBox, QDialog
+from cv2 import exp
 from source.functional import *
 from time import sleep
-from PyQt6.QtCore import QThread
+from PyQt6.QtCore import QThread, QEvent
+from threading import Thread
+import time
 
 gridLayoutStartResize()     # изменнение размеров основного слоя gridLayout в MainForm для корректного изменения размеров виджетов
 
@@ -55,24 +58,29 @@ resizeThread = ResizeThread()
 resizeThread.start()
 
 def saveSQL_data(Edit, orig_univer_code, orig_regNum):
+    """Функция сохранения данных в таблицу.
+    Входные параметры Edit - если это редактирование,
+    так же приреадактировании должн передаваться первичный ключ orig_univer_code - изначальный код ВУЗа, orig_regNum - изначальный регистрационный номер"""
     univer_code_name = form_AddField.university_code_cb.currentText()
     univer_code_name = univer_code_name.split('\t')
     subject = form_AddField.Subject_le.text()
     reg_num = form_AddField.regNum_le.text()
+
+    # ГРНТИ
     GRNTI = ""
-    if form_AddField.GRNTI1_1_cb.currentText() != '-':
-        GRNTI = form_AddField.GRNTI1_1_cb.currentText() + '.' + form_AddField.GRNTI1_2_cb.currentText()
-    if form_AddField.GRNTI1_3_cb.currentText() != '-':
-        GRNTI = GRNTI + '.' + form_AddField.GRNTI1_3_cb.currentText()
-    if form_AddField.GRNTI2_1_cb.currentText() != '-':
-        if GRNTI != "": GRNTI += ';'
-        GRNTI = GRNTI + form_AddField.GRNTI2_1_cb.currentText() + '.' + form_AddField.GRNTI2_2_cb.currentText()
-    if form_AddField.GRNTI2_3_cb.currentText() != '-':
-        GRNTI = GRNTI + '.' + form_AddField.GRNTI2_3_cb.currentText()
+    if form_AddField.GRNTI_1_le.text() != '..':
+        GRNTI = form_AddField.GRNTI_1_le.text()
+        if GRNTI[len(GRNTI)-2:len(GRNTI)-1] == '..':  GRNTI = GRNTI[0:len(GRNTI)-2]     # довольно кринжовая обработка разного количества цифр
+        if GRNTI[len(GRNTI)-1] == '.':  GRNTI = GRNTI[0:len(GRNTI)-1]
+    if form_AddField.GRNTI_2_le.text() != '..':
+        GRNTI += ';' + form_AddField.GRNTI_2_le.text()
+        if GRNTI[len(GRNTI)-2:len(GRNTI)-1] == '..':  GRNTI = GRNTI[0:len(GRNTI)-2]
+        if GRNTI[len(GRNTI)-1] == '.':  GRNTI = GRNTI[0:len(GRNTI)-1]
+    ########################
     type_EM = form_AddField.type_cb.currentText()
     TypeExhibit = form_AddField.TypeExhibit_cb.currentText()
-    Exhibitions = form_AddField.Exhibitions_le.text()
-    Exhibit = form_AddField.Exhibit_le.text()
+    Exhibitions = form_AddField.Exhibitions_te.toPlainText()
+    Exhibit = form_AddField.Exhibit_te.toPlainText()
     BossName = form_AddField.BossName_le.text()
     BossStatus = form_AddField.BossStatus_le.text()
 
@@ -91,10 +99,21 @@ def saveSQL_data(Edit, orig_univer_code, orig_regNum):
     }
     editingSQL_NIR(Edit=Edit, parameters_dict=data_dict, orig_univer_code=orig_univer_code, orig_regNum=orig_regNum)
     window_AddField.close()
-    window.setEnabled(True)
+    #window.setEnabled(True)
+    output_table(table_name=form.choiceTable.currentText())     # для мгновенного обновления
+
+    # Установка курсора на строку
+    i = 0
+    while True:
+        list_values = [form.tableView.model().index(i, j).data() for j in range(11)]
+        if list_values == [None, None, None, None, None, None, None, None, None, None, None]: break
+        list_values = list(map(str, list_values))
+        if (str(univer_code_name[0]) and str(reg_num)) in list_values:
+            form.tableView.selectRow(i)
+            break
+        i+=1
 
 
-    
 
 
 def add_field_window(Edit=False):
@@ -111,18 +130,14 @@ def add_field_window(Edit=False):
     univer_view = [str(code) + "\t" + univer_dict[code] for code in univer_code]   # хитрые пару строк, чтобы выводился и код и название
     form_AddField.university_code_cb.addItems(univer_view)
     # Ввод корректных кодов ГРНТИ
-    grnti_code = list(map(str, grnti_code)); grnti_code.insert(0, '-')
+    """ grnti_code = list(map(str, grnti_code)); grnti_code.insert(0, '-')
     for i in range(1, len(grnti_code)):
         if len(grnti_code[i]) == 1: grnti_code[i] = '0' + grnti_code[i]
     all_code = ['-']; [all_code.append(str(i)) for i in range(0, 91)]
     for i in range(1, len(all_code)):
         if len(all_code[i]) == 1: all_code[i] = '0' + all_code[i]
-    form_AddField.GRNTI1_1_cb.addItems(grnti_code)
-    form_AddField.GRNTI1_2_cb.addItems(all_code)
-    form_AddField.GRNTI1_3_cb.addItems(all_code)
-    form_AddField.GRNTI2_1_cb.addItems(grnti_code)
-    form_AddField.GRNTI2_2_cb.addItems(all_code)
-    form_AddField.GRNTI2_3_cb.addItems(all_code)
+    """
+    form_AddField.GRNTI_1_le.setInputMask('00.00.00;_'); form_AddField.GRNTI_2_le.setInputMask('00.00.00;_')
     orig_univerCode = orig_regNum = ''
     if Edit:
         # Если это окно редактирования, а не добавления, то мы выводим существующую информацию
@@ -135,46 +150,39 @@ def add_field_window(Edit=False):
             msg.setIcon(QMessageBox.Icon.Warning)
             msg.exec()
             return
-        list_values = [form.tableView.model().index(selected, i).data() for i in range(11)]
+        list_values = [form.tableView.model().index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
         # для дальнейшего передачи как параметра, сохраняем код ВУЗа и регистрационный номер, чтобы использовать их как метки для редактирования
         orig_univerCode = list_values[0]; orig_regNum = str(list_values[3])
         form_AddField.university_code_cb.setCurrentText(str(list_values[0]) + "\t" + list_values[1])    # Устанавливает значение по текущему тексту, только если такой элемент уже есть в списке QComboBox
         form_AddField.Subject_le.setText(str(list_values[2]))
         form_AddField.regNum_le.setText(str(list_values[3]))
         # ГРНТИ
-        try:
-            GRNTI = str(list_values[4])
-            if ',' in GRNTI:
-                GRNTI = GRNTI.split(',')
-            elif ';' in GRNTI:
-                GRNTI = GRNTI.split(';')
-            if str(type(GRNTI)) == "<class 'list'>" and len(GRNTI) > 1:
-                GRNTI[0] = GRNTI[0].split('.'); GRNTI[1] = GRNTI[1].split('.')
-                form_AddField.GRNTI1_1_cb.setCurrentText(GRNTI[0][0]);  form_AddField.GRNTI2_1_cb.setCurrentText(GRNTI[1][0])
-                form_AddField.GRNTI1_2_cb.setCurrentText(GRNTI[0][1]);  form_AddField.GRNTI2_2_cb.setCurrentText(GRNTI[1][1])
-                if len(GRNTI[0]) == 3:  form_AddField.GRNTI1_3_cb.setCurrentText(GRNTI[0][2])
-                if len(GRNTI[1]) == 3:  form_AddField.GRNTI2_3_cb.setCurrentText(GRNTI[1][2])
-            else:
-                GRNTI = GRNTI.split('.')
-                form_AddField.GRNTI1_1_cb.setCurrentText(GRNTI[0])
-                form_AddField.GRNTI1_2_cb.setCurrentText(GRNTI[1])
-                if len(GRNTI) == 3: form_AddField.GRNTI1_3_cb.setCurrentText(GRNTI[2])
-        except:
-            pass
-
+        GRNTI = str(list_values[4])
+        if ',' in GRNTI:
+            GRNTI = GRNTI.split(',')
+        elif ';' in GRNTI:
+            GRNTI = GRNTI.split(';')
+        if str(type(GRNTI)) == "<class 'list'>" and len(GRNTI) > 1:
+            form_AddField.GRNTI_1_le.setText(GRNTI[0])
+            form_AddField.GRNTI_2_le.setText(GRNTI[1])
+        else:
+            form_AddField.GRNTI_1_le.setText(GRNTI)
+        # остальные поля
         form_AddField.type_cb.setCurrentText(str(list_values[5]))
         form_AddField.TypeExhibit_cb.setCurrentText(str(list_values[6]))
-        form_AddField.Exhibitions_le.setText(str(list_values[7]))
-        form_AddField.Exhibit_le.setText(str(list_values[8]))
+        form_AddField.Exhibitions_te.setText(str(list_values[7]))
+        form_AddField.Exhibit_te.setText(str(list_values[8]))
         form_AddField.BossName_le.setText(str(list_values[9]))
         form_AddField.BossStatus_le.setText(str(list_values[10]))
-        
+
+    
     form_AddField.CancelButton.clicked.connect(lambda: window_AddField.close() and window.setEnabled(True))    # Не уверен, что подобный вызов 2-х функций корректное занятие, но оно работает
     form_AddField.SaveButton.clicked.connect(lambda: saveSQL_data(Edit=Edit, orig_univer_code=orig_univerCode, orig_regNum=orig_regNum))   # Тут и осуществляется вызов функции для записи данных
 
     window_AddField.show()
     # проблема при нажатии на крестик, окно не становится Enabled 
     #window.setEnabled(False)   #  Чтобы нельзя было использовать главное окно в этот момент
+
 
 
 def delete_row():
@@ -205,6 +213,7 @@ def delete_row():
         for index in index_set:
             db_model.removeRow(index)
     del reply
+    output_table(table_name=form.choiceTable.currentText())     # для мгновенного обновления
 	
 def msgbtn(i):
     global reply
@@ -218,7 +227,7 @@ form.choiceTable.currentTextChanged.connect(lambda: output_table(table_name=form
 form.AddField.clicked.connect(add_field_window)
 form.EditField.clicked.connect(lambda: add_field_window(Edit=True))
 form.deleteButton.clicked.connect(delete_row)
-form.UpdateButton.clicked.connect(lambda: output_table(table_name=form.choiceTable.currentText()))
+#form.FiltrationButton.clicked.connect(lambda: pass)
 
 # Запуск приложения
 window.show()

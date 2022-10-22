@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QDialog, QFrame,
-    QGridLayout, QHBoxLayout, QLabel, QLineEdit,
-    QPushButton, QSizePolicy, QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QDialog, QGridLayout,
+    QHBoxLayout, QLabel, QLineEdit, QPushButton,
+    QSizePolicy, QTextEdit, QWidget)
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -51,67 +51,15 @@ class Ui_Dialog(object):
         self.gridLayout = QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(10, 10, 10, 10)
-        self.GRNTI_lb = QLabel(self.gridLayoutWidget)
-        self.GRNTI_lb.setObjectName(u"GRNTI_lb")
+        self.TypeExhibit_lb = QLabel(self.gridLayoutWidget)
+        self.TypeExhibit_lb.setObjectName(u"TypeExhibit_lb")
 
-        self.gridLayout.addWidget(self.GRNTI_lb, 5, 0, 1, 1)
+        self.gridLayout.addWidget(self.TypeExhibit_lb, 7, 0, 1, 1)
 
-        self.GRNTI_layout = QGridLayout()
-        self.GRNTI_layout.setObjectName(u"GRNTI_layout")
-        self.line = QFrame(self.gridLayoutWidget)
-        self.line.setObjectName(u"line")
-        self.line.setFrameShape(QFrame.HLine)
-        self.line.setFrameShadow(QFrame.Sunken)
+        self.Subject_le = QLineEdit(self.gridLayoutWidget)
+        self.Subject_le.setObjectName(u"Subject_le")
 
-        self.GRNTI_layout.addWidget(self.line, 1, 0, 1, 3)
-
-        self.GRNTI2_3_cb = QComboBox(self.gridLayoutWidget)
-        self.GRNTI2_3_cb.setObjectName(u"GRNTI2_3_cb")
-
-        self.GRNTI_layout.addWidget(self.GRNTI2_3_cb, 2, 2, 1, 1)
-
-        self.GRNTI2_1_cb = QComboBox(self.gridLayoutWidget)
-        self.GRNTI2_1_cb.setObjectName(u"GRNTI2_1_cb")
-
-        self.GRNTI_layout.addWidget(self.GRNTI2_1_cb, 2, 0, 1, 1)
-
-        self.GRNTI2_2_cb = QComboBox(self.gridLayoutWidget)
-        self.GRNTI2_2_cb.setObjectName(u"GRNTI2_2_cb")
-
-        self.GRNTI_layout.addWidget(self.GRNTI2_2_cb, 2, 1, 1, 1)
-
-        self.GRNTI1_3_cb = QComboBox(self.gridLayoutWidget)
-        self.GRNTI1_3_cb.setObjectName(u"GRNTI1_3_cb")
-
-        self.GRNTI_layout.addWidget(self.GRNTI1_3_cb, 0, 2, 1, 1)
-
-        self.GRNTI1_2_cb = QComboBox(self.gridLayoutWidget)
-        self.GRNTI1_2_cb.setObjectName(u"GRNTI1_2_cb")
-
-        self.GRNTI_layout.addWidget(self.GRNTI1_2_cb, 0, 1, 1, 1)
-
-        self.GRNTI1_1_cb = QComboBox(self.gridLayoutWidget)
-        self.GRNTI1_1_cb.setObjectName(u"GRNTI1_1_cb")
-
-        self.GRNTI_layout.addWidget(self.GRNTI1_1_cb, 0, 0, 1, 1)
-
-
-        self.gridLayout.addLayout(self.GRNTI_layout, 5, 2, 1, 1)
-
-        self.Subject_lb = QLabel(self.gridLayoutWidget)
-        self.Subject_lb.setObjectName(u"Subject_lb")
-
-        self.gridLayout.addWidget(self.Subject_lb, 3, 0, 1, 1)
-
-        self.BossStatus_lb = QLabel(self.gridLayoutWidget)
-        self.BossStatus_lb.setObjectName(u"BossStatus_lb")
-
-        self.gridLayout.addWidget(self.BossStatus_lb, 12, 0, 1, 1)
-
-        self.Exhibitions_lb = QLabel(self.gridLayoutWidget)
-        self.Exhibitions_lb.setObjectName(u"Exhibitions_lb")
-
-        self.gridLayout.addWidget(self.Exhibitions_lb, 9, 0, 1, 1)
+        self.gridLayout.addWidget(self.Subject_le, 3, 2, 1, 1)
 
         self.type_cb = QComboBox(self.gridLayoutWidget)
         self.type_cb.addItem("")
@@ -120,10 +68,78 @@ class Ui_Dialog(object):
 
         self.gridLayout.addWidget(self.type_cb, 6, 2, 1, 1)
 
-        self.TypeExhibit_lb = QLabel(self.gridLayoutWidget)
-        self.TypeExhibit_lb.setObjectName(u"TypeExhibit_lb")
+        self.Subject_lb = QLabel(self.gridLayoutWidget)
+        self.Subject_lb.setObjectName(u"Subject_lb")
 
-        self.gridLayout.addWidget(self.TypeExhibit_lb, 7, 0, 1, 1)
+        self.gridLayout.addWidget(self.Subject_lb, 3, 0, 1, 1)
+
+        self.codeVUZ_lb = QLabel(self.gridLayoutWidget)
+        self.codeVUZ_lb.setObjectName(u"codeVUZ_lb")
+
+        self.gridLayout.addWidget(self.codeVUZ_lb, 0, 0, 1, 1)
+
+        self.BossStatus_le = QLineEdit(self.gridLayoutWidget)
+        self.BossStatus_le.setObjectName(u"BossStatus_le")
+
+        self.gridLayout.addWidget(self.BossStatus_le, 12, 2, 1, 1)
+
+        self.BossName_lb = QLabel(self.gridLayoutWidget)
+        self.BossName_lb.setObjectName(u"BossName_lb")
+
+        self.gridLayout.addWidget(self.BossName_lb, 11, 0, 1, 1)
+
+        self.Exhibit_lb = QLabel(self.gridLayoutWidget)
+        self.Exhibit_lb.setObjectName(u"Exhibit_lb")
+
+        self.gridLayout.addWidget(self.Exhibit_lb, 10, 0, 1, 1)
+
+        self.university_code_cb = QComboBox(self.gridLayoutWidget)
+        self.university_code_cb.setObjectName(u"university_code_cb")
+
+        self.gridLayout.addWidget(self.university_code_cb, 0, 2, 1, 1)
+
+        self.Exhibitions_lb = QLabel(self.gridLayoutWidget)
+        self.Exhibitions_lb.setObjectName(u"Exhibitions_lb")
+
+        self.gridLayout.addWidget(self.Exhibitions_lb, 9, 0, 1, 1)
+
+        self.GRNTI_lb = QLabel(self.gridLayoutWidget)
+        self.GRNTI_lb.setObjectName(u"GRNTI_lb")
+
+        self.gridLayout.addWidget(self.GRNTI_lb, 5, 0, 1, 1)
+
+        self.regNum_le = QLineEdit(self.gridLayoutWidget)
+        self.regNum_le.setObjectName(u"regNum_le")
+        self.regNum_le.setMaxLength(6)
+
+        self.gridLayout.addWidget(self.regNum_le, 4, 2, 1, 1)
+
+        self.BossStatus_lb = QLabel(self.gridLayoutWidget)
+        self.BossStatus_lb.setObjectName(u"BossStatus_lb")
+
+        self.gridLayout.addWidget(self.BossStatus_lb, 12, 0, 1, 1)
+
+        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.GRNTI_1_le = QLineEdit(self.gridLayoutWidget)
+        self.GRNTI_1_le.setObjectName(u"GRNTI_1_le")
+        self.GRNTI_1_le.setInputMethodHints(Qt.ImhNone)
+
+        self.horizontalLayout_3.addWidget(self.GRNTI_1_le)
+
+        self.GRNTI_2_le = QLineEdit(self.gridLayoutWidget)
+        self.GRNTI_2_le.setObjectName(u"GRNTI_2_le")
+        self.GRNTI_2_le.setInputMethodHints(Qt.ImhNone)
+
+        self.horizontalLayout_3.addWidget(self.GRNTI_2_le)
+
+
+        self.gridLayout.addLayout(self.horizontalLayout_3, 5, 2, 1, 1)
+
+        self.type_lb = QLabel(self.gridLayoutWidget)
+        self.type_lb.setObjectName(u"type_lb")
+
+        self.gridLayout.addWidget(self.type_lb, 6, 0, 1, 1)
 
         self.TypeExhibit_cb = QComboBox(self.gridLayoutWidget)
         self.TypeExhibit_cb.addItem("")
@@ -138,60 +154,20 @@ class Ui_Dialog(object):
 
         self.gridLayout.addWidget(self.BossName_le, 11, 2, 1, 1)
 
-        self.university_code_cb = QComboBox(self.gridLayoutWidget)
-        self.university_code_cb.setObjectName(u"university_code_cb")
-
-        self.gridLayout.addWidget(self.university_code_cb, 0, 2, 1, 1)
-
-        self.codeVUZ_lb = QLabel(self.gridLayoutWidget)
-        self.codeVUZ_lb.setObjectName(u"codeVUZ_lb")
-
-        self.gridLayout.addWidget(self.codeVUZ_lb, 0, 0, 1, 1)
-
-        self.type_lb = QLabel(self.gridLayoutWidget)
-        self.type_lb.setObjectName(u"type_lb")
-
-        self.gridLayout.addWidget(self.type_lb, 6, 0, 1, 1)
-
-        self.Exhibitions_le = QLineEdit(self.gridLayoutWidget)
-        self.Exhibitions_le.setObjectName(u"Exhibitions_le")
-
-        self.gridLayout.addWidget(self.Exhibitions_le, 9, 2, 1, 1)
-
-        self.Subject_le = QLineEdit(self.gridLayoutWidget)
-        self.Subject_le.setObjectName(u"Subject_le")
-
-        self.gridLayout.addWidget(self.Subject_le, 3, 2, 1, 1)
-
-        self.regNum_le = QLineEdit(self.gridLayoutWidget)
-        self.regNum_le.setObjectName(u"regNum_le")
-
-        self.gridLayout.addWidget(self.regNum_le, 4, 2, 1, 1)
-
-        self.BossStatus_le = QLineEdit(self.gridLayoutWidget)
-        self.BossStatus_le.setObjectName(u"BossStatus_le")
-
-        self.gridLayout.addWidget(self.BossStatus_le, 12, 2, 1, 1)
-
-        self.BossName_lb = QLabel(self.gridLayoutWidget)
-        self.BossName_lb.setObjectName(u"BossName_lb")
-
-        self.gridLayout.addWidget(self.BossName_lb, 11, 0, 1, 1)
-
         self.regNum_lb = QLabel(self.gridLayoutWidget)
         self.regNum_lb.setObjectName(u"regNum_lb")
 
         self.gridLayout.addWidget(self.regNum_lb, 4, 0, 1, 1)
 
-        self.Exhibit_lb = QLabel(self.gridLayoutWidget)
-        self.Exhibit_lb.setObjectName(u"Exhibit_lb")
+        self.Exhibitions_te = QTextEdit(self.gridLayoutWidget)
+        self.Exhibitions_te.setObjectName(u"Exhibitions_te")
 
-        self.gridLayout.addWidget(self.Exhibit_lb, 10, 0, 1, 1)
+        self.gridLayout.addWidget(self.Exhibitions_te, 9, 2, 1, 1)
 
-        self.Exhibit_le = QLineEdit(self.gridLayoutWidget)
-        self.Exhibit_le.setObjectName(u"Exhibit_le")
+        self.Exhibit_te = QTextEdit(self.gridLayoutWidget)
+        self.Exhibit_te.setObjectName(u"Exhibit_te")
 
-        self.gridLayout.addWidget(self.Exhibit_le, 10, 2, 1, 1)
+        self.gridLayout.addWidget(self.Exhibit_te, 10, 2, 1, 1)
 
 
         self.retranslateUi(Dialog)
@@ -203,22 +179,22 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"\u0420\u0435\u0434\u0430\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435", None))
         self.SaveButton.setText(QCoreApplication.translate("Dialog", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
         self.CancelButton.setText(QCoreApplication.translate("Dialog", u"\u041e\u0442\u043c\u0435\u043d\u0438\u0442\u044c", None))
-        self.GRNTI_lb.setText(QCoreApplication.translate("Dialog", u"\u0413\u0420\u041d\u0422\u0418", None))
-        self.Subject_lb.setText(QCoreApplication.translate("Dialog", u"\u041f\u0440\u0435\u0434\u043c\u0435\u0442", None))
-        self.BossStatus_lb.setText(QCoreApplication.translate("Dialog", u"\u0421\u0442\u0430\u0442\u0443\u0441 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044f", None))
-        self.Exhibitions_lb.setText(QCoreApplication.translate("Dialog", u"\u0412\u044b\u0441\u0442\u0430\u0432\u043a\u0438", None))
+        self.TypeExhibit_lb.setText(QCoreApplication.translate("Dialog", u"\u041d\u0430\u043b\u0438\u0447\u0438\u0435 \u044d\u043a\u0441\u043f\u043e\u043d\u0430\u0442\u0430", None))
         self.type_cb.setItemText(0, QCoreApplication.translate("Dialog", u"E", None))
         self.type_cb.setItemText(1, QCoreApplication.translate("Dialog", u"M", None))
 
-        self.TypeExhibit_lb.setText(QCoreApplication.translate("Dialog", u"\u041d\u0430\u043b\u0438\u0447\u0438\u0435 \u044d\u043a\u0441\u043f\u043e\u043d\u0430\u0442\u0430", None))
+        self.Subject_lb.setText(QCoreApplication.translate("Dialog", u"\u041f\u0440\u0435\u0434\u043c\u0435\u0442", None))
+        self.codeVUZ_lb.setText(QCoreApplication.translate("Dialog", u"\u041a\u043e\u0434 \u0412\u0423\u0417\u0430", None))
+        self.BossName_lb.setText(QCoreApplication.translate("Dialog", u"\u041d\u0430\u0443\u0447\u043d\u044b\u0439 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c", None))
+        self.Exhibit_lb.setText(QCoreApplication.translate("Dialog", u"\u042d\u043a\u0441\u043f\u043e\u043d\u0430\u0442", None))
+        self.Exhibitions_lb.setText(QCoreApplication.translate("Dialog", u"\u0412\u044b\u0441\u0442\u0430\u0432\u043a\u0438", None))
+        self.GRNTI_lb.setText(QCoreApplication.translate("Dialog", u"\u0413\u0420\u041d\u0422\u0418", None))
+        self.BossStatus_lb.setText(QCoreApplication.translate("Dialog", u"\u0421\u0442\u0430\u0442\u0443\u0441 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044f", None))
+        self.type_lb.setText(QCoreApplication.translate("Dialog", u"\u0422\u0438\u043f", None))
         self.TypeExhibit_cb.setItemText(0, QCoreApplication.translate("Dialog", u"\u0415", None))
         self.TypeExhibit_cb.setItemText(1, QCoreApplication.translate("Dialog", u"\u041d", None))
         self.TypeExhibit_cb.setItemText(2, QCoreApplication.translate("Dialog", u"\u041f", None))
 
-        self.codeVUZ_lb.setText(QCoreApplication.translate("Dialog", u"\u041a\u043e\u0434 \u0412\u0423\u0417\u0430", None))
-        self.type_lb.setText(QCoreApplication.translate("Dialog", u"\u0422\u0438\u043f", None))
-        self.BossName_lb.setText(QCoreApplication.translate("Dialog", u"\u041d\u0430\u0443\u0447\u043d\u044b\u0439 \u0440\u0443\u043a\u043e\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c", None))
         self.regNum_lb.setText(QCoreApplication.translate("Dialog", u"\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u043e\u043d\u043d\u044b\u0439 \u043d\u043e\u043c\u0435\u0440", None))
-        self.Exhibit_lb.setText(QCoreApplication.translate("Dialog", u"\u042d\u043a\u0441\u043f\u043e\u043d\u0430\u0442", None))
     # retranslateUi
 
