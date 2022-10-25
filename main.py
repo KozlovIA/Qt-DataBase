@@ -1,7 +1,6 @@
 from PyQt6 import uic, QtGui
 from PyQt6.QtWidgets import QApplication, QMessageBox
 from source.functional import *
-#from source.filtration import *
 from time import sleep
 from PyQt6.QtCore import QThread, QRect
 
@@ -46,12 +45,16 @@ class ResizeThread(QThread):
 
     def run(self):
         while True:
-            if end_of_work: return
-            geometry = form.centralwidget.geometry()
-            size = eval(str(geometry)[18:])[2:4]
-            form.gridLayout.setGeometry(QRect(0, 0, size[0], size[1]*(670/700)))
-            form.tabWidget.resize(size[0], size[1])
-            sleep(0.05)
+            try:
+                if end_of_work: return
+                geometry = form.centralwidget.geometry()
+                size = eval(str(geometry)[18:])[2:4]
+                form.gridLayout.setGeometry(QRect(0, 0, size[0], int(size[1]*(670/700))))
+                form.gridLayoutWidget_2.setGeometry(QRect(0, 0, size[0], int(size[1]*(670/700))))
+                form.tabWidget.resize(size[0], size[1])
+                sleep(0.05)
+            except:
+                print("Error Resize")
 # с кнопкой почему-то не выдает "Timers cannot be started from another thread", а со слоем выдает
 # менять каждый виджет отдельно, как решение, но это нужно ещё один алгоритм писать, пока что лень
 resizeThread = ResizeThread()
@@ -216,8 +219,16 @@ def delete_row():
     output_table(table_name=form.choiceTable.currentText())     # для мгновенного обновления
 	
 def msgbtn(i):
+    """Для получения значения нажатия в случае ошибки QMessageBox"""
     global reply
     reply = i.text()
+
+
+def filtration():
+    filtr = form.university_le.text()
+    db_model.setFilter(f"Код_ВУЗа={filtr}")        # Выбрали все строки из данной таблицы
+    form.tableFiltration.setModel(db_model)
+    form.tableFiltration.setSortingEnabled(True)
 
 
 output_table()
@@ -227,7 +238,7 @@ form.choiceTable.currentTextChanged.connect(lambda: output_table(table_name=form
 form.AddField.clicked.connect(add_field_window)
 form.EditField.clicked.connect(lambda: add_field_window(Edit=True))
 form.deleteButton.clicked.connect(delete_row)
-#form.FiltrationButton.clicked.connect(lambda: pass)
+form.filtrationButton.clicked.connect(filtration)
 
 # Запуск приложения
 window.show()

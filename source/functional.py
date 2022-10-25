@@ -29,20 +29,31 @@ def gridLayoutStartResize():
         file_info += line
     inx = file_info.find(parameter_search)     # начальный индекс параметра
     inx_end = file_info.find('</rect>', inx)   # конечный индекс настройки grid layout
+
     setting_old = setting = file_info[inx:inx_end]
+    # замена размеров для последующего уменьшения gridLayoutWidget
+    file_info = file_info.replace(setting_old, replace_setting(setting))
+
+    parameter_search = '<widget class="QWidget" name="gridLayoutWidget_2">'
+    inx = file_info.find(parameter_search)     # начальный индекс параметра
+    inx_end = file_info.find('</rect>', inx)   # конечный индекс настройки grid layout
+    setting_old = setting = file_info[inx:inx_end]
+    # замена размеров для последующего уменьшения gridLayoutTabFiltr
+    #file_info = file_info.replace(setting_old, replace_setting(setting))
+    GUI_file.close()
+    GUI_file = open('MainFormResize.ui', 'w', encoding='utf-8')
+    GUI_file.write(file_info)
+    GUI_file.close()
+
+def replace_setting(setting):
+    """Функция для сокращения части кода gridLayoutStartResize. Меняет размерности в settings"""
     inx_width_1, inx_width_2 = setting.find("<width>"), setting.find("</width>")
     setting_width = setting[inx_width_1:inx_width_2]
     setting = setting.replace(setting_width, "<width>8000")
     inx_height_1, inx_height_2 = setting.find("<height>"), setting.find("</height>")
     setting_height = setting[inx_height_1:inx_height_2]
     setting = setting.replace(setting_height, "<height>6000")
-    # замена размеров для последующего уменьшения
-    file_info = file_info.replace(setting_old, setting)
-    GUI_file.close()
-    GUI_file = open('MainFormResize.ui', 'w', encoding='utf-8')
-    GUI_file.write(file_info)
-    GUI_file.close()
-
+    return setting
 
 def SQLdata_acquisition_EditWindow():
     """Получение данных с таблиц для оформления EditWindow
@@ -108,5 +119,3 @@ def SQT_Query(SQLquery):
             f"""{SQLquery}"""
         )
 
-
-gridLayoutStartResize()
