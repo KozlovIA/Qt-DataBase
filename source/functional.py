@@ -1,9 +1,6 @@
 # Файл с пользовательскими функциями для очищения от таковых файла main
 # Пока не знаю, как это будет коннектиться с интерфейсом и будет ли файл востребован
 from PyQt6.QtSql import *
-from PyQt6 import uic
-from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QThread
 
 
 
@@ -25,18 +22,22 @@ db = db_connect()    # db - глобальная переменная ссыла
 def gridLayoutStartResize():
     """Начальное изменение размера сетки для дальнейшего нормального ресайза окна.
     Связано с тем, что gridLayout не получается сделать больше начального значения"""
-    parameter_search = '   <widget class="QWidget" name="gridLayoutWidget">\n    <property name="geometry">\n     <rect>\n      <x>0</x>\n      <y>0</y>\n      <width>'
+    parameter_search = '<widget class="QWidget" name="gridLayoutWidget">'
     GUI_file = open('MainForm.ui', 'r', encoding='utf-8')
     file_info = ''
     for line in GUI_file:
         file_info += line
     inx = file_info.find(parameter_search)     # начальный индекс параметра
-    inx_end = file_info.find('\n     </rect>', inx)   # конечный индекс настройки grid layout
-    setting = file_info[inx:inx_end]
+    inx_end = file_info.find('</rect>', inx)   # конечный индекс настройки grid layout
+    setting_old = setting = file_info[inx:inx_end]
+    inx_width_1, inx_width_2 = setting.find("<width>"), setting.find("</width>")
+    setting_width = setting[inx_width_1:inx_width_2]
+    setting = setting.replace(setting_width, "<width>8000")
+    inx_height_1, inx_height_2 = setting.find("<height>"), setting.find("</height>")
+    setting_height = setting[inx_height_1:inx_height_2]
+    setting = setting.replace(setting_height, "<height>6000")
     # замена размеров для последующего уменьшения
-    file_info = file_info.replace(setting,
-    '   <widget class="QWidget" name="gridLayoutWidget">\n    <property name="geometry">\n     <rect>\n      <x>0</x>\n      <y>0</y>\n      <width>8000</width>\n      <height>6000</height>'
-    )
+    file_info = file_info.replace(setting_old, setting)
     GUI_file.close()
     GUI_file = open('MainFormResize.ui', 'w', encoding='utf-8')
     GUI_file.write(file_info)
@@ -106,3 +107,6 @@ def SQT_Query(SQLquery):
     query.exec(
             f"""{SQLquery}"""
         )
+
+
+gridLayoutStartResize()

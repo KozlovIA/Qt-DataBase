@@ -1,11 +1,9 @@
 from PyQt6 import uic, QtGui
-from PyQt6.QtWidgets import QApplication, QMessageBox, QDialog
-from cv2 import exp
+from PyQt6.QtWidgets import QApplication, QMessageBox
 from source.functional import *
+#from source.filtration import *
 from time import sleep
-from PyQt6.QtCore import QThread, QEvent
-from threading import Thread
-import time
+from PyQt6.QtCore import QThread, QRect
 
 gridLayoutStartResize()     # изменнение размеров основного слоя gridLayout в MainForm для корректного изменения размеров виджетов
 
@@ -50,7 +48,9 @@ class ResizeThread(QThread):
         while True:
             if end_of_work: return
             geometry = form.centralwidget.geometry()
-            form.gridLayout.setGeometry(geometry)
+            size = eval(str(geometry)[18:])[2:4]
+            form.gridLayout.setGeometry(QRect(0, 0, size[0], size[1]*(670/700)))
+            form.tabWidget.resize(size[0], size[1])
             sleep(0.05)
 # с кнопкой почему-то не выдает "Timers cannot be started from another thread", а со слоем выдает
 # менять каждый виджет отдельно, как решение, но это нужно ещё один алгоритм писать, пока что лень
