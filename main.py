@@ -1,5 +1,6 @@
 from PyQt6 import uic, QtGui
 from PyQt6.QtWidgets import QApplication, QMessageBox
+from regex import R
 from source.functional import *
 from time import sleep
 from PyQt6.QtCore import QThread, QRect
@@ -64,9 +65,12 @@ def saveSQL_data(Edit, orig_univer_code, orig_regNum):
     """Функция сохранения данных в таблицу.
     Входные параметры Edit - если это редактирование,
     так же приреадактировании должн передаваться первичный ключ orig_univer_code - изначальный код ВУЗа, orig_regNum - изначальный регистрационный номер"""
+    type_dict = {"Тематический план": "Е", "НТП": "М"}
+    typeExhibit_dict = {"Есть": "Е", "Нет": "Н", "Планируется": "П"}
+
     univer_code_name = form_AddField.university_code_cb.currentText()
     univer_code_name = univer_code_name.split('\t')
-    subject = form_AddField.Subject_le.text()
+    subject = form_AddField.Subject_te.toPlainText()
     reg_num = form_AddField.regNum_le.text()
 
     # ГРНТИ
@@ -80,8 +84,8 @@ def saveSQL_data(Edit, orig_univer_code, orig_regNum):
         if GRNTI[len(GRNTI)-2:len(GRNTI)-1] == '..':  GRNTI = GRNTI[0:len(GRNTI)-2]
         if GRNTI[len(GRNTI)-1] == '.':  GRNTI = GRNTI[0:len(GRNTI)-1]
     ########################
-    type_EM = form_AddField.type_cb.currentText()
-    TypeExhibit = form_AddField.TypeExhibit_cb.currentText()
+    type_EM = type_dict[form_AddField.type_cb.currentText()]
+    TypeExhibit = typeExhibit_dict[form_AddField.TypeExhibit_cb.currentText()]
     Exhibitions = form_AddField.Exhibitions_te.toPlainText()
     Exhibit = form_AddField.Exhibit_te.toPlainText()
     BossName = form_AddField.BossName_le.text()
@@ -90,7 +94,7 @@ def saveSQL_data(Edit, orig_univer_code, orig_regNum):
     data_dict = {
         "Код_ВУЗа": univer_code_name[0],
         "Аббревиатура": univer_code_name[1],
-        "Предмет": subject,
+        "Название_НИР": subject,
         "Рег_номер": reg_num,
         "ГРНТИ": GRNTI,
         "Тип": type_EM,
@@ -100,6 +104,16 @@ def saveSQL_data(Edit, orig_univer_code, orig_regNum):
         "Научный_руководитель": BossName,
         "Статус_руководителя": BossStatus
     }
+    # Обработка некорректных данных
+    msgErr = ""
+    if reg_num == '':    msgErr = "Введите регистрационный номер!"; msgError(msgErr); return
+    if GRNTI == '':    msgErr = "Введите код ГРНТИ!"; msgError(msgErr); return
+    if len(subject) < 5:    msgErr = "Введите тематику НИР!"; msgError(msgErr); return
+    if TypeExhibit != 'Н' and len(Exhibitions) < 5:    msgErr = "Введите название выставки!"; msgError(msgErr); return
+    if TypeExhibit != 'Н' and len(Exhibit) < 5:    msgErr = "Введите название экспоната!"; msgError(msgErr); return
+    if len(BossName) < 3:    msgErr = "Введите имя научного руководителя!"; msgError(msgErr); return
+    if len(BossStatus) < 3:    msgErr = "Введите статус научного руководителя!"; msgError(msgErr); return
+
     editingSQL_NIR(Edit=Edit, parameters_dict=data_dict, orig_univer_code=orig_univer_code, orig_regNum=orig_regNum)
     window_AddField.close()
     #window.setEnabled(True)
@@ -116,7 +130,14 @@ def saveSQL_data(Edit, orig_univer_code, orig_regNum):
             break
         i+=1
 
-
+def msgError(msgErr):
+    """Функция вывода ошибок при сохранении некорректных данных в таблицу"""
+    msg = QMessageBox()
+    msg.setWindowTitle("Внимание!")
+    msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
+    msg.setText(msgErr)
+    msg.setIcon(QMessageBox.Icon.Warning)
+    msg.exec()
 
 
 def add_field_window(Edit=False):
@@ -128,6 +149,9 @@ def add_field_window(Edit=False):
     form_AddField = Form()
     form_AddField.setupUi(window_AddField)
     univer_dict, grnti_code = SQLdata_acquisition_EditWindow()[0:2]
+    # словари типа экспоната и его наличия, служат для более красивого вывода
+    type_dict = {'Е': "Тематический план", "М": "НТП"}
+    typeExhibit_dict = {"Е": "Есть", "Н": "Нет", "П": "Планируется"}
     # Ввод корректных кодов ВУЗов
     univer_code = list(univer_dict.keys()); #univer_code.sort()
     univer_view = [str(code) + "\t" + univer_dict[code] for code in univer_code]   # хитрые пару строк, чтобы выводился и код и название
@@ -157,7 +181,7 @@ def add_field_window(Edit=False):
         # для дальнейшего передачи как параметра, сохраняем код ВУЗа и регистрационный номер, чтобы использовать их как метки для редактирования
         orig_univerCode = list_values[0]; orig_regNum = str(list_values[3])
         form_AddField.university_code_cb.setCurrentText(str(list_values[0]) + "\t" + list_values[1])    # Устанавливает значение по текущему тексту, только если такой элемент уже есть в списке QComboBox
-        form_AddField.Subject_le.setText(str(list_values[2]))
+        form_AddField.Subject_te.setText(str(list_values[2]))
         form_AddField.regNum_le.setText(str(list_values[3]))
         # ГРНТИ
         GRNTI = str(list_values[4])
@@ -171,8 +195,8 @@ def add_field_window(Edit=False):
         else:
             form_AddField.GRNTI_1_le.setText(GRNTI)
         # остальные поля
-        form_AddField.type_cb.setCurrentText(str(list_values[5]))
-        form_AddField.TypeExhibit_cb.setCurrentText(str(list_values[6]))
+        form_AddField.type_cb.setCurrentText(type_dict[str(list_values[5])])
+        form_AddField.TypeExhibit_cb.setCurrentText(typeExhibit_dict[str(list_values[6])])
         form_AddField.Exhibitions_te.setText(str(list_values[7]))
         form_AddField.Exhibit_te.setText(str(list_values[8]))
         form_AddField.BossName_le.setText(str(list_values[9]))
@@ -226,7 +250,7 @@ def msgbtn(i):
 
 def filtration():
     filtr = form.university_le.text()
-    db_model.setFilter(f"Код_ВУЗа={filtr}")        # Выбрали все строки из данной таблицы
+    db_model.setFilter(f'Код_ВУЗа={filtr}')        # Выбрали все строки из данной таблицы
     form.tableFiltration.setModel(db_model)
     form.tableFiltration.setSortingEnabled(True)
 

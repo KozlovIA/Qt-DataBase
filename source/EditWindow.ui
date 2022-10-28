@@ -60,8 +60,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>641</width>
-     <height>431</height>
+     <width>631</width>
+     <height>441</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -77,93 +77,10 @@
     <property name="bottomMargin">
      <number>10</number>
     </property>
-    <item row="7" column="0">
-     <widget class="QLabel" name="TypeExhibit_lb">
-      <property name="text">
-       <string>Наличие экспоната</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="2">
-     <widget class="QLineEdit" name="Subject_le"/>
-    </item>
-    <item row="6" column="2">
-     <widget class="QComboBox" name="type_cb">
-      <item>
-       <property name="text">
-        <string>E</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>M</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="Subject_lb">
-      <property name="text">
-       <string>Предмет</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="codeVUZ_lb">
-      <property name="text">
-       <string>Код ВУЗа</string>
-      </property>
-     </widget>
-    </item>
-    <item row="12" column="2">
-     <widget class="QLineEdit" name="BossStatus_le"/>
-    </item>
-    <item row="11" column="0">
-     <widget class="QLabel" name="BossName_lb">
-      <property name="text">
-       <string>Научный руководитель</string>
-      </property>
-     </widget>
-    </item>
-    <item row="10" column="0">
-     <widget class="QLabel" name="Exhibit_lb">
-      <property name="text">
-       <string>Экспонат</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QComboBox" name="university_code_cb"/>
-    </item>
-    <item row="9" column="0">
-     <widget class="QLabel" name="Exhibitions_lb">
-      <property name="text">
-       <string>Выставки</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="GRNTI_lb">
-      <property name="text">
-       <string>ГРНТИ</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="2">
-     <widget class="QLineEdit" name="regNum_le">
-      <property name="maxLength">
-       <number>6</number>
-      </property>
-     </widget>
-    </item>
-    <item row="12" column="0">
-     <widget class="QLabel" name="BossStatus_lb">
-      <property name="text">
-       <string>Статус руководителя</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="2">
+    <property name="horizontalSpacing">
+     <number>6</number>
+    </property>
+    <item row="4" column="1">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QLineEdit" name="GRNTI_1_le">
@@ -181,47 +98,221 @@
       </item>
      </layout>
     </item>
+    <item row="18" column="0">
+     <widget class="QLabel" name="BossStatus_lb">
+      <property name="text">
+       <string>Статус руководителя</string>
+      </property>
+     </widget>
+    </item>
+    <item row="18" column="1">
+     <widget class="QLineEdit" name="BossStatus_le"/>
+    </item>
+    <item row="16" column="0">
+     <widget class="QLabel" name="BossName_lb">
+      <property name="text">
+       <string>Научный руководитель</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QComboBox" name="university_code_cb"/>
+    </item>
+    <item row="10" column="0">
+     <widget class="QLabel" name="TypeExhibit_lb">
+      <property name="text">
+       <string>Наличие экспоната</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="0" colspan="2">
+     <widget class="Line" name="line_7">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="1">
+     <widget class="QComboBox" name="TypeExhibit_cb">
+      <item>
+       <property name="text">
+        <string>Есть</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Нет</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Планируется</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="12" column="0">
+     <widget class="QLabel" name="Exhibitions_lb">
+      <property name="text">
+       <string>Выставки</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1" colspan="2">
+     <widget class="QTextEdit" name="Subject_te"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="GRNTI_lb">
+      <property name="text">
+       <string>ГРНТИ</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="15" column="0" colspan="2">
+     <widget class="Line" name="line_8">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" colspan="3">
+     <widget class="Line" name="line_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="1" colspan="2">
+     <widget class="QTextEdit" name="Exhibitions_te"/>
+    </item>
+    <item row="8" column="1">
+     <widget class="QComboBox" name="type_cb">
+      <item>
+       <property name="text">
+        <string>Тематический план</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>НТП</string>
+       </property>
+      </item>
+     </widget>
+    </item>
     <item row="6" column="0">
+     <widget class="QLabel" name="Subject_lb">
+      <property name="text">
+       <string>Название НИР</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2" rowspan="2">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>200</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="11" column="0" colspan="3">
+     <widget class="Line" name="line_5">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="16" column="1">
+     <widget class="QLineEdit" name="BossName_le"/>
+    </item>
+    <item row="13" column="0" colspan="3">
+     <widget class="Line" name="line_6">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0" colspan="2">
+     <widget class="Line" name="line_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="Line" name="line_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0">
      <widget class="QLabel" name="type_lb">
       <property name="text">
        <string>Тип</string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
      </widget>
     </item>
-    <item row="7" column="2">
-     <widget class="QComboBox" name="TypeExhibit_cb">
-      <item>
-       <property name="text">
-        <string>Е</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Н</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>П</string>
-       </property>
-      </item>
+    <item row="14" column="0">
+     <widget class="QLabel" name="Exhibit_lb">
+      <property name="text">
+       <string>Экспонат</string>
+      </property>
      </widget>
     </item>
-    <item row="11" column="2">
-     <widget class="QLineEdit" name="BossName_le"/>
+    <item row="0" column="0">
+     <widget class="QLabel" name="codeVUZ_lb">
+      <property name="text">
+       <string>ВУЗ</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
     </item>
-    <item row="4" column="0">
+    <item row="2" column="0">
      <widget class="QLabel" name="regNum_lb">
       <property name="text">
        <string>Регистрационный номер</string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
      </widget>
     </item>
-    <item row="9" column="2">
-     <widget class="QTextEdit" name="Exhibitions_te"/>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="regNum_le">
+      <property name="maxLength">
+       <number>6</number>
+      </property>
+     </widget>
     </item>
-    <item row="10" column="2">
+    <item row="14" column="1" colspan="2">
      <widget class="QTextEdit" name="Exhibit_te"/>
+    </item>
+    <item row="17" column="0" colspan="2">
+     <widget class="Line" name="line_9">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
