@@ -48,7 +48,7 @@ class Ui_Dialog(object):
 
         self.gridLayoutWidget = QWidget(Dialog)
         self.gridLayoutWidget.setObjectName(u"gridLayoutWidget")
-        self.gridLayoutWidget.setGeometry(QRect(0, 0, 631, 441))
+        self.gridLayoutWidget.setGeometry(QRect(0, 0, 631, 451))
         self.gridLayout = QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setHorizontalSpacing(6)

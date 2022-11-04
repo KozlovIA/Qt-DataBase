@@ -247,13 +247,25 @@ def msgbtn(i):
     global reply
     reply = i.text()
 
-def set_filter_value():
-    """Добавляет первоначальные значения фильтров в comboboxes"""
-    form.university_cb.addItem('-')
-    form.federalDistrict_cb.addItem('-')
-    form.city_cb.addItem('-')
-    form.region_cb.addItem('-')
-    info = get_info_for_filtration()    # словарь по {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
+def set_filter_value(info_dict=False):
+    """Добавляет первоначальные значения фильтров в comboboxes
+    info_dict - если окно уже есть, то запрос будет создан в зависимости от текущих значений фильтра"""
+    if info_dict==False:
+        # info, all_GRNTI = get_info_for_filtration()    # словарь по {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
+        info = get_info_for_filtration()
+    else:
+        form.federalDistrict_cb.clear()
+        form.city_cb.clear()
+        form.region_cb.clear()
+        form.GRNTI_1_cb.clear()
+        form.GRNTI_2_cb.clear()
+        # info, all_GRNTI = get_current_info_filtration(info_dict)
+        info = get_current_info_filtration(info_dict)
+        form.federalDistrict_cb.addItem('-')
+        form.city_cb.addItem('-')
+        form.region_cb.addItem('-')
+        form.GRNTI_1_cb.addItem('-')
+        form.GRNTI_2_cb.addItem('-')
     fed_district = []; city = []; region = []
     for code_uni in list(info.keys()):
         form.university_cb.addItem(info[code_uni][0])
@@ -263,14 +275,51 @@ def set_filter_value():
     form.federalDistrict_cb.addItems(set(fed_district))
     form.city_cb.addItems(set(city))
     form.region_cb.addItems(set(region))
+    # ГРНТИ
+    """ for grnti in all_GRNTI:
+        if ';' in grnti:
+            grnti = grnti.split(';')
+        elif ',' in grnti:
+            grnti = grnti.split(',')
+        elif ' ' in grnti:
+            grnti = grnti.split(' ')
+        if str(type(grnti)) == "<class 'list'>" and len(grnti) > 1:
+            form.GRNTI_1_cb.addItem(grnti[0])
+            form.GRNTI_1_cb.addItem(grnti[1])
+            form.GRNTI_2_cb.addItem(grnti[0])
+            form.GRNTI_2_cb.addItem(grnti[1])
+        else: form.GRNTI_1_cb.addItem(grnti); form.GRNTI_2_cb.addItem(grnti) """
 
-set_filter_value()
+    return info
 
-#def filtration():
-#    filtr = form.university_le.text()
-#    db_model.setFilter(f'Код_ВУЗа={filtr}')        # Выбрали все строки из данной таблицы
-#    form.tableFiltration.setModel(db_model)
-#    form.tableFiltration.setSortingEnabled(True)
+initialFilterValues = set_filter_value()    # словарь по {Код ВУЗа: [Аббревиатура, Федеральный округ, Город, Область]}
+
+def filtration():
+    typeExhibit_dict = {"Есть": "Е", "Нет": "Н", "Планируется": "П"}
+    typeExhibit_dict_revers = {"Е": "Есть", "Н": "Нет", "П": "Планируется"}
+    fed_Distr = form.federalDistrict_cb.currentText()
+    city = form.city_cb.currentText()
+    region = form.region_cb.currentText()
+    if form.preference_exibit_cb.currentText() != "-":
+        preference_exibit = typeExhibit_dict[form.preference_exibit_cb.currentText()]
+    else: preference_exibit = '-'
+    GRNTI_1 = form.GRNTI_1_cb.currentText()
+    GRNTI_2 = form.GRNTI_2_cb.currentText()
+    univer = form.university_cb.currentText()
+
+    info_dict = {
+        "Федеральный_округ": fed_Distr,
+        "Город": city,
+        "Область": region,
+        "Аббревиатура": univer,
+        #"ГРНТИ": [GRNTI_1, GRNTI_2],
+        "Наличие_экспоната": preference_exibit}
+
+    #set_filter_value(info_dict)
+    query = QSqlQuery()
+    query.exec(f"""SELECT * FROM Vyst_mo WHERE Аббревиатура="{univer}" """)
+    while query.next():
+        print(query.value("Код_ВУЗа"))
 
 
 output_table()
@@ -280,7 +329,15 @@ form.choiceTable.currentTextChanged.connect(lambda: output_table(table_name=form
 form.AddField.clicked.connect(add_field_window)
 form.EditField.clicked.connect(lambda: add_field_window(Edit=True))
 form.deleteButton.clicked.connect(delete_row)
-#form.filtrationButton.clicked.connect(filtration)
+
+form.federalDistrict_cb.currentTextChanged.connect(filtration)
+form.city_cb.currentTextChanged.connect(filtration)
+form.region_cb.currentTextChanged.connect(filtration)
+form.university_cb.currentTextChanged.connect(filtration)
+form.GRNTI_1_cb.currentTextChanged.connect(filtration)
+form.GRNTI_2_cb.currentTextChanged.connect(filtration)
+form.preference_exibit_cb.currentTextChanged.connect(filtration)
+
 
 # Запуск приложения
 window.show()

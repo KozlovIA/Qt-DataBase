@@ -155,23 +155,61 @@
         <number>3</number>
        </property>
        <item row="7" column="0">
-        <widget class="QLabel" name="university_lb">
+        <widget class="QLabel" name="preference_exibit_lb">
          <property name="text">
-          <string>ВУЗ</string>
+          <string>Наличие экспоната</string>
          </property>
         </widget>
        </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="city_cb">
+         <item>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </item>
+        </widget>
+       </item>
        <item row="7" column="1">
-        <widget class="QComboBox" name="university_cb"/>
+        <widget class="QComboBox" name="preference_exibit_cb">
+         <item>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Есть</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Нет</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Планируется</string>
+          </property>
+         </item>
+        </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QComboBox" name="federalDistrict_cb"/>
+        <widget class="QComboBox" name="federalDistrict_cb">
+         <item>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </item>
+        </widget>
        </item>
-       <item row="9" column="0" colspan="2">
-        <widget class="QPushButton" name="filtrationButton">
-         <property name="text">
-          <string>Применить</string>
-         </property>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="region_cb">
+         <item>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="1" column="0">
@@ -202,18 +240,60 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="0" colspan="2">
+       <item row="12" column="0" colspan="2">
         <widget class="Line" name="line_4">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
-        <widget class="QComboBox" name="region_cb"/>
+       <item row="9" column="1">
+        <widget class="QComboBox" name="university_cb">
+         <item>
+          <property name="text">
+           <string>-</string>
+          </property>
+         </item>
+        </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QComboBox" name="city_cb"/>
+       <item row="9" column="0">
+        <widget class="QLabel" name="university_lb">
+         <property name="text">
+          <string>ВУЗ</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="GRNTI_lb">
+         <property name="text">
+          <string>ГРНТИ</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QComboBox" name="GRNTI_1_cb">
+           <item>
+            <property name="text">
+             <string>-</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="GRNTI_2_cb">
+           <item>
+            <property name="text">
+             <string>-</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
