@@ -112,10 +112,23 @@ def editingSQL_NIR(Edit=False, parameters_dict=False, orig_univer_code=False, or
             f"""INSERT INTO Vyst_mo {keys} VALUES {values}"""
         )
 
-def SQT_Query(SQLquery):
-    """Функция принимающая на вход SQL запрос и выполняющая его"""
-    query = QSqlQuery()
-    query.exec(
-            f"""{SQLquery}"""
-        )
+
+def get_info_for_filtration():
+    """Получение информации из таблицы для вставки её в фильтрацию"""
+    query = QSqlQuery("""SELECT Код_ВУЗа, Аббревиатура FROM Vyst_mo""")
+    university_dict = {}
+    while query.next():
+        current_code = query.value("Код_ВУЗа")
+        university_dict.update({current_code: query.value("Аббревиатура")})  # update заменяет старое значение по ключу, если оно существует или добавляет новое
+    # сортировка по ключам
+    university_dict = dict(sorted(university_dict.items()))
+
+    for code_uni in list(university_dict.keys()):
+        query.exec(
+                f"""SELECT Федеральный_округ, Город, Область FROM VUZ WHERE Код_ВУЗа={code_uni}"""
+            )
+        query.next()
+        university_dict.update({code_uni: [university_dict[code_uni], query.value("Федеральный_округ"), query.value("Город"), query.value("Область")]})
+        
+    return university_dict
 

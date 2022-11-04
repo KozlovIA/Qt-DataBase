@@ -55,7 +55,7 @@ class ResizeThread(QThread):
                 form.tabWidget.resize(size[0], size[1])
                 sleep(0.05)
             except:
-                print("Error Resize")
+                pass#print("Error Resize")
 # с кнопкой почему-то не выдает "Timers cannot be started from another thread", а со слоем выдает
 # менять каждый виджет отдельно, как решение, но это нужно ещё один алгоритм писать, пока что лень
 resizeThread = ResizeThread()
@@ -247,12 +247,30 @@ def msgbtn(i):
     global reply
     reply = i.text()
 
+def set_filter_value():
+    """Добавляет первоначальные значения фильтров в comboboxes"""
+    form.university_cb.addItem('-')
+    form.federalDistrict_cb.addItem('-')
+    form.city_cb.addItem('-')
+    form.region_cb.addItem('-')
+    info = get_info_for_filtration()    # словарь по {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
+    fed_district = []; city = []; region = []
+    for code_uni in list(info.keys()):
+        form.university_cb.addItem(info[code_uni][0])
+        fed_district.append(info[code_uni][1])
+        city.append(info[code_uni][2])
+        region.append(info[code_uni][3])
+    form.federalDistrict_cb.addItems(set(fed_district))
+    form.city_cb.addItems(set(city))
+    form.region_cb.addItems(set(region))
 
-def filtration():
-    filtr = form.university_le.text()
-    db_model.setFilter(f'Код_ВУЗа={filtr}')        # Выбрали все строки из данной таблицы
-    form.tableFiltration.setModel(db_model)
-    form.tableFiltration.setSortingEnabled(True)
+set_filter_value()
+
+#def filtration():
+#    filtr = form.university_le.text()
+#    db_model.setFilter(f'Код_ВУЗа={filtr}')        # Выбрали все строки из данной таблицы
+#    form.tableFiltration.setModel(db_model)
+#    form.tableFiltration.setSortingEnabled(True)
 
 
 output_table()
@@ -262,7 +280,7 @@ form.choiceTable.currentTextChanged.connect(lambda: output_table(table_name=form
 form.AddField.clicked.connect(add_field_window)
 form.EditField.clicked.connect(lambda: add_field_window(Edit=True))
 form.deleteButton.clicked.connect(delete_row)
-form.filtrationButton.clicked.connect(filtration)
+#form.filtrationButton.clicked.connect(filtration)
 
 # Запуск приложения
 window.show()
