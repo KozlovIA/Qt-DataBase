@@ -6,6 +6,7 @@ from PyQt6.QtCore import QThread, QRect
 import pandas as pd
 
 gridLayoutStartResize()     # изменнение размеров основного слоя gridLayout в MainForm для корректного изменения размеров виджетов
+GRNTI_dict = get_GRNTI()    # ГРНТИ коды в формате {"[Код_ВУЗа, Рег_номер]": "ГРНТИ"}
 
 Form, Window = uic.loadUiType("MainFormResize.ui")  # файл MainFormResize создается в функции gridLayoutStartResize, если поставить MainForm.ui, интерфейс не будет изменять размер в большую сторону
 
@@ -247,26 +248,37 @@ def msgbtn(i):
     global reply
     reply = i.text()
 
-def set_filter_value(info_dict=False):
+def set_filter_value(info_dict=False, typeExhibit_dict_revers={}, grnti_values=list(GRNTI_dict.values())):
     """Добавляет первоначальные значения фильтров в comboboxes
     info_dict - если окно уже есть, то запрос будет создан в зависимости от текущих значений фильтра"""
-    if info_dict==False:
-        # info, all_GRNTI = get_info_for_filtration()    # словарь по {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
-        info_dict = get_info_for_filtration()
+    if info_dict==False: 
+        info_dict = get_info_for_filtration()   # словарь по {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
         output_table()
+        Edit = False
     else:
+        university_cb_value = form.university_cb.currentText()
+        federalDistrict_cb_value = form.federalDistrict_cb.currentText()
+        city_cb_value = form.city_cb.currentText()
+        region_cb_value = form.region_cb.currentText()
+        preference_exibit_cb_value = form.preference_exibit_cb.currentText()
+        GRNTI_1_cb_value = form.GRNTI_1_cb.currentText()
+        GRNTI_2_cb_value = form.GRNTI_2_cb.currentText()
+
         form.federalDistrict_cb.clear()
         form.city_cb.clear()
         form.region_cb.clear()
         form.GRNTI_1_cb.clear()
         form.GRNTI_2_cb.clear()
         form.university_cb.clear()
+        form.preference_exibit_cb.clear()
         form.federalDistrict_cb.addItem('-')
         form.city_cb.addItem('-')
         form.region_cb.addItem('-')
         form.GRNTI_1_cb.addItem('-')
         form.GRNTI_2_cb.addItem('-')
         form.university_cb.addItem('-')
+        Edit = True
+    # Добавление в списки, а затем в QComboBoxes значений
     fed_district = []; city = []; region = []
     for code_uni in list(info_dict.keys()):
         form.university_cb.addItem(info_dict[code_uni][0])
@@ -276,8 +288,17 @@ def set_filter_value(info_dict=False):
     form.federalDistrict_cb.addItems(set(fed_district))
     form.city_cb.addItems(set(city))
     form.region_cb.addItems(set(region))
-    # ГРНТИ
-    """ for grnti in all_GRNTI:
+    form.preference_exibit_cb.addItems(list(typeExhibit_dict_revers.values()))
+    if Edit: 
+        form.university_cb.setCurrentText(university_cb_value)
+        form.federalDistrict_cb.setCurrentText(federalDistrict_cb_value)
+        form.city_cb.setCurrentText(city_cb_value)
+        form.region_cb.setCurrentText(region_cb_value)
+        form.preference_exibit_cb.setCurrentText(preference_exibit_cb_value)
+        form.GRNTI_1_cb.setCurrentText(GRNTI_1_cb_value)
+        form.GRNTI_2_cb.setCurrentText(GRNTI_2_cb_value)
+    # ГРНТИ как обычно отдельно
+    for grnti in grnti_values:
         if ';' in grnti:
             grnti = grnti.split(';')
         if str(type(grnti)) == "<class 'list'>" and len(grnti) > 1:
@@ -285,15 +306,14 @@ def set_filter_value(info_dict=False):
             form.GRNTI_1_cb.addItem(grnti[1])
             form.GRNTI_2_cb.addItem(grnti[0])
             form.GRNTI_2_cb.addItem(grnti[1])
-        else: form.GRNTI_1_cb.addItem(grnti); form.GRNTI_2_cb.addItem(grnti) """
+        else: form.GRNTI_1_cb.addItem(grnti); form.GRNTI_2_cb.addItem(grnti)
 
 
-set_filter_value()    # словарь по {Код ВУЗа: [Аббревиатура, Федеральный округ, Город, Область]}
+set_filter_value()
 
 
 def filtration():
     typeExhibit_dict = {"Есть": "Е", "Нет": "Н", "Планируется": "П", "-": "-"}
-    typeExhibit_dict_revers = {"Е": "Есть", "Н": "Нет", "П": "Планируется"}
     fed_Distr = form.federalDistrict_cb.currentText()
     city = form.city_cb.currentText()
     region = form.region_cb.currentText()
@@ -381,11 +401,13 @@ def filtration():
 
     # Получаем значения таблицы для перенастройки фильтрационных QComboBox 
     k = 0
-    code_values = []
+    code_values = []; grnti_values = []
     while True:
         code_univer = form.tableView.model().index(k, 0).data()     # Получение кодов ВУЗов из таблицы
+        grnti = form.tableView.model().index(k, 4).data()     # Получение текущих кодов ГРНТИ из таблицы
         if code_univer == None: break
         code_values.append(code_univer)
+        grnti_values.append(grnti)
         k += 1
     code_values = set(code_values)
     #["Код_ВУЗа", "Аббревиатура", "Название_НИР", "Рег_номер", "ГРНТИ", "Тип", "Наличие_экспоната", "Выставки", 
@@ -404,9 +426,19 @@ def filtration():
     info_dict = {}
     while query.next():
         info_dict.update({query.value("Код_ВУЗа"): [query.value("Аббревиатура"), query.value("Федеральный_округ"), query.value("Город"), query.value("Область")]})
+
+    query.exec(f"""SELECT Наличие_экспоната FROM Vyst_mo {where_VUZ}""")    # where_VUZ тут вполне логично, т.к. в нем коды ВУЗов
+
+    typeExhibit_dict_ = {"Е": "Есть", "Н": "Нет", "П": "Планируется"}
+    typeExhibit_dict_revers = {"-": "-"}
+    while query.next():
+        type_exh = query.value("Наличие_экспоната")
+        typeExhibit_dict_revers.update({type_exh: typeExhibit_dict_[type_exh]})
+        if typeExhibit_dict_revers == typeExhibit_dict_: break
         #"ГРНТИ": [GRNTI_1, GRNTI_2],
-    set_filter_value(info_dict)    # Изменение значений в фильтрах - QComboBox
-        
+    set_filter_value(info_dict, typeExhibit_dict_revers, grnti_values)    # Изменение значений в фильтрах - QComboBox
+    
+
 
 
 #output_table()

@@ -133,8 +133,13 @@ def get_info_for_filtration():
     query.exec(
                 f"""SELECT ГРНТИ FROM Vyst_mo"""
             )
-    all_GRNTI = []
-    #while query.next():
-    #        all_GRNTI.append(str(query.value("ГРНТИ")))
-    return university_dict#, all_GRNTI   #university_dict = {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
 
+    return university_dict  #   #university_dict = {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
+
+def get_GRNTI():
+    """Возвращает все существующие в табилце Vyst_mo ГРНТИ коды в формате {"[Код_ВУЗа, Рег_номер]": "ГРНТИ"}"""
+    query = QSqlQuery("""SELECT Код_ВУЗа, Рег_номер, ГРНТИ FROM Vyst_mo""")
+    GRNTI_dict = {}
+    while query.next():
+        GRNTI_dict.update({f'[{query.value("Код_ВУЗа")}, {query.value("Рег_номер")}]': query.value("ГРНТИ")})
+    return GRNTI_dict
