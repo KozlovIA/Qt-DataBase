@@ -45,7 +45,7 @@
       <height>751</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0">
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetNoConstraint</enum>
      </property>
@@ -81,14 +81,14 @@
        </property>
       </widget>
      </item>
-     <item row="13" column="3">
+     <item row="14" column="3">
       <widget class="QPushButton" name="EditField">
        <property name="text">
         <string>Редактировать</string>
        </property>
       </widget>
      </item>
-     <item row="12" column="0" colspan="4">
+     <item row="13" column="0" colspan="4">
       <widget class="Line" name="line">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -183,14 +183,14 @@
        </item>
       </widget>
      </item>
-     <item row="13" column="0">
+     <item row="14" column="0">
       <widget class="QPushButton" name="AddField">
        <property name="text">
         <string>Добавить</string>
        </property>
       </widget>
      </item>
-     <item row="9" column="0" colspan="4">
+     <item row="10" column="0" colspan="4">
       <widget class="QTableView" name="tableView">
        <property name="enabled">
         <bool>true</bool>
@@ -222,7 +222,7 @@
        </item>
       </widget>
      </item>
-     <item row="13" column="2">
+     <item row="14" column="2">
       <widget class="QPushButton" name="deleteButton">
        <property name="text">
         <string>Удалить</string>
@@ -243,7 +243,7 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="0" colspan="3">
+     <item row="9" column="0" colspan="3">
       <widget class="Line" name="line_4">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -289,6 +289,20 @@
          <string>-</string>
         </property>
        </item>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QPushButton" name="apply_filtering_bn">
+       <property name="text">
+        <string>Применить</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="2">
+      <widget class="QPushButton" name="reset_filtering_bn">
+       <property name="text">
+        <string>Сброс</string>
+       </property>
       </widget>
      </item>
     </layout>

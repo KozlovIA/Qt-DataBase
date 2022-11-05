@@ -252,26 +252,27 @@ def set_filter_value(info_dict=False):
     info_dict - если окно уже есть, то запрос будет создан в зависимости от текущих значений фильтра"""
     if info_dict==False:
         # info, all_GRNTI = get_info_for_filtration()    # словарь по {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
-        info = get_info_for_filtration()
+        info_dict = get_info_for_filtration()
+        output_table()
     else:
         form.federalDistrict_cb.clear()
         form.city_cb.clear()
         form.region_cb.clear()
         form.GRNTI_1_cb.clear()
         form.GRNTI_2_cb.clear()
-        # info, all_GRNTI = get_current_info_filtration(info_dict)
-        info = get_current_info_filtration(info_dict)
+        form.university_cb.clear()
         form.federalDistrict_cb.addItem('-')
         form.city_cb.addItem('-')
         form.region_cb.addItem('-')
         form.GRNTI_1_cb.addItem('-')
         form.GRNTI_2_cb.addItem('-')
+        form.university_cb.addItem('-')
     fed_district = []; city = []; region = []
-    for code_uni in list(info.keys()):
-        form.university_cb.addItem(info[code_uni][0])
-        fed_district.append(info[code_uni][1])
-        city.append(info[code_uni][2])
-        region.append(info[code_uni][3])
+    for code_uni in list(info_dict.keys()):
+        form.university_cb.addItem(info_dict[code_uni][0])
+        fed_district.append(info_dict[code_uni][1])
+        city.append(info_dict[code_uni][2])
+        region.append(info_dict[code_uni][3])
     form.federalDistrict_cb.addItems(set(fed_district))
     form.city_cb.addItems(set(city))
     form.region_cb.addItems(set(region))
@@ -286,9 +287,8 @@ def set_filter_value(info_dict=False):
             form.GRNTI_2_cb.addItem(grnti[1])
         else: form.GRNTI_1_cb.addItem(grnti); form.GRNTI_2_cb.addItem(grnti) """
 
-    return info
 
-initialFilterValues = set_filter_value()    # словарь по {Код ВУЗа: [Аббревиатура, Федеральный округ, Город, Область]}
+set_filter_value()    # словарь по {Код ВУЗа: [Аббревиатура, Федеральный округ, Город, Область]}
 
 
 def filtration():
@@ -309,9 +309,9 @@ def filtration():
     if univer != '-': info_dict.update({"Аббревиатура": univer})
     if preference_exibit != '-': info_dict.update({"Наличие_экспоната": preference_exibit})
         #"ГРНТИ": [GRNTI_1, GRNTI_2],
-
-    #set_filter_value(info_dict)    # Изменение значений в фильтрах - QComboBox
     
+    if info_dict == {}:
+        set_filter_value(info_dict=False)
 
     where_VUZ = ""; where_Vyst_mo = ""
     # Создаем условия для запросов SQL
@@ -381,16 +381,35 @@ def filtration():
 
     # Получаем значения таблицы для перенастройки фильтрационных QComboBox 
     k = 0
-    table_values = []
+    code_values = []
     while True:
-        list_values = [form.tableView.model().index(k, i).data() for i in range(11)]     # Получение данных из таблицы
-        if list_values == [None, None, None, None, None, None, None, None, None, None, None]: break
-        table_values.append(list_values)
+        code_univer = form.tableView.model().index(k, 0).data()     # Получение кодов ВУЗов из таблицы
+        if code_univer == None: break
+        code_values.append(code_univer)
         k += 1
+    code_values = set(code_values)
+    #["Код_ВУЗа", "Аббревиатура", "Название_НИР", "Рег_номер", "ГРНТИ", "Тип", "Наличие_экспоната", "Выставки", 
+                #"Экспонат", "Научный_руководитель", "Статус_руководителя"]
+    # Формируем словарь info_dict по {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
+    where_VUZ = ''
+    # Создаем условия для запросов SQL
+    for code in code_values:
+        where_VUZ = "Код_ВУЗа=" + str(code) + " OR "
+
+    if where_VUZ != "":
+        where_VUZ = "WHERE " + where_VUZ[0:(len(where_VUZ)-4)]
+
+    query.exec(f"""SELECT Код_ВУЗа, Аббревиатура, Федеральный_округ, Город, Область FROM VUZ {where_VUZ}""")
     
+    info_dict = {}
+    while query.next():
+        info_dict.update({query.value("Код_ВУЗа"): [query.value("Аббревиатура"), query.value("Федеральный_округ"), query.value("Город"), query.value("Область")]})
+        #"ГРНТИ": [GRNTI_1, GRNTI_2],
+    set_filter_value(info_dict)    # Изменение значений в фильтрах - QComboBox
+        
 
 
-output_table()
+#output_table()
 # Взаимодействие с интерфесом
 # Передавать параметры в функции через кнопки можно с помощью лямбда функций form.pushButton.clicked.connect(lambda x: test("hello fucking Qt!"))
 form.choiceTable.currentTextChanged.connect(lambda: output_table(table_name=form.choiceTable.currentText()))
@@ -398,13 +417,9 @@ form.AddField.clicked.connect(add_field_window)
 form.EditField.clicked.connect(lambda: add_field_window(Edit=True))
 form.deleteButton.clicked.connect(delete_row)
 
-form.federalDistrict_cb.currentTextChanged.connect(filtration)
-form.city_cb.currentTextChanged.connect(filtration)
-form.region_cb.currentTextChanged.connect(filtration)
-form.university_cb.currentTextChanged.connect(filtration)
-form.GRNTI_1_cb.currentTextChanged.connect(filtration)
-form.GRNTI_2_cb.currentTextChanged.connect(filtration)
-form.preference_exibit_cb.currentTextChanged.connect(filtration)
+form.apply_filtering_bn.clicked.connect(filtration)
+form.reset_filtering_bn.clicked.connect(set_filter_value)
+
 
 
 # Запуск приложения
