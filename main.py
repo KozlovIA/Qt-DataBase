@@ -1,9 +1,9 @@
 from PyQt6 import uic, QtGui
-from PyQt6.QtWidgets import QApplication, QMessageBox
-from regex import R
+from PyQt6.QtWidgets import QApplication, QMessageBox, QTableWidgetItem
 from source.functional import *
 from time import sleep
 from PyQt6.QtCore import QThread, QRect
+import pandas as pd
 
 gridLayoutStartResize()     # изменнение размеров основного слоя gridLayout в MainForm для корректного изменения размеров виджетов
 
@@ -53,7 +53,7 @@ class ResizeThread(QThread):
                 form.gridLayout.setGeometry(QRect(0, 0, size[0], int(size[1]*(670/700))))
                 form.gridLayoutWidget_2.setGeometry(QRect(0, 0, size[0], int(size[1]*(670/700))))
                 form.tabWidget.resize(size[0], size[1])
-                sleep(0.05)
+                sleep(0.1)
             except:
                 pass#print("Error Resize")
 # с кнопкой почему-то не выдает "Timers cannot be started from another thread", а со слоем выдает
@@ -279,10 +279,6 @@ def set_filter_value(info_dict=False):
     """ for grnti in all_GRNTI:
         if ';' in grnti:
             grnti = grnti.split(';')
-        elif ',' in grnti:
-            grnti = grnti.split(',')
-        elif ' ' in grnti:
-            grnti = grnti.split(' ')
         if str(type(grnti)) == "<class 'list'>" and len(grnti) > 1:
             form.GRNTI_1_cb.addItem(grnti[0])
             form.GRNTI_1_cb.addItem(grnti[1])
@@ -294,32 +290,104 @@ def set_filter_value(info_dict=False):
 
 initialFilterValues = set_filter_value()    # словарь по {Код ВУЗа: [Аббревиатура, Федеральный округ, Город, Область]}
 
+
 def filtration():
-    typeExhibit_dict = {"Есть": "Е", "Нет": "Н", "Планируется": "П"}
+    typeExhibit_dict = {"Есть": "Е", "Нет": "Н", "Планируется": "П", "-": "-"}
     typeExhibit_dict_revers = {"Е": "Есть", "Н": "Нет", "П": "Планируется"}
     fed_Distr = form.federalDistrict_cb.currentText()
     city = form.city_cb.currentText()
     region = form.region_cb.currentText()
-    if form.preference_exibit_cb.currentText() != "-":
-        preference_exibit = typeExhibit_dict[form.preference_exibit_cb.currentText()]
-    else: preference_exibit = '-'
+    preference_exibit = typeExhibit_dict[form.preference_exibit_cb.currentText()]
     GRNTI_1 = form.GRNTI_1_cb.currentText()
     GRNTI_2 = form.GRNTI_2_cb.currentText()
     univer = form.university_cb.currentText()
 
-    info_dict = {
-        "Федеральный_округ": fed_Distr,
-        "Город": city,
-        "Область": region,
-        "Аббревиатура": univer,
+    info_dict = {}
+    if fed_Distr != '-': info_dict.update({"Федеральный_округ": fed_Distr})
+    if city != '-': info_dict.update({"Город": city})
+    if region != '-': info_dict.update({"Область": region})
+    if univer != '-': info_dict.update({"Аббревиатура": univer})
+    if preference_exibit != '-': info_dict.update({"Наличие_экспоната": preference_exibit})
         #"ГРНТИ": [GRNTI_1, GRNTI_2],
-        "Наличие_экспоната": preference_exibit}
 
-    #set_filter_value(info_dict)
+    #set_filter_value(info_dict)    # Изменение значений в фильтрах - QComboBox
+    
+
+    where_VUZ = ""; where_Vyst_mo = ""
+    # Создаем условия для запросов SQL
+    for key in list(info_dict.keys()):
+        if key == "ГРНТИ" or key == "Наличие_экспоната" or key == "Аббревиатура":
+            where_Vyst_mo += key + '="' + str(info_dict[key]) + '" AND '
+        else:
+            where_VUZ += key + '="' + str(info_dict[key]) + '" AND '
+    if where_VUZ != "":
+        where_VUZ = "WHERE " + where_VUZ[0:(len(where_VUZ)-4)]
+    if where_Vyst_mo != "":
+        where_Vyst_mo = where_Vyst_mo[0:(len(where_Vyst_mo)-4)]
+
+    # Делаем запрос сначала в VUZ, получаем номера ВУЗов и добавляем их в условие к таблицу Vyst_mo, изи ГГ
     query = QSqlQuery()
-    query.exec(f"""SELECT * FROM Vyst_mo WHERE Аббревиатура="{univer}" """)
+
+    if where_VUZ != '':
+        query.exec(f"""SELECT Код_ВУЗа FROM VUZ {where_VUZ}""")
+        first_loop = True
+        while query.next():
+            if first_loop and where_Vyst_mo != "":
+                where_Vyst_mo += " AND "
+            first_loop = False
+            where_Vyst_mo = where_Vyst_mo + "Код_ВУЗа=" + str(query.value("Код_ВУЗа")) + " OR "
+    if where_Vyst_mo != "":
+        where_Vyst_mo = "WHERE " + where_Vyst_mo
+    if where_Vyst_mo[-3:-1] == "OR":
+        where_Vyst_mo = where_Vyst_mo[0:len(where_Vyst_mo)-4]
+
+
+    query.exec(f"""SELECT * FROM Vyst_mo {where_Vyst_mo}""")
+    df_model = pd.DataFrame(
+        columns=["Код_ВУЗа", "Аббревиатура", "Название_НИР", "Рег_номер", "ГРНТИ", "Тип", "Наличие_экспоната", "Выставки", 
+                "Экспонат", "Научный_руководитель", "Статус_руководителя"]
+    )
+    table_dict = {}
     while query.next():
-        print(query.value("Код_ВУЗа"))
+        table_dict.update({"Код_ВУЗа": query.value("Код_ВУЗа")})
+        table_dict.update({"Аббревиатура": query.value("Аббревиатура")})
+        table_dict.update({"Название_НИР": query.value("Название_НИР")})
+        table_dict.update({"Рег_номер": query.value("Рег_номер")})
+        table_dict.update({"ГРНТИ": query.value("ГРНТИ")})
+        table_dict.update({"Тип": query.value("Тип")})
+        table_dict.update({"Наличие_экспоната": query.value("Наличие_экспоната")})
+        table_dict.update({"Выставки": query.value("Выставки")})
+        table_dict.update({"Экспонат": query.value("Экспонат")})
+        table_dict.update({"Научный_руководитель": query.value("Научный_руководитель")})
+        table_dict.update({"Статус_руководителя": query.value("Статус_руководителя")})
+        temp_df = pd.DataFrame.from_dict(table_dict, orient='index').T
+        df_model = pd.concat([df_model, temp_df])
+    # for the table model
+    table_model = QtGui.QStandardItemModel()
+    # set table headers
+    table_model.setColumnCount(df_model.columns.size)
+    table_model.setHorizontalHeaderLabels(df_model.columns.tolist())
+    form.tableView.horizontalHeader().setStretchLastSection(True)
+
+    # fill table model data
+    for row_idx in range(len(df_model.values)):
+        row = list()
+        for col_idx in range(df_model.columns.size):
+            val = QtGui.QStandardItem(str(df_model.values[row_idx][col_idx]))
+            row.append(val)
+        table_model.appendRow(row)
+    # set table model to table object
+    form.tableView.setModel(table_model)
+
+    # Получаем значения таблицы для перенастройки фильтрационных QComboBox 
+    k = 0
+    table_values = []
+    while True:
+        list_values = [form.tableView.model().index(k, i).data() for i in range(11)]     # Получение данных из таблицы
+        if list_values == [None, None, None, None, None, None, None, None, None, None, None]: break
+        table_values.append(list_values)
+        k += 1
+    
 
 
 output_table()
