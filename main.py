@@ -248,20 +248,12 @@ def msgbtn(i):
     global reply
     reply = i.text()
 
-def set_filter_value(info_dict=False, typeExhibit_dict_revers={}, grnti_values=list(GRNTI_dict.values()), filtering_reset=False):
+def set_filter_value(info_dict=False, typeExhibit_dict_revers={"Е": "Есть", "Н": "Нет", "П": "Планируется"}, grnti_values=list(GRNTI_dict.values())):
     """Добавляет первоначальные значения фильтров в comboboxes
     info_dict - если окно уже есть, то запрос будет создан в зависимости от текущих значений фильтра"""
     if info_dict==False: 
         info_dict = get_info_for_filtration()   # словарь по {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
         output_table()
-        if filtering_reset:
-            form.university_cb.setCurrentText("-")
-            form.federalDistrict_cb.setCurrentText("-")
-            form.city_cb.setCurrentText("-")
-            form.region_cb.setCurrentText("-")
-            form.preference_exibit_cb.setCurrentText("-")
-            form.GRNTI_1_cb.setCurrentText("-")
-            form.GRNTI_2_cb.setCurrentText("-")
         Edit = False
     else:
         university_cb_value = form.university_cb.currentText()
@@ -272,20 +264,21 @@ def set_filter_value(info_dict=False, typeExhibit_dict_revers={}, grnti_values=l
         GRNTI_1_cb_value = form.GRNTI_1_cb.currentText()
         GRNTI_2_cb_value = form.GRNTI_2_cb.currentText()
 
-        form.federalDistrict_cb.clear()
-        form.city_cb.clear()
-        form.region_cb.clear()
-        form.GRNTI_1_cb.clear()
-        form.GRNTI_2_cb.clear()
-        form.university_cb.clear()
-        form.preference_exibit_cb.clear()
-        form.federalDistrict_cb.addItem('-')
-        form.city_cb.addItem('-')
-        form.region_cb.addItem('-')
-        form.GRNTI_1_cb.addItem('-')
-        form.GRNTI_2_cb.addItem('-')
-        form.university_cb.addItem('-')
         Edit = True
+    form.federalDistrict_cb.clear()
+    form.city_cb.clear()
+    form.region_cb.clear()
+    form.GRNTI_1_cb.clear()
+    form.GRNTI_2_cb.clear()
+    form.university_cb.clear()
+    form.preference_exibit_cb.clear()
+    form.preference_exibit_cb.addItem("-")
+    form.federalDistrict_cb.addItem('-')
+    form.city_cb.addItem('-')
+    form.region_cb.addItem('-')
+    form.GRNTI_1_cb.addItem('-')
+    form.GRNTI_2_cb.addItem('-')
+    form.university_cb.addItem('-')
     # Добавление в списки, а затем в QComboBoxes значений
     fed_district = []; city = []; region = []
     for code_uni in list(info_dict.keys()):
@@ -355,7 +348,8 @@ def filtration():
     if where_Vyst_mo != "(":
         where_Vyst_mo = where_Vyst_mo[0:(len(where_Vyst_mo)-4)]
         where_Vyst_mo += ')'
-    else:   where_Vyst_mo = ""
+    elif where_Vyst_mo == "(":   where_Vyst_mo = ""
+
 
     # Делаем запрос сначала в VUZ, получаем номера ВУЗов и добавляем их в условие к таблицу Vyst_mo, изи ГГ
     query = QSqlQuery()
@@ -377,8 +371,9 @@ def filtration():
     # фильтрация грнти через регистрационный номер
     code_and_reg_num = []
     for key in list(GRNTI_dict.keys()):
-        if GRNTI_1 != '-' and GRNTI_2 != '-' and (GRNTI_1 + ';' + GRNTI_2) == GRNTI_dict[key]:
-            code_and_reg_num.append(eval(key))
+        if GRNTI_1 != '-' and GRNTI_2 != '-':
+            if (GRNTI_1 + ';' + GRNTI_2) == GRNTI_dict[key]:
+                code_and_reg_num.append(eval(key))
             continue
         if GRNTI_1 != '-' and (GRNTI_1 in GRNTI_dict[key]):
             code_and_reg_num.append(eval(key))
@@ -390,17 +385,23 @@ def filtration():
         if first_loop and where_Vyst_mo != "":
             where_Vyst_mo += " AND "
         if first_loop:
+            where_Vyst_mo += "("
             first_loop = False
-        where_Vyst_mo = where_Vyst_mo + '(Рег_номер="' + str(rNum[1]) + '" AND Код_ВУЗа=' + str(rNum[0]) + ') OR '
+        where_Vyst_mo = where_Vyst_mo + 'Рег_номер="' + str(rNum[1]) + '" AND Код_ВУЗа=' + str(rNum[0]) + ' OR '
     if where_Vyst_mo[-3:-1] == "OR":
         where_Vyst_mo = where_Vyst_mo[0:len(where_Vyst_mo)-4]
+        where_Vyst_mo += ')'
 
         
     if where_Vyst_mo != "":
         where_Vyst_mo = "WHERE " + where_Vyst_mo
 
+    if (not (fed_Distr == '-' and city  == '-' and region == '-' and preference_exibit  == '-' and GRNTI_1 == '-' and GRNTI_2  == '-' and univer == '-')) and where_Vyst_mo == "":
+        pass
+    else:
+        query.exec(f"""SELECT * FROM Vyst_mo {where_Vyst_mo}""")
 
-    query.exec(f"""SELECT * FROM Vyst_mo {where_Vyst_mo}""")
+    
     df_model = pd.DataFrame(
         columns=["Код_ВУЗа", "Аббревиатура", "Название_НИР", "Рег_номер", "ГРНТИ", "Тип", "Наличие_экспоната", "Выставки", 
                 "Экспонат", "Научный_руководитель", "Статус_руководителя"]
@@ -441,7 +442,7 @@ def filtration():
     k = 0
     code_values = []; grnti_values = []
     typeExhibit_dict_ = {"Е": "Есть", "Н": "Нет", "П": "Планируется"}
-    typeExhibit_dict = {"-": "-"}
+    typeExhibit_dict = {}
     while True:
         code_univer = form.tableView.model().index(k, 0).data()     # Получение кодов ВУЗов из таблицы
         grnti = form.tableView.model().index(k, 4).data()     # Получение текущих кодов ГРНТИ из таблицы
@@ -492,9 +493,7 @@ form.deleteButton.clicked.connect(delete_row)
 
 form.apply_filtering_bn.clicked.connect(filtration)
 form.reset_table_filtering_bn.clicked.connect(set_filter_value)
-form.reset_filtering_bn.clicked.connect(lambda: set_filter_value(filtering_reset=True))
-
-
+form.reset_filtering_bn.clicked.connect(set_filter_value)
 
 
 # Запуск приложения

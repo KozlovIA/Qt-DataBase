@@ -232,21 +232,6 @@
          <string>-</string>
         </property>
        </item>
-       <item>
-        <property name="text">
-         <string>Есть</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Нет</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Планируется</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="0" column="0">
