@@ -250,12 +250,20 @@ def msgbtn(i):
     global reply
     reply = i.text()
 
-def set_filter_value(info_dict=False, typeExhibit_dict_revers={}, grnti_values=list(GRNTI_dict.values())):
+def set_filter_value(info_dict=False, typeExhibit_dict_revers={}, grnti_values=list(GRNTI_dict.values()), filtering_reset=False):
     """Добавляет первоначальные значения фильтров в comboboxes
     info_dict - если окно уже есть, то запрос будет создан в зависимости от текущих значений фильтра"""
     if info_dict==False: 
         info_dict = get_info_for_filtration()   # словарь по {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
         output_table()
+        if filtering_reset:
+            form.university_cb.setCurrentText("-")
+            form.federalDistrict_cb.setCurrentText("-")
+            form.city_cb.setCurrentText("-")
+            form.region_cb.setCurrentText("-")
+            form.preference_exibit_cb.setCurrentText("-")
+            form.GRNTI_1_cb.setCurrentText("-")
+            form.GRNTI_2_cb.setCurrentText("-")
         Edit = False
     else:
         university_cb_value = form.university_cb.currentText()
@@ -337,7 +345,7 @@ def filtration():
     if info_dict == {}:
         set_filter_value(info_dict=False)
 
-    where_VUZ = ""; where_Vyst_mo = ""
+    where_VUZ = ""; where_Vyst_mo = "("
     # Создаем условия для запросов SQL
     for key in list(info_dict.keys()):
         if key == "ГРНТИ" or key == "Наличие_экспоната" or key == "Аббревиатура":
@@ -346,8 +354,10 @@ def filtration():
             where_VUZ += key + '="' + str(info_dict[key]) + '" AND '
     if where_VUZ != "":
         where_VUZ = "WHERE " + where_VUZ[0:(len(where_VUZ)-4)]
-    if where_Vyst_mo != "":
+    if where_Vyst_mo != "(":
         where_Vyst_mo = where_Vyst_mo[0:(len(where_Vyst_mo)-4)]
+        where_Vyst_mo += ')'
+    else:   where_Vyst_mo = ""
 
     # Делаем запрос сначала в VUZ, получаем номера ВУЗов и добавляем их в условие к таблицу Vyst_mo, изи ГГ
     query = QSqlQuery()
@@ -358,10 +368,13 @@ def filtration():
         while query.next():
             if first_loop and where_Vyst_mo != "":
                 where_Vyst_mo += " AND "
+            if first_loop:
+                where_Vyst_mo += "("
             first_loop = False
             where_Vyst_mo = where_Vyst_mo + "Код_ВУЗа=" + str(query.value("Код_ВУЗа")) + " OR "
     if where_Vyst_mo[-3:-1] == "OR":
         where_Vyst_mo = where_Vyst_mo[0:len(where_Vyst_mo)-4]
+        where_Vyst_mo += ')'
     
     # фильтрация грнти через регистрационный номер
     code_and_reg_num = []
@@ -383,11 +396,12 @@ def filtration():
         where_Vyst_mo = where_Vyst_mo + '(Рег_номер="' + str(rNum[1]) + '" AND Код_ВУЗа=' + str(rNum[0]) + ') OR '
     if where_Vyst_mo[-3:-1] == "OR":
         where_Vyst_mo = where_Vyst_mo[0:len(where_Vyst_mo)-4]
-    print(where_Vyst_mo)
+
         
     if where_Vyst_mo != "":
         where_Vyst_mo = "WHERE " + where_Vyst_mo
 
+    print(f"""SELECT * FROM Vyst_mo {where_Vyst_mo}""")
 
     query.exec(f"""SELECT * FROM Vyst_mo {where_Vyst_mo}""")
     df_model = pd.DataFrame(
@@ -477,7 +491,9 @@ form.EditField.clicked.connect(lambda: add_field_window(Edit=True))
 form.deleteButton.clicked.connect(delete_row)
 
 form.apply_filtering_bn.clicked.connect(filtration)
-form.reset_filtering_bn.clicked.connect(set_filter_value)
+form.reset_table_filtering_bn.clicked.connect(set_filter_value)
+form.reset_filtering_bn.clicked.connect(lambda: set_filter_value(filtering_reset=True))
+
 
 
 
