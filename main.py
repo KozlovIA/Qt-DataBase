@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 from PyQt6 import uic, QtGui
-from PyQt6.QtWidgets import QApplication, QMessageBox, QTableWidgetItem
+from PyQt6.QtWidgets import QApplication, QMessageBox
 from source.functional import *
 from time import sleep
 from PyQt6.QtCore import QThread, QRect
@@ -9,6 +10,7 @@ gridLayoutStartResize()     # изменнение размеров основн
 GRNTI_dict = get_GRNTI()    # ГРНТИ коды в формате {"[Код_ВУЗа, Рег_номер]": "ГРНТИ"}
 
 Form, Window = uic.loadUiType("MainFormResize.ui")  # файл MainFormResize создается в функции gridLayoutStartResize, если поставить MainForm.ui, интерфейс не будет изменять размер в большую сторону
+#Form, Window = uic.loadUiType("MainForm.ui")
 
 # Настройка интерфейса
 app = QApplication([])
@@ -289,14 +291,7 @@ def set_filter_value(info_dict=False, typeExhibit_dict_revers={}, grnti_values=l
     form.city_cb.addItems(set(city))
     form.region_cb.addItems(set(region))
     form.preference_exibit_cb.addItems(list(typeExhibit_dict_revers.values()))
-    if Edit: 
-        form.university_cb.setCurrentText(university_cb_value)
-        form.federalDistrict_cb.setCurrentText(federalDistrict_cb_value)
-        form.city_cb.setCurrentText(city_cb_value)
-        form.region_cb.setCurrentText(region_cb_value)
-        form.preference_exibit_cb.setCurrentText(preference_exibit_cb_value)
-        form.GRNTI_1_cb.setCurrentText(GRNTI_1_cb_value)
-        form.GRNTI_2_cb.setCurrentText(GRNTI_2_cb_value)
+
     # ГРНТИ как обычно отдельно
     for grnti in grnti_values:
         if ';' in grnti:
@@ -308,7 +303,15 @@ def set_filter_value(info_dict=False, typeExhibit_dict_revers={}, grnti_values=l
             form.GRNTI_2_cb.addItem(grnti[1])
         else: form.GRNTI_1_cb.addItem(grnti); form.GRNTI_2_cb.addItem(grnti)
 
-
+    # Установка значений фильтра на место
+    if Edit: 
+        form.university_cb.setCurrentText(university_cb_value)
+        form.federalDistrict_cb.setCurrentText(federalDistrict_cb_value)
+        form.city_cb.setCurrentText(city_cb_value)
+        form.region_cb.setCurrentText(region_cb_value)
+        form.preference_exibit_cb.setCurrentText(preference_exibit_cb_value)
+        form.GRNTI_1_cb.setCurrentText(GRNTI_1_cb_value)
+        form.GRNTI_2_cb.setCurrentText(GRNTI_2_cb_value)
 set_filter_value()
 
 
@@ -321,6 +324,7 @@ def filtration():
     GRNTI_1 = form.GRNTI_1_cb.currentText()
     GRNTI_2 = form.GRNTI_2_cb.currentText()
     univer = form.university_cb.currentText()
+
 
     info_dict = {}
     if fed_Distr != '-': info_dict.update({"Федеральный_округ": fed_Distr})
@@ -356,10 +360,33 @@ def filtration():
                 where_Vyst_mo += " AND "
             first_loop = False
             where_Vyst_mo = where_Vyst_mo + "Код_ВУЗа=" + str(query.value("Код_ВУЗа")) + " OR "
-    if where_Vyst_mo != "":
-        where_Vyst_mo = "WHERE " + where_Vyst_mo
     if where_Vyst_mo[-3:-1] == "OR":
         where_Vyst_mo = where_Vyst_mo[0:len(where_Vyst_mo)-4]
+    
+    # фильтрация грнти через регистрационный номер
+    code_and_reg_num = []
+    for key in list(GRNTI_dict.keys()):
+        if GRNTI_1 != '-' and GRNTI_2 != '-' and (GRNTI_1 + ';' + GRNTI_2) == GRNTI_dict[key]:
+            code_and_reg_num.append(eval(key))
+            continue
+        if GRNTI_1 != '-' and (GRNTI_1 in GRNTI_dict[key]):
+            code_and_reg_num.append(eval(key))
+        elif GRNTI_2 != '-' and (GRNTI_2 in GRNTI_dict[key]):
+            code_and_reg_num.append(eval(key))
+
+    first_loop = True
+    for rNum in code_and_reg_num:
+        if first_loop and where_Vyst_mo != "":
+            where_Vyst_mo += " AND "
+        if first_loop:
+            first_loop = False
+        where_Vyst_mo = where_Vyst_mo + '(Рег_номер="' + str(rNum[1]) + '" AND Код_ВУЗа=' + str(rNum[0]) + ') OR '
+    if where_Vyst_mo[-3:-1] == "OR":
+        where_Vyst_mo = where_Vyst_mo[0:len(where_Vyst_mo)-4]
+    print(where_Vyst_mo)
+        
+    if where_Vyst_mo != "":
+        where_Vyst_mo = "WHERE " + where_Vyst_mo
 
 
     query.exec(f"""SELECT * FROM Vyst_mo {where_Vyst_mo}""")

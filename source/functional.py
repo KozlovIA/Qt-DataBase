@@ -141,5 +141,5 @@ def get_GRNTI():
     query = QSqlQuery("""SELECT Код_ВУЗа, Рег_номер, ГРНТИ FROM Vyst_mo""")
     GRNTI_dict = {}
     while query.next():
-        GRNTI_dict.update({f'[{query.value("Код_ВУЗа")}, {query.value("Рег_номер")}]': query.value("ГРНТИ")})
+        GRNTI_dict.update({f'[{query.value("Код_ВУЗа")}, "{query.value("Рег_номер")}"]': query.value("ГРНТИ")})
     return GRNTI_dict
