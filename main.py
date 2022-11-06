@@ -54,8 +54,6 @@ class ResizeThread(QThread):
                 geometry = form.centralwidget.geometry()
                 size = eval(str(geometry)[18:])[2:4]
                 form.gridLayout.setGeometry(QRect(0, 0, size[0], int(size[1]*(670/700))))
-                form.gridLayoutWidget_2.setGeometry(QRect(0, 0, size[0], int(size[1]*(670/700))))
-                form.tabWidget.resize(size[0], size[1])
                 sleep(0.1)
             except:
                 pass#print("Error Resize")
@@ -401,7 +399,6 @@ def filtration():
     if where_Vyst_mo != "":
         where_Vyst_mo = "WHERE " + where_Vyst_mo
 
-    print(f"""SELECT * FROM Vyst_mo {where_Vyst_mo}""")
 
     query.exec(f"""SELECT * FROM Vyst_mo {where_Vyst_mo}""")
     df_model = pd.DataFrame(
@@ -443,24 +440,35 @@ def filtration():
     # Получаем значения таблицы для перенастройки фильтрационных QComboBox 
     k = 0
     code_values = []; grnti_values = []
+    typeExhibit_dict_ = {"Е": "Есть", "Н": "Нет", "П": "Планируется"}
+    typeExhibit_dict = {"-": "-"}
     while True:
         code_univer = form.tableView.model().index(k, 0).data()     # Получение кодов ВУЗов из таблицы
         grnti = form.tableView.model().index(k, 4).data()     # Получение текущих кодов ГРНТИ из таблицы
+        availability = form.tableView.model().index(k, 6).data()     # Получение текущих кодов ГРНТИ из таблицы
+        if typeExhibit_dict != typeExhibit_dict_:
+            try:
+                typeExhibit_dict.update({availability: typeExhibit_dict_[availability]})
+            except: pass
         if code_univer == None: break
         code_values.append(code_univer)
         grnti_values.append(grnti)
         k += 1
+
     code_values = set(code_values)
+    
     #["Код_ВУЗа", "Аббревиатура", "Название_НИР", "Рег_номер", "ГРНТИ", "Тип", "Наличие_экспоната", "Выставки", 
                 #"Экспонат", "Научный_руководитель", "Статус_руководителя"]
     # Формируем словарь info_dict по {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
     where_VUZ = ''
     # Создаем условия для запросов SQL
     for code in code_values:
-        where_VUZ = "Код_ВУЗа=" + str(code) + " OR "
+        where_VUZ = where_VUZ + "Код_ВУЗа=" + str(code) + " OR "
+
 
     if where_VUZ != "":
         where_VUZ = "WHERE " + where_VUZ[0:(len(where_VUZ)-4)]
+
 
     query.exec(f"""SELECT Код_ВУЗа, Аббревиатура, Федеральный_округ, Город, Область FROM VUZ {where_VUZ}""")
     
@@ -468,16 +476,8 @@ def filtration():
     while query.next():
         info_dict.update({query.value("Код_ВУЗа"): [query.value("Аббревиатура"), query.value("Федеральный_округ"), query.value("Город"), query.value("Область")]})
 
-    query.exec(f"""SELECT Наличие_экспоната FROM Vyst_mo {where_VUZ}""")    # where_VUZ тут вполне логично, т.к. в нем коды ВУЗов
-
-    typeExhibit_dict_ = {"Е": "Есть", "Н": "Нет", "П": "Планируется"}
-    typeExhibit_dict_revers = {"-": "-"}
-    while query.next():
-        type_exh = query.value("Наличие_экспоната")
-        typeExhibit_dict_revers.update({type_exh: typeExhibit_dict_[type_exh]})
-        if typeExhibit_dict_revers == typeExhibit_dict_: break
-        #"ГРНТИ": [GRNTI_1, GRNTI_2],
-    set_filter_value(info_dict, typeExhibit_dict_revers, grnti_values)    # Изменение значений в фильтрах - QComboBox
+        
+    set_filter_value(info_dict, typeExhibit_dict, grnti_values)    # Изменение значений в фильтрах - QComboBox
     
 
 
