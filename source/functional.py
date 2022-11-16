@@ -143,3 +143,12 @@ def get_GRNTI():
     while query.next():
         GRNTI_dict.update({f'[{query.value("Код_ВУЗа")}, "{query.value("Рег_номер")}"]': query.value("ГРНТИ")})
     return GRNTI_dict
+
+
+def get_GRNTI_fromGRNTItable():
+    """Возвращает рубрики из таблиццы grntirub"""
+    query = QSqlQuery("""SELECT * FROM grntirub""")
+    GRNTI_list = [] # список списков ["Код_рубрики Рубрика"]
+    while query.next():
+        GRNTI_list.append(query.value("Код_рубрики") + " " + query.value("Рубрика"))
+    return GRNTI_list

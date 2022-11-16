@@ -132,7 +132,7 @@ def saveSQL_data(Edit, orig_univer_code, orig_regNum):
         i+=1
 
 def msgError(msgErr):
-    """Функция вывода ошибок при сохранении некорректных данных в таблицу"""
+    """Функция вывода ошибок при с текстом ошибки"""
     msg = QMessageBox()
     msg.setWindowTitle("Внимание!")
     msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
@@ -248,7 +248,7 @@ def msgbtn(i):
     global reply
     reply = i.text()
 
-def set_filter_value(info_dict=False, typeExhibit_dict_revers={"Е": "Есть", "Н": "Нет", "П": "Планируется"}, grnti_values=list(GRNTI_dict.values())):
+def set_filter_value(info_dict=False, typeExhibit_dict_revers={"Е": "Есть", "Н": "Нет", "П": "Планируется"}):
     """Добавляет первоначальные значения фильтров в comboboxes
     info_dict - если окно уже есть, то запрос будет создан в зависимости от текущих значений фильтра"""
     if info_dict==False: 
@@ -256,15 +256,16 @@ def set_filter_value(info_dict=False, typeExhibit_dict_revers={"Е": "Есть",
         output_table()
         Edit = False
     else:
-        university_cb_value = form.university_cb.currentText()
-        federalDistrict_cb_value = form.federalDistrict_cb.currentText()
-        city_cb_value = form.city_cb.currentText()
-        region_cb_value = form.region_cb.currentText()
-        preference_exibit_cb_value = form.preference_exibit_cb.currentText()
-        GRNTI_1_cb_value = form.GRNTI_1_cb.currentText()
-        GRNTI_2_cb_value = form.GRNTI_2_cb.currentText()
-
         Edit = True
+
+    university_cb_value = form.university_cb.currentText()
+    federalDistrict_cb_value = form.federalDistrict_cb.currentText()
+    city_cb_value = form.city_cb.currentText()
+    region_cb_value = form.region_cb.currentText()
+    preference_exibit_cb_value = form.preference_exibit_cb.currentText()
+    GRNTI_1_cb_value = form.GRNTI_1_cb.currentText()
+    GRNTI_2_cb_value = form.GRNTI_2_cb.currentText()
+
     form.federalDistrict_cb.clear()
     form.city_cb.clear()
     form.region_cb.clear()
@@ -292,18 +293,12 @@ def set_filter_value(info_dict=False, typeExhibit_dict_revers={"Е": "Есть",
     form.preference_exibit_cb.addItems(list(typeExhibit_dict_revers.values()))
 
     # ГРНТИ как обычно отдельно
-    for grnti in grnti_values:
-        if ';' in grnti:
-            grnti = grnti.split(';')
-        if str(type(grnti)) == "<class 'list'>" and len(grnti) > 1:
-            form.GRNTI_1_cb.addItem(grnti[0])
-            form.GRNTI_1_cb.addItem(grnti[1])
-            form.GRNTI_2_cb.addItem(grnti[0])
-            form.GRNTI_2_cb.addItem(grnti[1])
-        else: form.GRNTI_1_cb.addItem(grnti); form.GRNTI_2_cb.addItem(grnti)
+    GRNTI_list = get_GRNTI_fromGRNTItable()
+    form.GRNTI_1_cb.addItems(GRNTI_list)
+    form.GRNTI_2_cb.addItems(GRNTI_list)
 
     # Установка значений фильтра на место
-    if Edit: 
+    if Edit:
         form.university_cb.setCurrentText(university_cb_value)
         form.federalDistrict_cb.setCurrentText(federalDistrict_cb_value)
         form.city_cb.setCurrentText(city_cb_value)
@@ -320,8 +315,8 @@ def filtration():
     city = form.city_cb.currentText()
     region = form.region_cb.currentText()
     preference_exibit = typeExhibit_dict[form.preference_exibit_cb.currentText()]
-    GRNTI_1 = form.GRNTI_1_cb.currentText()
-    GRNTI_2 = form.GRNTI_2_cb.currentText()
+    GRNTI_1 = form.GRNTI_1_cb.currentText()[0:2]
+    GRNTI_2 = form.GRNTI_2_cb.currentText()[0:2]
     univer = form.university_cb.currentText()
 
 
@@ -333,8 +328,6 @@ def filtration():
     if preference_exibit != '-': info_dict.update({"Наличие_экспоната": preference_exibit})
         #"ГРНТИ": [GRNTI_1, GRNTI_2],
     
-    if info_dict == {}:
-        set_filter_value(info_dict=False)
 
     where_VUZ = ""; where_Vyst_mo = "("
     # Создаем условия для запросов SQL
@@ -371,14 +364,23 @@ def filtration():
     # фильтрация грнти через регистрационный номер
     code_and_reg_num = []
     for key in list(GRNTI_dict.keys()):
-        if GRNTI_1 != '-' and GRNTI_2 != '-':
-            if (GRNTI_1 + ';' + GRNTI_2) == GRNTI_dict[key]:
+        # отбор кодов по первым 2-м числам в коде грнти
+        _grnti = GRNTI_dict[key].split(';')
+        if len(_grnti) > 1:
+            _grnti_0 = _grnti[0].split('.')
+            _grnti_1 = _grnti[1].split('.')
+            if GRNTI_1 != '-' and GRNTI_2 != '-' and ((GRNTI_1 == _grnti_0[0] and GRNTI_2 == _grnti_1[0]) or (GRNTI_1 == _grnti_1[0] and GRNTI_2 == _grnti_0[0])):
                 code_and_reg_num.append(eval(key))
-            continue
-        if GRNTI_1 != '-' and (GRNTI_1 in GRNTI_dict[key]):
-            code_and_reg_num.append(eval(key))
-        elif GRNTI_2 != '-' and (GRNTI_2 in GRNTI_dict[key]):
-            code_and_reg_num.append(eval(key))
+                continue
+        else:
+            _grnti_0 = _grnti[0].split('.')
+            if GRNTI_1 != '-' and GRNTI_1 == _grnti_0[0]:
+                code_and_reg_num.append(eval(key))
+            elif GRNTI_2 != '-' and GRNTI_2 == _grnti_0[0]:
+                code_and_reg_num.append(eval(key))
+
+    if info_dict == {} and code_and_reg_num == []:
+        set_filter_value(info_dict=False)
 
     first_loop = True
     for rNum in code_and_reg_num:
@@ -445,7 +447,7 @@ def filtration():
     typeExhibit_dict = {}
     while True:
         code_univer = form.tableView.model().index(k, 0).data()     # Получение кодов ВУЗов из таблицы
-        grnti = form.tableView.model().index(k, 4).data()     # Получение текущих кодов ГРНТИ из таблицы
+        #grnti = form.tableView.model().index(k, 4).data()     # Получение текущих кодов ГРНТИ из таблицы
         availability = form.tableView.model().index(k, 6).data()     # Получение текущих кодов ГРНТИ из таблицы
         if typeExhibit_dict != typeExhibit_dict_:
             try:
@@ -453,7 +455,7 @@ def filtration():
             except: pass
         if code_univer == None: break
         code_values.append(code_univer)
-        grnti_values.append(grnti)
+        #grnti_values.append(grnti)
         k += 1
 
     code_values = set(code_values)
@@ -478,7 +480,7 @@ def filtration():
         info_dict.update({query.value("Код_ВУЗа"): [query.value("Аббревиатура"), query.value("Федеральный_округ"), query.value("Город"), query.value("Область")]})
 
         
-    set_filter_value(info_dict, typeExhibit_dict, grnti_values)    # Изменение значений в фильтрах - QComboBox
+    set_filter_value(info_dict, typeExhibit_dict)    # Изменение значений в фильтрах - QComboBox
     
 
 

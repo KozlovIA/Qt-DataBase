@@ -67,27 +67,52 @@
      <property name="verticalSpacing">
       <number>7</number>
      </property>
-     <item row="14" column="0">
-      <widget class="QPushButton" name="AddField">
-       <property name="text">
-        <string>Добавить</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="university_lb">
-       <property name="text">
-        <string>ВУЗ</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QComboBox" name="federalDistrict_cb">
+     <item row="7" column="2">
+      <widget class="QComboBox" name="university_cb">
        <item>
         <property name="text">
          <string>-</string>
         </property>
        </item>
+      </widget>
+     </item>
+     <item row="5" column="2">
+      <widget class="QComboBox" name="preference_exibit_cb">
+       <item>
+        <property name="text">
+         <string>-</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="city_lb">
+       <property name="text">
+        <string>Город</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="federalDistrict_lb">
+       <property name="text">
+        <string>Федеральный округ</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QComboBox" name="city_cb">
+       <item>
+        <property name="text">
+         <string>-</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="3">
+      <widget class="Line" name="line_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
       </widget>
      </item>
      <item row="10" column="0" colspan="4">
@@ -113,22 +138,6 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="Line" name="line_2">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="2">
-      <widget class="QComboBox" name="region_cb">
-       <item>
-        <property name="text">
-         <string>-</string>
-        </property>
-       </item>
-      </widget>
-     </item>
      <item row="6" column="0">
       <widget class="QLabel" name="GRNTI_lb">
        <property name="text">
@@ -139,17 +148,36 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="preference_exibit_lb">
+     <item row="14" column="0">
+      <widget class="QPushButton" name="AddField">
        <property name="text">
-        <string>Наличие экспоната</string>
+        <string>Добавить</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="region_lb">
+     <item row="0" column="0">
+      <widget class="QComboBox" name="choiceTable">
+       <item>
+        <property name="text">
+         <string>Таблица НИР</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Таблица ВУЗов</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Таблица ГРНТИ</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="14" column="3">
+      <widget class="QPushButton" name="EditField">
        <property name="text">
-        <string>Область</string>
+        <string>Редактировать</string>
        </property>
       </widget>
      </item>
@@ -160,30 +188,31 @@
        </property>
       </widget>
      </item>
-     <item row="14" column="3">
-      <widget class="QPushButton" name="EditField">
+     <item row="3" column="0">
+      <widget class="QLabel" name="region_lb">
        <property name="text">
-        <string>Редактировать</string>
+        <string>Область</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="2" colspan="2">
-      <widget class="QLabel" name="dbInfo">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
+     <item row="7" column="0">
+      <widget class="QLabel" name="university_lb">
        <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
+        <string>ВУЗ</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
-      <widget class="QPushButton" name="apply_filtering_bn">
+     <item row="13" column="0" colspan="4">
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="preference_exibit_lb">
        <property name="text">
-        <string>Применить</string>
+        <string>Наличие экспоната</string>
        </property>
       </widget>
      </item>
@@ -209,77 +238,17 @@
        </item>
       </layout>
      </item>
-     <item row="13" column="0" colspan="4">
-      <widget class="Line" name="line">
+     <item row="0" column="1">
+      <widget class="Line" name="line_2">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>Qt::Vertical</enum>
        </property>
       </widget>
      </item>
-     <item row="7" column="2">
-      <widget class="QComboBox" name="university_cb">
-       <item>
-        <property name="text">
-         <string>-</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="5" column="2">
-      <widget class="QComboBox" name="preference_exibit_cb">
-       <item>
-        <property name="text">
-         <string>-</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QComboBox" name="choiceTable">
-       <item>
-        <property name="text">
-         <string>Таблица НИР</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Таблица ВУЗов</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Таблица ГРНТИ</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="city_lb">
+     <item row="8" column="0">
+      <widget class="QPushButton" name="apply_filtering_bn">
        <property name="text">
-        <string>Город</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="federalDistrict_lb">
-       <property name="text">
-        <string>Федеральный округ</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QComboBox" name="city_cb">
-       <item>
-        <property name="text">
-         <string>-</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="1" column="0" colspan="3">
-      <widget class="Line" name="line_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <string>Применить</string>
        </property>
       </widget>
      </item>
@@ -300,6 +269,37 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item row="2" column="2">
+      <widget class="QComboBox" name="federalDistrict_cb">
+       <item>
+        <property name="text">
+         <string>-</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="0" column="2" colspan="2">
+      <widget class="QLabel" name="dbInfo">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QComboBox" name="region_cb">
+       <item>
+        <property name="text">
+         <string>-</string>
+        </property>
+       </item>
+      </widget>
      </item>
     </layout>
    </widget>
