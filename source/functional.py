@@ -33,11 +33,11 @@ def gridLayoutStartResize():
     setting_old = setting = file_info[inx:inx_end]
     # замена размеров для последующего уменьшения gridLayoutWidget
     file_info = file_info.replace(setting_old, replace_setting(setting))
-
-    parameter_search = '<widget class="QWidget" name="gridLayoutWidget_2">'
+    
+    """ parameter_search = '<widget class="QWidget" name="gridLayoutWidget_2">'
     inx = file_info.find(parameter_search)     # начальный индекс параметра
     inx_end = file_info.find('</rect>', inx)   # конечный индекс настройки grid layout
-    setting_old = setting = file_info[inx:inx_end]
+    setting_old = setting = file_info[inx:inx_end] """
     # замена размеров для последующего уменьшения gridLayoutTabFiltr
     #file_info = file_info.replace(setting_old, replace_setting(setting))
     GUI_file.close()

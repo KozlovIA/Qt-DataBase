@@ -5,6 +5,7 @@ from source.functional import *
 from time import sleep
 from PyQt6.QtCore import QThread, QRect
 import pandas as pd
+import os
 
 gridLayoutStartResize()     # изменнение размеров основного слоя gridLayout в MainForm для корректного изменения размеров виджетов
 GRNTI_dict = get_GRNTI()    # ГРНТИ коды в формате {"[Код_ВУЗа, Рег_номер]": "ГРНТИ"}
@@ -18,7 +19,38 @@ window = Window()
 form = Form()
 form.setupUi(window)
 
-# Функции взаимодйствия
+
+
+def recNum():
+    """Функция для подсчета числа строк в таблицах"""
+    recCount = 0
+    while True:
+        list_values = [form.tableView.model().index(recCount, j).data() for j in range(11)]
+        if list_values == [None, None, None, None, None, None, None, None, None, None, None]: break
+        recCount+=1
+    form.recNum_lb.setText("Всего строк: " + str(recCount))
+
+
+def set_tableChoiceItems():
+    """Установка имен таблиц в QComboBox выбора таблиц"""
+    table_list = ['-', 'Таблица НИР', 'Таблица ВУЗов', 'Таблица ГРНТИ']
+    table_list += get_custom_table()
+    form.choiceTable.clear()
+    form.choiceTable.addItems(table_list)
+    form.choiceTable.setCurrentText('Таблица НИР')
+
+
+def get_custom_table():
+    """Считывание таблиц созданных ранее"""
+    if os.path.exists("data"):
+        all_files = []
+        for root, dirs, files in os.walk("data"):  
+            for filename in files:
+                all_files.append(filename[0:len(filename)-4])
+    return all_files
+
+set_tableChoiceItems()
+    
 def output_table(table_name="Таблица НИР"):
     """Функция отображения таблицы"""
     table_dict = {'Таблица НИР': 'Vyst_mo', 'Таблица ВУЗов': 'VUZ', 'Таблица ГРНТИ': 'grntirub'}
@@ -27,21 +59,62 @@ def output_table(table_name="Таблица НИР"):
     if table_name == "Таблица НИР":
         form.AddField.setEnabled(True); form.EditField.setEnabled(True); form.deleteButton.setEnabled(True)
     else: form.AddField.setEnabled(False); form.EditField.setEnabled(False); form.deleteButton.setEnabled(False)
+    global db_model
+    if not (table_name in list(table_dict.keys())):
+        if table_name == '': return
+        if table_name == '-':
+            form.tableView.clearSpans()
+            db_model = QSqlTableModel()
+            form.tableView.setModel(db_model)
+            return
+        output_custom_table(table_name=table_name)
+        form.deleteTable_bn.setEnabled(True)
+        form.editEntery_bn.setText("Удалить запись из таблицы")
+        return
+    form.editEntery_bn.setText("Добавить запись в таблицу")
+    form.deleteTable_bn.setEnabled(False)
     if not db:  # db - глобальная переменная ссылающаяся на базу данных, создается с модуле functional.py строка 23 после функции db_connect()
         form.dbInfo.setText('Ошибка подключения к базе данных "' + table_name + '"')
         return
     form.dbInfo.setText('Подключено к базе данных "' + table_name + '"')
-    global db_model
     db_model = QSqlTableModel()  # Создали объект таблицы
     db_model.setTable(table_dict[table_name])     # Привязали таблицу из базы данных
     db_model.select()        # Выбрали все строки из данной таблицы
     form.tableView.setModel(db_model)
     form.tableView.setSortingEnabled(True)
+    recNum()
 
 
+def output_custom_table(table_name):
+    """Вывод кастомных таблиц"""
+    if os.path.exists("data"):
+        file = open("data/" + table_name + ".dat", 'r', encoding='utf-8')
+        data = []
+        for line in file:
+            data.append(eval(line))
+        file.close()
+
+        headlines = ["Код_ВУЗа", "Аббревиатура", "Название_НИР", "Рег_номер", "ГРНТИ", "Тип", "Наличие_экспоната", "Выставки", 
+                "Экспонат", "Научный_руководитель", "Статус_руководителя"]
+        table_model = QtGui.QStandardItemModel()
+        # set table headers
+        table_model.setColumnCount(len(headlines))
+        table_model.setHorizontalHeaderLabels(headlines)
+        form.tableView.horizontalHeader().setStretchLastSection(True)
+
+        # fill table model data
+        for row_idx in range(len(data)):
+            row = list()
+            for col_idx in range(len(data[row_idx])):
+                val = QtGui.QStandardItem(str(data[row_idx][col_idx]))
+                row.append(val)
+            table_model.appendRow(row)
+        # set table model to table object
+        form.tableView.setModel(table_model)
+        recNum()
+
+    
 end_of_work = False     # для завершения потока изменения размера окна
-
-
 class ResizeThread(QThread):
     """Класс для изменения размеров виджетов вместе с размером окна"""
     def __init__(self, parent=None):
@@ -158,13 +231,6 @@ def add_field_window(Edit=False):
     univer_view = [str(code) + "\t" + univer_dict[code] for code in univer_code]   # хитрые пару строк, чтобы выводился и код и название
     form_AddField.university_code_cb.addItems(univer_view)
     # Ввод корректных кодов ГРНТИ
-    """ grnti_code = list(map(str, grnti_code)); grnti_code.insert(0, '-')
-    for i in range(1, len(grnti_code)):
-        if len(grnti_code[i]) == 1: grnti_code[i] = '0' + grnti_code[i]
-    all_code = ['-']; [all_code.append(str(i)) for i in range(0, 91)]
-    for i in range(1, len(all_code)):
-        if len(all_code[i]) == 1: all_code[i] = '0' + all_code[i]
-    """
     form_AddField.GRNTI_1_le.setInputMask('00.00.00;_'); form_AddField.GRNTI_2_le.setInputMask('00.00.00;_')
     orig_univerCode = orig_regNum = ''
     if Edit:
@@ -310,6 +376,9 @@ set_filter_value()
 
 
 def filtration():
+    """Фильтрация таблицы НИР"""
+    form.AddField.setEnabled(False); form.EditField.setEnabled(False); form.deleteButton.setEnabled(False)
+    form.choiceTable.setCurrentText("-")
     typeExhibit_dict = {"Есть": "Е", "Нет": "Н", "Планируется": "П", "-": "-"}
     fed_Distr = form.federalDistrict_cb.currentText()
     city = form.city_cb.currentText()
@@ -481,9 +550,133 @@ def filtration():
 
         
     set_filter_value(info_dict, typeExhibit_dict)    # Изменение значений в фильтрах - QComboBox
+    recNum()
     
 
+def new_tableName():
+    """Задание имени новой таблицы"""
+    global window_AddTable, form_AddTable
+    Form, Window = uic.loadUiType("source/CreateTableWindow.ui")
+    # Настройка интерфейса
+    window_AddTable = Window()
+    form_AddTable = Form()
+    form_AddTable.setupUi(window_AddTable)
+    global table_name
+    form_AddTable.Save_bn.clicked.connect(get_table_name)
+    form_AddTable.Cancel_bn.clicked.connect(lambda: window_AddTable.close())
+    window_AddTable.show()
 
+def get_table_name():
+    """Функция для получения введенного имени для создания новой таблицы"""
+    global table_name
+    table_name=form_AddTable.TableName_le.text()
+    window_AddTable.close()
+    if table_name != "":
+        create_table(table_name=table_name)
+        table_name = ""
+
+def create_table(table_name):
+    """Создание таблицы на основе фильтрации"""
+    # Запись всех данных из отфильтрованных элементов
+    data = []
+    i=0
+    while True:
+        list_values = [form.tableView.model().index(i, j).data() for j in range(11)]
+        if list_values == [None, None, None, None, None, None, None, None, None, None, None]: break
+        list_values = list(map(str, list_values))
+        data.append(list_values)
+        i+=1
+    # Запись данных в текстовый файл
+    if not os.path.exists("data"):
+        os.mkdir("data")
+    file = open("data/" + table_name + ".dat", 'w', encoding='utf-8')
+    for dat in data:
+        file.write(str(dat) + '\n')
+    file.close()
+    set_tableChoiceItems()
+    form.choiceTable.setCurrentText(table_name)
+
+def delete_custom_table():
+    """Удаление кастомной таблицы"""
+    if os.path.exists("data/" + form.choiceTable.currentText() + ".dat"):
+        os.remove("data/" + form.choiceTable.currentText() + ".dat")
+        set_tableChoiceItems()
+
+
+def edit_customTable():
+    """Добавить или удалить строку кастомной таблицы.
+    row = add, row = remove"""
+    choice = form.editEntery_bn.text()
+    if choice == "Добавить запись в таблицу":
+        addRow_choiceTable()
+    if choice == "Удалить запись из таблицы":
+        selected = form.tableView.currentIndex().row()  # текущая отмеченная строка
+        if selected == -1:
+            msg = QMessageBox()
+            msg.setWindowTitle("Внимание!")
+            msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
+            msg.setText("Для удаления выберете строку!")
+            msg.setIcon(QMessageBox.Icon.Warning)
+            msg.exec()
+            return
+        list_values = [form.tableView.model().index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
+        removeRow_customTable(list_values)
+
+def addRow_choiceTable():
+    """Добавление записи в кастомную таблицу. Функция выбора таблицы"""
+    selected = form.tableView.currentIndex().row()  # текущая отмеченная строка
+    if selected == -1:
+        msg = QMessageBox()
+        msg.setWindowTitle("Внимание!")
+        msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
+        msg.setText("Для добавления выберете строку!")
+        msg.setIcon(QMessageBox.Icon.Warning)
+        msg.exec()
+        return
+    list_values = [form.tableView.model().index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
+    global window_ChoiceTable, form_ChoiceTable
+    Form, Window = uic.loadUiType("source/addToTableWindow.ui")
+    # Настройка интерфейса
+    window_ChoiceTable = Window()
+    form_ChoiceTable = Form()
+    form_ChoiceTable.setupUi(window_ChoiceTable)
+
+    table_list = get_custom_table()
+    form_ChoiceTable.tableName.addItems(table_list)
+
+
+    form_ChoiceTable.Ok_bn.clicked.connect(lambda: addRow_to_customTable(tableName=form_ChoiceTable.tableName.currentText(), data=list_values))
+    window_ChoiceTable.show()
+
+
+def addRow_to_customTable(tableName, data):
+    """Функция добавления записи в кастомную таблицу"""
+    window_ChoiceTable.close()
+    if os.path.exists("data"):
+        file = open("data/" + tableName + ".dat", 'a', encoding='utf-8')
+        file.write(str(data) + '\n')
+        file.close()
+
+def removeRow_customTable(rowForRemove):
+    """Удаление строки кастомной таблицы.
+    rowForRemove - список со значениями в строке для удаления"""
+    tableName = form.choiceTable.currentText()
+    if os.path.exists("data"):
+        file = open("data/" + tableName + ".dat", 'r', encoding='utf-8')
+        data = []
+        for line in file:
+            data.append(eval(line))
+        file.close()
+        try:
+            data.remove(rowForRemove)
+        except:
+            pass
+        file = open("data/" + tableName + ".dat", 'w', encoding='utf-8')
+        for dat in data:
+            file.write(str(dat) + '\n')
+        file.close()
+        output_table(tableName)
+    
 
 #output_table()
 # Взаимодействие с интерфесом
@@ -496,6 +689,10 @@ form.deleteButton.clicked.connect(delete_row)
 form.apply_filtering_bn.clicked.connect(filtration)
 form.reset_table_filtering_bn.clicked.connect(set_filter_value)
 form.reset_filtering_bn.clicked.connect(set_filter_value)
+
+form.CreateNewTable_bn.clicked.connect(new_tableName)
+form.deleteTable_bn.clicked.connect(delete_custom_table)
+form.editEntery_bn.clicked.connect(edit_customTable)
 
 
 # Запуск приложения
