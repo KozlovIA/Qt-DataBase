@@ -249,7 +249,7 @@
        <item row="1" column="1">
         <widget class="QPushButton" name="deleteTable_bn">
          <property name="text">
-          <string>Удалить группу НИР</string>
+          <string>Удалить локальную таблицу</string>
          </property>
         </widget>
        </item>
@@ -332,18 +332,6 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
-    <property name="title">
-     <string>Данные</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menu_eq">
-    <property name="title">
-     <string>gfgh</string>
-    </property>
-   </widget>
-   <addaction name="menu"/>
-   <addaction name="menu_eq"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

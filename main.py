@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from PyQt6 import uic, QtGui
+from PyQt6 import uic, QtGui, QtCore
 from PyQt6.QtWidgets import QApplication, QMessageBox
 from source.functional import *
 from time import sleep
@@ -25,7 +25,7 @@ def recNum():
     """Функция для подсчета числа строк в таблицах"""
     recCount = 0
     while True:
-        list_values = [form.tableView.model().index(recCount, j).data() for j in range(11)]
+        list_values = [modelFetchMore.index(recCount, j).data() for j in range(11)]
         if list_values == [None, None, None, None, None, None, None, None, None, None, None]: break
         recCount+=1
     form.recNum_lb.setText("Всего строк: " + str(recCount))
@@ -47,7 +47,8 @@ def get_custom_table():
         for root, dirs, files in os.walk("data"):  
             for filename in files:
                 all_files.append(filename[0:len(filename)-4])
-    return all_files
+        return all_files
+    return []
 
 set_tableChoiceItems()
     
@@ -82,6 +83,11 @@ def output_table(table_name="Таблица НИР"):
     db_model.select()        # Выбрали все строки из данной таблицы
     form.tableView.setModel(db_model)
     form.tableView.setSortingEnabled(True)
+    
+    # model = form.tableView.model(); model.fetchMore() используется для считывания всех данных таблицы
+    global modelFetchMore
+    modelFetchMore = form.tableView.model()
+    modelFetchMore.fetchMore()
     recNum()
 
 
@@ -111,7 +117,13 @@ def output_custom_table(table_name):
             table_model.appendRow(row)
         # set table model to table object
         form.tableView.setModel(table_model)
+
+        # model = form.tableView.model(); model.fetchMore() используется для считывания всех данных таблицы
+        global modelFetchMore
+        modelFetchMore = form.tableView.model()
+        modelFetchMore.fetchMore(QtCore.QModelIndex())
         recNum()
+
 
     
 end_of_work = False     # для завершения потока изменения размера окна
@@ -196,7 +208,7 @@ def saveSQL_data(Edit, orig_univer_code, orig_regNum):
     # Установка курсора на строку
     i = 0
     while True:
-        list_values = [form.tableView.model().index(i, j).data() for j in range(11)]
+        list_values = [modelFetchMore.index(i, j).data() for j in range(11)]
         if list_values == [None, None, None, None, None, None, None, None, None, None, None]: break
         list_values = list(map(str, list_values))
         if (str(univer_code_name[0]) and str(reg_num)) in list_values:
@@ -244,7 +256,7 @@ def add_field_window(Edit=False):
             msg.setIcon(QMessageBox.Icon.Warning)
             msg.exec()
             return
-        list_values = [form.tableView.model().index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
+        list_values = [modelFetchMore.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
         # для дальнейшего передачи как параметра, сохраняем код ВУЗа и регистрационный номер, чтобы использовать их как метки для редактирования
         orig_univerCode = list_values[0]; orig_regNum = str(list_values[3])
         form_AddField.university_code_cb.setCurrentText(str(list_values[0]) + "\t" + list_values[1])    # Устанавливает значение по текущему тексту, только если такой элемент уже есть в списке QComboBox
@@ -515,9 +527,9 @@ def filtration():
     typeExhibit_dict_ = {"Е": "Есть", "Н": "Нет", "П": "Планируется"}
     typeExhibit_dict = {}
     while True:
-        code_univer = form.tableView.model().index(k, 0).data()     # Получение кодов ВУЗов из таблицы
-        #grnti = form.tableView.model().index(k, 4).data()     # Получение текущих кодов ГРНТИ из таблицы
-        availability = form.tableView.model().index(k, 6).data()     # Получение текущих кодов ГРНТИ из таблицы
+        code_univer = modelFetchMore.index(k, 0).data()     # Получение кодов ВУЗов из таблицы
+        #grnti = modelFetchMore.index(k, 4).data()     # Получение текущих кодов ГРНТИ из таблицы
+        availability = modelFetchMore.index(k, 6).data()     # Получение текущих кодов ГРНТИ из таблицы
         if typeExhibit_dict != typeExhibit_dict_:
             try:
                 typeExhibit_dict.update({availability: typeExhibit_dict_[availability]})
@@ -581,7 +593,7 @@ def create_table(table_name):
     data = []
     i=0
     while True:
-        list_values = [form.tableView.model().index(i, j).data() for j in range(11)]
+        list_values = [modelFetchMore.index(i, j).data() for j in range(11)]
         if list_values == [None, None, None, None, None, None, None, None, None, None, None]: break
         list_values = list(map(str, list_values))
         data.append(list_values)
@@ -619,7 +631,7 @@ def edit_customTable():
             msg.setIcon(QMessageBox.Icon.Warning)
             msg.exec()
             return
-        list_values = [form.tableView.model().index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
+        list_values = [modelFetchMore.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
         removeRow_customTable(list_values)
 
 def addRow_choiceTable():
@@ -633,7 +645,7 @@ def addRow_choiceTable():
         msg.setIcon(QMessageBox.Icon.Warning)
         msg.exec()
         return
-    list_values = [form.tableView.model().index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
+    list_values = [modelFetchMore.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
     global window_ChoiceTable, form_ChoiceTable
     Form, Window = uic.loadUiType("source/addToTableWindow.ui")
     # Настройка интерфейса
