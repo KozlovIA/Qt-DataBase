@@ -6,6 +6,7 @@ from time import sleep
 from PyQt6.QtCore import QThread, QRect
 import pandas as pd
 import os
+import sys
 
 gridLayoutStartResize()     # изменнение размеров основного слоя gridLayout в MainForm для корректного изменения размеров виджетов
 GRNTI_dict = get_GRNTI()    # ГРНТИ коды в формате {"[Код_ВУЗа, Рег_номер]": "ГРНТИ"}
@@ -24,36 +25,59 @@ form.setupUi(window)
 def recNum():
     """Функция для подсчета числа строк в таблицах"""
     recCount = 0
+    model_temp = form.tableView.model()
+    model_temp.fetchMore(QtCore.QModelIndex())
     while True:
-        list_values = [modelFetchMore.index(recCount, j).data() for j in range(11)]
+        list_values = [model_temp.index(recCount, j).data() for j in range(11)]
         if list_values == [None, None, None, None, None, None, None, None, None, None, None]: break
         recCount+=1
     form.recNum_lb.setText("Всего строк: " + str(recCount))
+    if recCount == 0:
+        msgError("Записи не найдены!")
+        set_filter_value()  # Сброс значений фильтра
 
 
-def set_tableChoiceItems():
+def set_tableChoiceItems(table="source"):
     """Установка имен таблиц в QComboBox выбора таблиц"""
-    table_list = ['-', 'Таблица НИР', 'Таблица ВУЗов', 'Таблица ГРНТИ']
-    table_list += get_custom_table()
-    form.choiceTable.clear()
-    form.choiceTable.addItems(table_list)
-    form.choiceTable.setCurrentText('Таблица НИР')
+    if table == "source":
+        table_list = ['Таблица НИР', 'Таблица ВУЗов', 'Таблица ГРНТИ']
+        ico_file = "source/data-integration-icon.png"
+
+    if table == "custom":
+        table_list = get_custom_table()
+        ico_file = "source/create-table-icon.png"
+        if len(table_list) == 0:
+            msgError("Группы НИР не найдены!")
+            return
+
+    ico = QtGui.QIcon()
+    ico.addFile(ico_file)
+
+    global window_OpenTable, form_OpenTable
+    Form, Window = uic.loadUiType("source/ChoiceTableWindow.ui")
+    # Настройка интерфейса
+    window_OpenTable = Window()
+    form_OpenTable = Form()
+    form_OpenTable.setupUi(window_OpenTable)
+
+    for name in table_list:
+        form_OpenTable.choiceTable.addItem(ico, name)
+    form_OpenTable.choiceTable.setCurrentText(table_list[0])
+    form_OpenTable.OK_bn.clicked.connect(lambda: output_table(table_name=form_OpenTable.choiceTable.currentText()))
+
+    window_OpenTable.show()
 
 
-def get_custom_table():
-    """Считывание таблиц созданных ранее"""
-    if os.path.exists("data"):
-        all_files = []
-        for root, dirs, files in os.walk("data"):  
-            for filename in files:
-                all_files.append(filename[0:len(filename)-4])
-        return all_files
-    return []
-
-set_tableChoiceItems()
     
-def output_table(table_name="Таблица НИР"):
-    """Функция отображения таблицы"""
+def output_table(table_name="Таблица НИР", choice_close="False"):
+    """Функция отображения таблицы.
+    table_name - имя таблицы, choice_close - логический параметр отвечающий за закрытие окна выбора таблицы"""
+    if choice_close:
+        try:
+            global window_OpenTable
+            window_OpenTable.close()
+        except:
+            pass
     table_dict = {'Таблица НИР': 'Vyst_mo', 'Таблица ВУЗов': 'VUZ', 'Таблица ГРНТИ': 'grntirub'}
     #global db
     #db = db_connect()
@@ -217,7 +241,8 @@ def saveSQL_data(Edit, orig_univer_code, orig_regNum):
         i+=1
 
 def msgError(msgErr):
-    """Функция вывода ошибок при с текстом ошибки"""
+    """Функция вывода ошибок.
+    msgErr - текст ошибки"""
     msg = QMessageBox()
     msg.setWindowTitle("Внимание!")
     msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
@@ -329,6 +354,7 @@ def msgbtn(i):
 def set_filter_value(info_dict=False, typeExhibit_dict_revers={"Е": "Есть", "Н": "Нет", "П": "Планируется"}):
     """Добавляет первоначальные значения фильтров в comboboxes
     info_dict - если окно уже есть, то запрос будет создан в зависимости от текущих значений фильтра"""
+    global form_Filtering
     if info_dict==False: 
         info_dict = get_info_for_filtration()   # словарь по {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
         output_table()
@@ -336,69 +362,70 @@ def set_filter_value(info_dict=False, typeExhibit_dict_revers={"Е": "Есть",
     else:
         Edit = True
 
-    university_cb_value = form.university_cb.currentText()
-    federalDistrict_cb_value = form.federalDistrict_cb.currentText()
-    city_cb_value = form.city_cb.currentText()
-    region_cb_value = form.region_cb.currentText()
-    preference_exibit_cb_value = form.preference_exibit_cb.currentText()
-    GRNTI_1_cb_value = form.GRNTI_1_cb.currentText()
-    GRNTI_2_cb_value = form.GRNTI_2_cb.currentText()
+    # Сохранение текущих значений
+    university_cb_value = form_Filtering.university_cb.currentText()
+    federalDistrict_cb_value = form_Filtering.federalDistrict_cb.currentText()
+    city_cb_value = form_Filtering.city_cb.currentText()
+    region_cb_value = form_Filtering.region_cb.currentText()
+    preference_exibit_cb_value = form_Filtering.preference_exibit_cb.currentText()
+    GRNTI_1_cb_value = form_Filtering.GRNTI_1_cb.currentText()
+    GRNTI_2_cb_value = form_Filtering.GRNTI_2_cb.currentText()
 
-    form.federalDistrict_cb.clear()
-    form.city_cb.clear()
-    form.region_cb.clear()
-    form.GRNTI_1_cb.clear()
-    form.GRNTI_2_cb.clear()
-    form.university_cb.clear()
-    form.preference_exibit_cb.clear()
-    form.preference_exibit_cb.addItem("-")
-    form.federalDistrict_cb.addItem('-')
-    form.city_cb.addItem('-')
-    form.region_cb.addItem('-')
-    form.GRNTI_1_cb.addItem('-')
-    form.GRNTI_2_cb.addItem('-')
-    form.university_cb.addItem('-')
+    form_Filtering.federalDistrict_cb.clear()
+    form_Filtering.city_cb.clear()
+    form_Filtering.region_cb.clear()
+    form_Filtering.GRNTI_1_cb.clear()
+    form_Filtering.GRNTI_2_cb.clear()
+    form_Filtering.university_cb.clear()
+    form_Filtering.preference_exibit_cb.clear()
+    form_Filtering.preference_exibit_cb.addItem("-")
+    form_Filtering.federalDistrict_cb.addItem('-')
+    form_Filtering.city_cb.addItem('-')
+    form_Filtering.region_cb.addItem('-')
+    form_Filtering.GRNTI_1_cb.addItem('-')
+    form_Filtering.GRNTI_2_cb.addItem('-')
+    form_Filtering.university_cb.addItem('-')
     # Добавление в списки, а затем в QComboBoxes значений
     fed_district = []; city = []; region = []
     for code_uni in list(info_dict.keys()):
-        form.university_cb.addItem(info_dict[code_uni][0])
+        form_Filtering.university_cb.addItem(info_dict[code_uni][0])
         fed_district.append(info_dict[code_uni][1])
         city.append(info_dict[code_uni][2])
         region.append(info_dict[code_uni][3])
-    form.federalDistrict_cb.addItems(set(fed_district))
-    form.city_cb.addItems(set(city))
-    form.region_cb.addItems(set(region))
-    form.preference_exibit_cb.addItems(list(typeExhibit_dict_revers.values()))
+    form_Filtering.federalDistrict_cb.addItems(set(fed_district))
+    form_Filtering.city_cb.addItems(set(city))
+    form_Filtering.region_cb.addItems(set(region))
+    form_Filtering.preference_exibit_cb.addItems(list(typeExhibit_dict_revers.values()))
 
     # ГРНТИ как обычно отдельно
     GRNTI_list = get_GRNTI_fromGRNTItable()
-    form.GRNTI_1_cb.addItems(GRNTI_list)
-    form.GRNTI_2_cb.addItems(GRNTI_list)
+    form_Filtering.GRNTI_1_cb.addItems(GRNTI_list)
+    form_Filtering.GRNTI_2_cb.addItems(GRNTI_list)
 
     # Установка значений фильтра на место
     if Edit:
-        form.university_cb.setCurrentText(university_cb_value)
-        form.federalDistrict_cb.setCurrentText(federalDistrict_cb_value)
-        form.city_cb.setCurrentText(city_cb_value)
-        form.region_cb.setCurrentText(region_cb_value)
-        form.preference_exibit_cb.setCurrentText(preference_exibit_cb_value)
-        form.GRNTI_1_cb.setCurrentText(GRNTI_1_cb_value)
-        form.GRNTI_2_cb.setCurrentText(GRNTI_2_cb_value)
-set_filter_value()
+        form_Filtering.university_cb.setCurrentText(university_cb_value)
+        form_Filtering.federalDistrict_cb.setCurrentText(federalDistrict_cb_value)
+        form_Filtering.city_cb.setCurrentText(city_cb_value)
+        form_Filtering.region_cb.setCurrentText(region_cb_value)
+        form_Filtering.preference_exibit_cb.setCurrentText(preference_exibit_cb_value)
+        form_Filtering.GRNTI_1_cb.setCurrentText(GRNTI_1_cb_value)
+        form_Filtering.GRNTI_2_cb.setCurrentText(GRNTI_2_cb_value)
+
 
 
 def filtration():
     """Фильтрация таблицы НИР"""
+    global form_Filtering
     form.AddField.setEnabled(False); form.EditField.setEnabled(False); form.deleteButton.setEnabled(False)
-    form.choiceTable.setCurrentText("-")
     typeExhibit_dict = {"Есть": "Е", "Нет": "Н", "Планируется": "П", "-": "-"}
-    fed_Distr = form.federalDistrict_cb.currentText()
-    city = form.city_cb.currentText()
-    region = form.region_cb.currentText()
-    preference_exibit = typeExhibit_dict[form.preference_exibit_cb.currentText()]
-    GRNTI_1 = form.GRNTI_1_cb.currentText()[0:2]
-    GRNTI_2 = form.GRNTI_2_cb.currentText()[0:2]
-    univer = form.university_cb.currentText()
+    fed_Distr = form_Filtering.federalDistrict_cb.currentText()
+    city = form_Filtering.city_cb.currentText()
+    region = form_Filtering.region_cb.currentText()
+    preference_exibit = typeExhibit_dict[form_Filtering.preference_exibit_cb.currentText()]
+    GRNTI_1 = form_Filtering.GRNTI_1_cb.currentText()[0:2]      # Коды из фильтра
+    GRNTI_2 = form_Filtering.GRNTI_2_cb.currentText()[0:2]
+    univer = form_Filtering.university_cb.currentText()
 
 
     info_dict = {}
@@ -450,15 +477,33 @@ def filtration():
         if len(_grnti) > 1:
             _grnti_0 = _grnti[0].split('.')
             _grnti_1 = _grnti[1].split('.')
-            if GRNTI_1 != '-' and GRNTI_2 != '-' and ((GRNTI_1 == _grnti_0[0] and GRNTI_2 == _grnti_1[0]) or (GRNTI_1 == _grnti_1[0] and GRNTI_2 == _grnti_0[0])):
-                code_and_reg_num.append(eval(key))
-                continue
+            if len(_grnti_0) == 3:  # Удаление 3-го кода ГРНТИ
+                _grnti_0.pop(2)
+            if len(_grnti_1) == 3:
+                _grnti_1.pop(2)
+            if GRNTI_1 != '-' and GRNTI_2 != '-':
+                if ((GRNTI_1 in _grnti_0 and GRNTI_2 in _grnti_1) or (GRNTI_1 in _grnti_1 and GRNTI_2 in _grnti_0)):
+                #or (GRNTI_1 in _grnti_0 and GRNTI_2 in _grnti_0) or (GRNTI_1 in _grnti_1 and GRNTI_2 in _grnti_1)):
+                    code_and_reg_num.append(eval(key))
+                    continue
+            else:
+                if GRNTI_1 != '-' and (GRNTI_1 in _grnti_0 or GRNTI_1 in _grnti_1):
+                    code_and_reg_num.append(eval(key))
+                elif GRNTI_2 != '-' and (GRNTI_2 in _grnti_0 or GRNTI_2 in _grnti_1):
+                    code_and_reg_num.append(eval(key))
         else:
             _grnti_0 = _grnti[0].split('.')
-            if GRNTI_1 != '-' and GRNTI_1 == _grnti_0[0]:
-                code_and_reg_num.append(eval(key))
-            elif GRNTI_2 != '-' and GRNTI_2 == _grnti_0[0]:
-                code_and_reg_num.append(eval(key))
+            if len(_grnti_0) == 3:  # Удаление 3-го кода ГРНТИ
+                _grnti_0.pop(2)
+            if GRNTI_1 != '-' and GRNTI_2 != '-':
+                if (GRNTI_1 in _grnti_0 and GRNTI_2 in _grnti_0):
+                    code_and_reg_num.append(eval(key))
+                    continue
+            else:
+                if GRNTI_1 != '-' and (GRNTI_1 in _grnti_0):
+                    code_and_reg_num.append(eval(key))
+                elif GRNTI_2 != '-' and (GRNTI_2 in _grnti_0):
+                    code_and_reg_num.append(eval(key))
 
     if info_dict == {} and code_and_reg_num == []:
         set_filter_value(info_dict=False)
@@ -526,10 +571,11 @@ def filtration():
     code_values = []; grnti_values = []
     typeExhibit_dict_ = {"Е": "Есть", "Н": "Нет", "П": "Планируется"}
     typeExhibit_dict = {}
+    modelFetchMore_withFiltering = form.tableView.model()
+    modelFetchMore_withFiltering.fetchMore(QtCore.QModelIndex())
     while True:
-        code_univer = modelFetchMore.index(k, 0).data()     # Получение кодов ВУЗов из таблицы
-        #grnti = modelFetchMore.index(k, 4).data()     # Получение текущих кодов ГРНТИ из таблицы
-        availability = modelFetchMore.index(k, 6).data()     # Получение текущих кодов ГРНТИ из таблицы
+        code_univer = modelFetchMore_withFiltering.index(k, 0).data()     # Получение кодов ВУЗов из таблицы
+        availability = modelFetchMore_withFiltering.index(k, 6).data()     # Получение текущих кодов ГРНТИ из таблицы
         if typeExhibit_dict != typeExhibit_dict_:
             try:
                 typeExhibit_dict.update({availability: typeExhibit_dict_[availability]})
@@ -560,10 +606,24 @@ def filtration():
     while query.next():
         info_dict.update({query.value("Код_ВУЗа"): [query.value("Аббревиатура"), query.value("Федеральный_округ"), query.value("Город"), query.value("Область")]})
 
-        
-    set_filter_value(info_dict, typeExhibit_dict)    # Изменение значений в фильтрах - QComboBox
+    set_filter_value(info_dict, typeExhibit_dict)
     recNum()
     
+
+def filtering_window():
+    """Открытие окна фильтрации"""
+    global window_Filtering, form_Filtering
+    Form, Window = uic.loadUiType("source/FilteringWindow.ui")
+    # Настройка интерфейса
+    window_Filtering = Window()
+    form_Filtering = Form()
+    form_Filtering.setupUi(window_Filtering)
+    form_Filtering.apply_filtering_bn.clicked.connect(filtration)
+    form_Filtering.reset_filtering_bn.clicked.connect(set_filter_value)
+    set_filter_value()  # установка значений фильтров
+
+    window_Filtering.show()
+
 
 def new_tableName():
     """Задание имени новой таблицы"""
@@ -690,17 +750,21 @@ def removeRow_customTable(rowForRemove):
         output_table(tableName)
     
 
+
 #output_table()
 # Взаимодействие с интерфесом
 # Передавать параметры в функции через кнопки можно с помощью лямбда функций form.pushButton.clicked.connect(lambda x: test("hello fucking Qt!"))
-form.choiceTable.currentTextChanged.connect(lambda: output_table(table_name=form.choiceTable.currentText()))
+
+form.action_sourceTable.triggered.connect(lambda: set_tableChoiceItems(table="source"))
+form.action_researchTable.triggered.connect(lambda: set_tableChoiceItems(table="custom"))
+
+#form.choiceTable.currentTextChanged.connect(lambda: output_table(table_name=form.choiceTable.currentText()))
 form.AddField.clicked.connect(add_field_window)
 form.EditField.clicked.connect(lambda: add_field_window(Edit=True))
 form.deleteButton.clicked.connect(delete_row)
 
-form.apply_filtering_bn.clicked.connect(filtration)
-form.reset_table_filtering_bn.clicked.connect(set_filter_value)
-form.reset_filtering_bn.clicked.connect(set_filter_value)
+form.filtering_bn.clicked.connect(filtering_window)
+
 
 form.CreateNewTable_bn.clicked.connect(new_tableName)
 form.deleteTable_bn.clicked.connect(delete_custom_table)

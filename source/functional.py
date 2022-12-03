@@ -1,6 +1,7 @@
 # Файл с пользовательскими функциями для очищения от таковых файла main
 # Пока не знаю, как это будет коннектиться с интерфейсом и будет ли файл востребован
 from PyQt6.QtSql import *
+import os
 
 
 
@@ -152,3 +153,15 @@ def get_GRNTI_fromGRNTItable():
     while query.next():
         GRNTI_list.append(query.value("Код_рубрики") + " " + query.value("Рубрика"))
     return GRNTI_list
+
+
+
+def get_custom_table():
+    """Считывание групп НИР созданных ранее"""
+    if os.path.exists("data"):
+        all_files = []
+        for root, dirs, files in os.walk("data"):  
+            for filename in files:
+                all_files.append(filename[0:len(filename)-4])
+        return all_files
+    return []

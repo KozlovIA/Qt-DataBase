@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>317</width>
+    <height>176</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>317</width>
+    <height>176</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>317</width>
+    <height>176</height>
+   </size>
+  </property>
+  <property name="cursor">
+   <cursorShape>ArrowCursor</cursorShape>
+  </property>
+  <property name="windowTitle">
+   <string>Открыть таблицу</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>choice-icon.png</normaloff>choice-icon.png</iconset>
+  </property>
+  <widget class="QPushButton" name="OK_bn">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>110</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>ОК</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="choiceTable">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>60</y>
+     <width>201</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>16</width>
+     <height>16</height>
+    </size>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

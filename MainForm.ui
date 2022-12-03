@@ -45,7 +45,7 @@
       <height>711</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0">
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0" columnstretch="0,0,0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetNoConstraint</enum>
      </property>
@@ -67,167 +67,30 @@
      <property name="verticalSpacing">
       <number>7</number>
      </property>
-     <item row="0" column="1" colspan="2">
-      <widget class="QLabel" name="dbInfo">
+     <item row="1" column="0" colspan="4">
+      <widget class="QTableView" name="tableView">
        <property name="enabled">
         <bool>true</bool>
        </property>
-       <property name="text">
-        <string/>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
+       <property name="gridStyle">
+        <enum>Qt::SolidLine</enum>
        </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="region_lb">
-       <property name="text">
-        <string>Область</string>
+       <property name="sortingEnabled">
+        <bool>true</bool>
        </property>
-      </widget>
-     </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="Line" name="line_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QComboBox" name="preference_exibit_cb">
-       <item>
-        <property name="text">
-         <string>-</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="federalDistrict_lb">
+      <widget class="QLabel" name="recNum_lb">
        <property name="text">
-        <string>Федеральный округ</string>
+        <string>Всего строк: </string>
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
-      <widget class="QPushButton" name="apply_filtering_bn">
-       <property name="text">
-        <string>Применить</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="GRNTI_lb">
-       <property name="text">
-        <string>ГРНТИ</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QPushButton" name="reset_table_filtering_bn">
-         <property name="text">
-          <string>Сброс таблицы</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="reset_filtering_bn">
-         <property name="text">
-          <string>Сброс фильтров</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="city_cb">
-       <item>
-        <property name="text">
-         <string>-</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="region_cb">
-       <item>
-        <property name="text">
-         <string>-</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QComboBox" name="university_cb">
-       <item>
-        <property name="text">
-         <string>-</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QComboBox" name="GRNTI_1_cb">
-         <item>
-          <property name="text">
-           <string>-</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="GRNTI_2_cb">
-         <item>
-          <property name="text">
-           <string>-</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="0" column="0">
-      <widget class="QComboBox" name="choiceTable"/>
-     </item>
-     <item row="2" column="1">
-      <widget class="QComboBox" name="federalDistrict_cb">
-       <item>
-        <property name="text">
-         <string>-</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="university_lb">
-       <property name="text">
-        <string>ВУЗ</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0" colspan="2">
-      <widget class="Line" name="line_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="preference_exibit_lb">
-       <property name="text">
-        <string>Наличие экспоната</string>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="0" colspan="4">
+     <item row="4" column="0" colspan="4">
       <layout class="QGridLayout" name="gridLayout_2">
        <property name="spacing">
         <number>10</number>
@@ -290,33 +153,23 @@
        </item>
       </layout>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="city_lb">
-       <property name="text">
-        <string>Город</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="0" colspan="4">
-      <widget class="QTableView" name="tableView">
+     <item row="0" column="1" colspan="2">
+      <widget class="QLabel" name="dbInfo">
        <property name="enabled">
         <bool>true</bool>
        </property>
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
+       <property name="text">
+        <string/>
        </property>
-       <property name="gridStyle">
-        <enum>Qt::SolidLine</enum>
-       </property>
-       <property name="sortingEnabled">
-        <bool>true</bool>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
-     <item row="11" column="0">
-      <widget class="QLabel" name="recNum_lb">
+     <item row="2" column="3">
+      <widget class="QPushButton" name="filtering_bn">
        <property name="text">
-        <string>Всего строк: </string>
+        <string>Фильтрация</string>
        </property>
       </widget>
      </item>
@@ -332,20 +185,64 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="ChoiceTable_menu">
     <property name="title">
      <string>Данные</string>
     </property>
+    <addaction name="action_sourceTable"/>
+    <addaction name="action_researchTable"/>
    </widget>
    <widget class="QMenu" name="menu_eq">
     <property name="title">
-     <string>gfgh</string>
+     <string>Справка</string>
     </property>
+    <addaction name="action1"/>
    </widget>
-   <addaction name="menu"/>
+   <addaction name="ChoiceTable_menu"/>
    <addaction name="menu_eq"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionnf_kbwf">
+   <property name="text">
+    <string>nf,kbwf</string>
+   </property>
+  </action>
+  <action name="action1">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>1</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>Таблица</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>ТАблица</string>
+   </property>
+  </action>
+  <action name="action_sourceTable">
+   <property name="icon">
+    <iconset>
+     <normaloff>source/data-integration-icon.png</normaloff>source/data-integration-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Исходные данные</string>
+   </property>
+  </action>
+  <action name="action_researchTable">
+   <property name="icon">
+    <iconset>
+     <normaloff>source/create-table-icon.png</normaloff>source/create-table-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Группы НИР</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
