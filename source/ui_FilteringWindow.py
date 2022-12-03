@@ -32,7 +32,7 @@ class Ui_Dialog(object):
         Dialog.setMinimumSize(QSize(481, 243))
         Dialog.setMaximumSize(QSize(600, 243))
         icon = QIcon()
-        icon.addFile(u"filtering-data-icon.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u"image/filtering-data-icon.png", QSize(), QIcon.Normal, QIcon.Off)
         Dialog.setWindowIcon(icon)
         self.gridLayoutWidget = QWidget(Dialog)
         self.gridLayoutWidget.setObjectName(u"gridLayoutWidget")

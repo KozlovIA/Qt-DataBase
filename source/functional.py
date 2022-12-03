@@ -1,7 +1,13 @@
+# -*- coding: utf-8 -*-
 # Файл с пользовательскими функциями для очищения от таковых файла main
-# Пока не знаю, как это будет коннектиться с интерфейсом и будет ли файл востребован
 from PyQt6.QtSql import *
 import os
+from docxtpl import DocxTemplate
+import docx
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Pt
+import comtypes.client
+from docxtpl import DocxTemplate
 
 
 
@@ -165,3 +171,54 @@ def get_custom_table():
                 all_files.append(filename[0:len(filename)-4])
         return all_files
     return []
+
+
+def doc_save(path, headlines, list_values, extension="Документ Microsoft Word (*.docx)"):
+    """Сохраняет данные по карточке НИР в docx или pdf файл
+    path - путь
+    headlines - список заголовков
+    list_values - список данных для заголовков
+    extension = Документ Microsoft Word (*.docx) или PDF (*.pdf)
+    Размерности headlines и list_values должны совпадать"""
+    if len(list_values) != len(headlines): return -1
+
+    doc = docx.Document()
+
+    paragraph1 = doc.add_paragraph()
+    paragraph1.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = paragraph1.add_run()
+    run.font.size = Pt(18)
+    run = paragraph1.add_run(list_values[2] + "\n")
+    run.font.bold = True
+    run.font.size = Pt(18)
+
+    paragraph2 = doc.add_paragraph()
+    for i in range(len(list_values)):
+        if i == 2: continue
+        run = paragraph2.add_run(headlines[i] + ": ")
+        run.font.bold = True
+        run.font.size = Pt(16)
+        run = paragraph2.add_run(str(list_values[i]) + "\n")
+        run.font.size = Pt(16)
+
+    doc.save(path) 
+
+    if extension == "PDF (*.pdf)":
+        doc = DocxTemplate(path)
+
+        wdFormatPDF = 17
+
+        in_file = os.path.abspath (path)
+        out_file = os.path.abspath(path[0:len(path)-5] + ".pdf")
+
+        word = comtypes.client.CreateObject('Word.Application')
+        doc = word.Documents.Open(in_file)
+        doc.SaveAs(out_file, FileFormat=wdFormatPDF)
+        doc.Close()
+        word.Quit()
+
+        os.remove(path)
+
+
+if __name__ == "__main__":
+    pass

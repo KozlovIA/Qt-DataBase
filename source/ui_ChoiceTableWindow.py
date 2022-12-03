@@ -27,7 +27,7 @@ class Ui_Dialog(object):
         Dialog.setMaximumSize(QSize(317, 176))
         Dialog.setCursor(QCursor(Qt.ArrowCursor))
         icon = QIcon()
-        icon.addFile(u"choice-icon.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u"image/choice-icon.png", QSize(), QIcon.Normal, QIcon.Off)
         Dialog.setWindowIcon(icon)
         self.OK_bn = QPushButton(Dialog)
         self.OK_bn.setObjectName(u"OK_bn")

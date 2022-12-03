@@ -26,7 +26,7 @@ class Ui_Dialog(object):
         Dialog.setMinimumSize(QSize(400, 230))
         Dialog.setMaximumSize(QSize(400, 230))
         icon = QIcon()
-        icon.addFile(u"pencil-icon.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u"image/pencil-icon.png", QSize(), QIcon.Normal, QIcon.Off)
         Dialog.setWindowIcon(icon)
         self.Save_bn = QPushButton(Dialog)
         self.Save_bn.setObjectName(u"Save_bn")

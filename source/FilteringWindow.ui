@@ -33,7 +33,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>filtering-data-icon.png</normaloff>filtering-data-icon.png</iconset>
+    <normaloff>image/filtering-data-icon.png</normaloff>image/filtering-data-icon.png</iconset>
   </property>
   <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">

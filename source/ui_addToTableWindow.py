@@ -26,7 +26,7 @@ class Ui_Dialog(object):
         Dialog.setMinimumSize(QSize(400, 120))
         Dialog.setMaximumSize(QSize(400, 120))
         icon = QIcon()
-        icon.addFile(u"pencil-icon.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u"image/pencil-icon.png", QSize(), QIcon.Normal, QIcon.Off)
         Dialog.setWindowIcon(icon)
         self.label = QLabel(Dialog)
         self.label.setObjectName(u"label")

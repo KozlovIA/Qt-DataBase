@@ -24,15 +24,15 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(640, 510)
+        Dialog.resize(640, 583)
         Dialog.setMinimumSize(QSize(640, 510))
-        Dialog.setMaximumSize(QSize(640, 510))
+        Dialog.setMaximumSize(QSize(640, 600))
         icon = QIcon()
-        icon.addFile(u"pencil-icon.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u"image/pencil-icon.png", QSize(), QIcon.Normal, QIcon.Off)
         Dialog.setWindowIcon(icon)
         self.horizontalLayoutWidget = QWidget(Dialog)
         self.horizontalLayoutWidget.setObjectName(u"horizontalLayoutWidget")
-        self.horizontalLayoutWidget.setGeometry(QRect(320, 440, 311, 61))
+        self.horizontalLayoutWidget.setGeometry(QRect(320, 520, 311, 61))
         self.horizontalLayout_2 = QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -48,7 +48,7 @@ class Ui_Dialog(object):
 
         self.gridLayoutWidget = QWidget(Dialog)
         self.gridLayoutWidget.setObjectName(u"gridLayoutWidget")
-        self.gridLayoutWidget.setGeometry(QRect(0, 0, 631, 451))
+        self.gridLayoutWidget.setGeometry(QRect(0, 0, 631, 511))
         self.gridLayout = QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setHorizontalSpacing(6)

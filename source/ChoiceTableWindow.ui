@@ -30,7 +30,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>choice-icon.png</normaloff>choice-icon.png</iconset>
+    <normaloff>image/choice-icon.png</normaloff>image/choice-icon.png</iconset>
   </property>
   <widget class="QPushButton" name="OK_bn">
    <property name="geometry">

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from PyQt6 import uic, QtGui, QtCore
-from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMessageBox, QFileDialog
 from source.functional import *
 from time import sleep
 from PyQt6.QtCore import QThread, QRect
 import pandas as pd
 import os
-import sys
 
 gridLayoutStartResize()     # изменнение размеров основного слоя gridLayout в MainForm для корректного изменения размеров виджетов
 GRNTI_dict = get_GRNTI()    # ГРНТИ коды в формате {"[Код_ВУЗа, Рег_номер]": "ГРНТИ"}
@@ -38,14 +37,14 @@ def recNum():
 
 
 def set_tableChoiceItems(table="source"):
-    """Установка имен таблиц в QComboBox выбора таблиц"""
+    """Установка имен таблиц в QComboBox выбора таблиц в окне ChoiceTableWindow.ui"""
     if table == "source":
         table_list = ['Таблица НИР', 'Таблица ВУЗов', 'Таблица ГРНТИ']
-        ico_file = "source/data-integration-icon.png"
+        ico_file = "source/image/data-integration-icon.png"
 
     if table == "custom":
         table_list = get_custom_table()
-        ico_file = "source/create-table-icon.png"
+        ico_file = "source/image/create-table-icon.png"
         if len(table_list) == 0:
             msgError("Группы НИР не найдены!")
             return
@@ -72,6 +71,8 @@ def set_tableChoiceItems(table="source"):
 def output_table(table_name="Таблица НИР", choice_close="False"):
     """Функция отображения таблицы.
     table_name - имя таблицы, choice_close - логический параметр отвечающий за закрытие окна выбора таблицы"""
+    global currentTable # текущая выбранная таблица
+    currentTable = table_name
     if choice_close:
         try:
             global window_OpenTable
@@ -82,8 +83,17 @@ def output_table(table_name="Таблица НИР", choice_close="False"):
     #global db
     #db = db_connect()
     if table_name == "Таблица НИР":
-        form.AddField.setEnabled(True); form.EditField.setEnabled(True); form.deleteButton.setEnabled(True)
-    else: form.AddField.setEnabled(False); form.EditField.setEnabled(False); form.deleteButton.setEnabled(False)
+        form.addGroup_action.setEnabled(True)
+        form.EditTable_menu.setEnabled(True)
+        form.addToGroup_action.setEnabled(True)
+        form.deleteFromGroup_action.setEnabled(True)
+        form.creatingResearchCard_action.setEnabled(True)
+    else:
+        form.EditTable_menu.setEnabled(False)
+        form.addGroup_action.setEnabled(False)
+        form.addToGroup_action.setEnabled(False)
+        form.deleteFromGroup_action.setEnabled(False)
+        form.creatingResearchCard_action.setEnabled(False)
     global db_model
     if not (table_name in list(table_dict.keys())):
         if table_name == '': return
@@ -93,15 +103,17 @@ def output_table(table_name="Таблица НИР", choice_close="False"):
             form.tableView.setModel(db_model)
             return
         output_custom_table(table_name=table_name)
-        form.deleteTable_bn.setEnabled(True)
-        form.editEntery_bn.setText("Удалить запись из таблицы")
+        form.addToGroup_action.setEnabled(True)
+        form.deleteFromGroup_action.setEnabled(True)
+        form.addGroup_action.setEnabled(True)
+        form.deleteGroup_action.setEnabled(True)
+        form.creatingResearchCard_action.setEnabled(True)
+        form.dbInfo.setText('Группа НИР: "' + table_name + '"')
         return
-    form.editEntery_bn.setText("Добавить запись в таблицу")
-    form.deleteTable_bn.setEnabled(False)
     if not db:  # db - глобальная переменная ссылающаяся на базу данных, создается с модуле functional.py строка 23 после функции db_connect()
         form.dbInfo.setText('Ошибка подключения к базе данных "' + table_name + '"')
         return
-    form.dbInfo.setText('Подключено к базе данных "' + table_name + '"')
+    form.dbInfo.setText(table_name)
     db_model = QSqlTableModel()  # Создали объект таблицы
     db_model.setTable(table_dict[table_name])     # Привязали таблицу из базы данных
     db_model.select()        # Выбрали все строки из данной таблицы
@@ -227,7 +239,7 @@ def saveSQL_data(Edit, orig_univer_code, orig_regNum):
     editingSQL_NIR(Edit=Edit, parameters_dict=data_dict, orig_univer_code=orig_univer_code, orig_regNum=orig_regNum)
     window_AddField.close()
     #window.setEnabled(True)
-    output_table(table_name=form.choiceTable.currentText())     # для мгновенного обновления
+    output_table(table_name=currentTable)     # для мгновенного обновления
 
     # Установка курсора на строку
     i = 0
@@ -245,7 +257,7 @@ def msgError(msgErr):
     msgErr - текст ошибки"""
     msg = QMessageBox()
     msg.setWindowTitle("Внимание!")
-    msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
+    msg.setWindowIcon(QtGui.QIcon("source/image/warning-icon.png"))
     msg.setText(msgErr)
     msg.setIcon(QMessageBox.Icon.Warning)
     msg.exec()
@@ -276,7 +288,7 @@ def add_field_window(Edit=False):
         if selected == -1:
             msg = QMessageBox()
             msg.setWindowTitle("Внимание!")
-            msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
+            msg.setWindowIcon(QtGui.QIcon("source/image/warning-icon.png"))
             msg.setText("Для редактирования выберете строку!")
             msg.setIcon(QMessageBox.Icon.Warning)
             msg.exec()
@@ -323,7 +335,7 @@ def delete_row():
     if len(selected) == 0:
         msg = QMessageBox()
         msg.setWindowTitle("Внимание!")
-        msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
+        msg.setWindowIcon(QtGui.QIcon("source/image/warning-icon.png"))
         msg.setText("Для удаления выберете строку!")
         msg.setIcon(QMessageBox.Icon.Warning)
         msg.exec()
@@ -335,7 +347,7 @@ def delete_row():
     else: str_ = "строку"
     msg.setText(f"Вы действительно хотите удалить {str_}?")
     msg.setWindowTitle("Удаление")
-    msg.setWindowIcon(QtGui.QIcon("source/delete-icon.png"))
+    msg.setWindowIcon(QtGui.QIcon("source/image/delete-icon.png"))
     msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
     global reply; reply="Cancel"
     msg.buttonClicked.connect(msgbtn)
@@ -344,7 +356,7 @@ def delete_row():
         for index in index_set:
             db_model.removeRow(index)
     del reply
-    output_table(table_name=form.choiceTable.currentText())     # для мгновенного обновления
+    output_table(table_name=currentTable)     # для мгновенного обновления
 	
 def msgbtn(i):
     """Для получения значения нажатия в случае ошибки QMessageBox"""
@@ -417,7 +429,7 @@ def set_filter_value(info_dict=False, typeExhibit_dict_revers={"Е": "Есть",
 def filtration():
     """Фильтрация таблицы НИР"""
     global form_Filtering
-    form.AddField.setEnabled(False); form.EditField.setEnabled(False); form.deleteButton.setEnabled(False)
+    form.EditTable_menu.setEnabled(False)
     typeExhibit_dict = {"Есть": "Е", "Нет": "Н", "Планируется": "П", "-": "-"}
     fed_Distr = form_Filtering.federalDistrict_cb.currentText()
     city = form_Filtering.city_cb.currentText()
@@ -621,7 +633,6 @@ def filtering_window():
     form_Filtering.apply_filtering_bn.clicked.connect(filtration)
     form_Filtering.reset_filtering_bn.clicked.connect(set_filter_value)
     set_filter_value()  # установка значений фильтров
-
     window_Filtering.show()
 
 
@@ -648,12 +659,14 @@ def get_table_name():
         table_name = ""
 
 def create_table(table_name):
-    """Создание таблицы на основе фильтрации"""
+    """Создание группы НИР на основе фильтрации"""
     # Запись всех данных из отфильтрованных элементов
     data = []
     i=0
+    temp_model = form.tableView.model()
+    temp_model.fetchMore(QtCore.QModelIndex())
     while True:
-        list_values = [modelFetchMore.index(i, j).data() for j in range(11)]
+        list_values = [temp_model.index(i, j).data() for j in range(11)]
         if list_values == [None, None, None, None, None, None, None, None, None, None, None]: break
         list_values = list(map(str, list_values))
         data.append(list_values)
@@ -665,33 +678,75 @@ def create_table(table_name):
     for dat in data:
         file.write(str(dat) + '\n')
     file.close()
-    set_tableChoiceItems()
-    form.choiceTable.setCurrentText(table_name)
-
-def delete_custom_table():
-    """Удаление кастомной таблицы"""
-    if os.path.exists("data/" + form.choiceTable.currentText() + ".dat"):
-        os.remove("data/" + form.choiceTable.currentText() + ".dat")
-        set_tableChoiceItems()
+    output_table(table_name=table_name)
 
 
-def edit_customTable():
+def delete_custom_table(table_name):
+    """Удаление группы НИР, функция после окна удаления"""
+    window_DelTable.close()
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Icon.Information)
+    msg.setText(f'Вы действительно хотите удалить группу НИР: "{table_name}"?')
+    msg.setWindowTitle("Удаление")
+    msg.setWindowIcon(QtGui.QIcon("source/image/delete-icon.png"))
+    msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
+    global reply; reply="Cancel"
+    msg.buttonClicked.connect(msgbtn)
+    msg.exec()
+    if reply == "Cancel":
+        del reply
+        return
+    del reply
+    if os.path.exists("data/" + table_name + ".dat"):
+        os.remove("data/" + table_name + ".dat")
+        if table_name == currentTable:
+            output_table()
+
+def del_customTable_window():
+    """Окно удаления группы НИР"""
+    table_list = get_custom_table()
+    ico_file = "source/image/create-table-icon.png"
+    if len(table_list) == 0:
+        msgError("Группы НИР не найдены!")
+        return
+
+    ico = QtGui.QIcon()
+    ico.addFile(ico_file)
+
+    global window_DelTable, form_DelTable
+    Form, Window = uic.loadUiType("source/ChoiceTableWindow.ui")
+    # Настройка интерфейса
+    window_DelTable = Window()
+    form_DelTable = Form()
+    form_DelTable.setupUi(window_DelTable)
+    window_DelTable.setWindowTitle("Удалить группы НИР")
+    window_DelTable.setWindowIcon(QtGui.QIcon("source/image/delete-icon.png"))
+
+    for name in table_list:
+        form_DelTable.choiceTable.addItem(ico, name)
+    form_DelTable.choiceTable.setCurrentText(table_list[0])
+    form_DelTable.OK_bn.clicked.connect(lambda: delete_custom_table(table_name=form_DelTable.choiceTable.currentText()))
+
+    window_DelTable.show()
+
+def edit_customTable(row="add"):
     """Добавить или удалить строку кастомной таблицы.
     row = add, row = remove"""
-    choice = form.editEntery_bn.text()
-    if choice == "Добавить запись в таблицу":
+    if row == "add":
         addRow_choiceTable()
-    if choice == "Удалить запись из таблицы":
+    if row == "remove":
         selected = form.tableView.currentIndex().row()  # текущая отмеченная строка
         if selected == -1:
             msg = QMessageBox()
             msg.setWindowTitle("Внимание!")
-            msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
+            msg.setWindowIcon(QtGui.QIcon("source/image/warning-icon.png"))
             msg.setText("Для удаления выберете строку!")
             msg.setIcon(QMessageBox.Icon.Warning)
             msg.exec()
             return
-        list_values = [modelFetchMore.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
+        temp_model = form.tableView.model()
+        temp_model.fetchMore(QtCore.QModelIndex())
+        list_values = [temp_model.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
         removeRow_customTable(list_values)
 
 def addRow_choiceTable():
@@ -700,12 +755,14 @@ def addRow_choiceTable():
     if selected == -1:
         msg = QMessageBox()
         msg.setWindowTitle("Внимание!")
-        msg.setWindowIcon(QtGui.QIcon("source/warning-icon.png"))
+        msg.setWindowIcon(QtGui.QIcon("source/image/warning-icon.png"))
         msg.setText("Для добавления выберете строку!")
         msg.setIcon(QMessageBox.Icon.Warning)
         msg.exec()
         return
-    list_values = [modelFetchMore.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
+    temp_model = form.tableView.model()
+    temp_model.fetchMore(QtCore.QModelIndex())
+    list_values = [temp_model.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
     global window_ChoiceTable, form_ChoiceTable
     Form, Window = uic.loadUiType("source/addToTableWindow.ui")
     # Настройка интерфейса
@@ -732,7 +789,7 @@ def addRow_to_customTable(tableName, data):
 def removeRow_customTable(rowForRemove):
     """Удаление строки кастомной таблицы.
     rowForRemove - список со значениями в строке для удаления"""
-    tableName = form.choiceTable.currentText()
+    tableName = currentTable
     if os.path.exists("data"):
         file = open("data/" + tableName + ".dat", 'r', encoding='utf-8')
         data = []
@@ -749,26 +806,46 @@ def removeRow_customTable(rowForRemove):
         file.close()
         output_table(tableName)
     
+def creating_research_card():
+    """Функция создания карточки НИР. Открывает окно для выбора пути сохранения."""
+    headlines = ["Код ВУЗа", "Аббревиатура", "Название НИР", "Регистрационный номер", "ГРНТИ", "Тип", "Наличие экспоната", "Выставки", 
+                "Экспонат", "Научный руководитель", "Статус руководителя"]
+    selected = form.tableView.currentIndex().row()  # текущая отмеченная строка
+    if selected == -1:
+        msgError("Для формирования карточки НИР выберете строку!")
+        return
+    temp_model = form.tableView.model()
+    temp_model.fetchMore(QtCore.QModelIndex())
+    list_values = [temp_model.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
+
+    path, extension = QFileDialog.getSaveFileUrl(filter="Документ Microsoft Word (*.docx);;PDF (*.pdf)") # Открывает окно с выбором пути сохранения
+    path = path.toString()
+
+    if path == '': return 0
+
+    doc_save(path=path, headlines=headlines, list_values=list_values, extension=extension)
 
 
-#output_table()
-# Взаимодействие с интерфесом
+
+output_table()
+# Взаимодействие с интерфейсом
 # Передавать параметры в функции через кнопки можно с помощью лямбда функций form.pushButton.clicked.connect(lambda x: test("hello fucking Qt!"))
 
 form.action_sourceTable.triggered.connect(lambda: set_tableChoiceItems(table="source"))
 form.action_researchTable.triggered.connect(lambda: set_tableChoiceItems(table="custom"))
 
-#form.choiceTable.currentTextChanged.connect(lambda: output_table(table_name=form.choiceTable.currentText()))
-form.AddField.clicked.connect(add_field_window)
-form.EditField.clicked.connect(lambda: add_field_window(Edit=True))
-form.deleteButton.clicked.connect(delete_row)
+form.addEntry_action.triggered.connect(add_field_window)
+form.editEntry_action.triggered.connect(lambda: add_field_window(Edit=True))
+form.deleteEntry_action.triggered.connect(delete_row)
 
 form.filtering_bn.clicked.connect(filtering_window)
 
+form.addGroup_action.triggered.connect(new_tableName)
+form.deleteGroup_action.triggered.connect(del_customTable_window)
+form.addToGroup_action.triggered.connect(lambda: edit_customTable(row="add"))
+form.deleteFromGroup_action.triggered.connect(lambda: edit_customTable(row="remove"))
 
-form.CreateNewTable_bn.clicked.connect(new_tableName)
-form.deleteTable_bn.clicked.connect(delete_custom_table)
-form.editEntery_bn.clicked.connect(edit_customTable)
+form.creatingResearchCard_action.triggered.connect(creating_research_card)
 
 
 # Запуск приложения

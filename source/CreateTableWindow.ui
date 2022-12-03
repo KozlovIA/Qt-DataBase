@@ -27,7 +27,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>pencil-icon.png</normaloff>pencil-icon.png</iconset>
+    <normaloff>image/pencil-icon.png</normaloff>image/pencil-icon.png</iconset>
   </property>
   <widget class="QPushButton" name="Save_bn">
    <property name="geometry">

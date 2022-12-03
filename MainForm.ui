@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>874</width>
-    <height>756</height>
+    <height>762</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,7 +24,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>source/database-icon.png</normaloff>source/database-icon.png</iconset>
+    <normaloff>source/image/database-icon.png</normaloff>source/image/database-icon.png</iconset>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonIconOnly</enum>
@@ -45,21 +45,21 @@
       <height>711</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0" columnstretch="0,0,0,0">
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="0,0,0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetNoConstraint</enum>
      </property>
      <property name="leftMargin">
-      <number>10</number>
+      <number>5</number>
      </property>
      <property name="topMargin">
-      <number>10</number>
+      <number>5</number>
      </property>
      <property name="rightMargin">
-      <number>10</number>
+      <number>5</number>
      </property>
      <property name="bottomMargin">
-      <number>10</number>
+      <number>5</number>
      </property>
      <property name="horizontalSpacing">
       <number>6</number>
@@ -72,6 +72,18 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>1</number>
+       </property>
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
        </property>
@@ -83,77 +95,14 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="recNum_lb">
+     <item row="2" column="3">
+      <widget class="QPushButton" name="filtering_bn">
        <property name="text">
-        <string>Всего строк: </string>
+        <string>Фильтрация</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="0" colspan="4">
-      <layout class="QGridLayout" name="gridLayout_2">
-       <property name="spacing">
-        <number>10</number>
-       </property>
-       <item row="2" column="0" colspan="3">
-        <widget class="Line" name="line">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="CreateNewTable_bn">
-         <property name="text">
-          <string>Создать таблицу</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="deleteTable_bn">
-         <property name="text">
-          <string>Удалить группу НИР</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QPushButton" name="editEntery_bn">
-         <property name="text">
-          <string>Добавить запись в таблицу</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QPushButton" name="EditField">
-         <property name="text">
-          <string>Редактировать запись</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QPushButton" name="AddField">
-         <property name="text">
-          <string>Добавить запись</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QPushButton" name="deleteButton">
-         <property name="text">
-          <string>Удалить запись</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="3">
-        <widget class="Line" name="line_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="0" column="1" colspan="2">
+     <item row="0" column="0" colspan="4">
       <widget class="QLabel" name="dbInfo">
        <property name="enabled">
         <bool>true</bool>
@@ -166,10 +115,13 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="3">
-      <widget class="QPushButton" name="filtering_bn">
+     <item row="2" column="0">
+      <widget class="QLabel" name="recNum_lb">
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
        <property name="text">
-        <string>Фильтрация</string>
+        <string>Всего строк: </string>
        </property>
       </widget>
      </item>
@@ -192,27 +144,62 @@
     <addaction name="action_sourceTable"/>
     <addaction name="action_researchTable"/>
    </widget>
-   <widget class="QMenu" name="menu_eq">
+   <widget class="QMenu" name="reference_menu">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>Справка</string>
     </property>
-    <addaction name="action1"/>
+    <addaction name="help_action"/>
+    <addaction name="aboutProgram_action"/>
+   </widget>
+   <widget class="QMenu" name="EditTable_menu">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>Редактировать</string>
+    </property>
+    <addaction name="addEntry_action"/>
+    <addaction name="editEntry_action"/>
+    <addaction name="deleteEntry_action"/>
+   </widget>
+   <widget class="QMenu" name="researchGroups_menu">
+    <property name="title">
+     <string>Группы НИР</string>
+    </property>
+    <addaction name="addGroup_action"/>
+    <addaction name="deleteGroup_action"/>
+    <addaction name="addToGroup_action"/>
+    <addaction name="deleteFromGroup_action"/>
+    <addaction name="creatingResearchCard_action"/>
    </widget>
    <addaction name="ChoiceTable_menu"/>
-   <addaction name="menu_eq"/>
+   <addaction name="EditTable_menu"/>
+   <addaction name="researchGroups_menu"/>
+   <addaction name="reference_menu"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+  </widget>
   <action name="actionnf_kbwf">
    <property name="text">
     <string>nf,kbwf</string>
    </property>
   </action>
-  <action name="action1">
+  <action name="help_action">
    <property name="enabled">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>source/image/help-icon.png</normaloff>source/image/help-icon.png</iconset>
+   </property>
    <property name="text">
-    <string>1</string>
+    <string>Помощь</string>
    </property>
   </action>
   <action name="action">
@@ -228,7 +215,7 @@
   <action name="action_sourceTable">
    <property name="icon">
     <iconset>
-     <normaloff>source/data-integration-icon.png</normaloff>source/data-integration-icon.png</iconset>
+     <normaloff>source/image/data-integration-icon.png</normaloff>source/image/data-integration-icon.png</iconset>
    </property>
    <property name="text">
     <string>Исходные данные</string>
@@ -237,10 +224,91 @@
   <action name="action_researchTable">
    <property name="icon">
     <iconset>
-     <normaloff>source/create-table-icon.png</normaloff>source/create-table-icon.png</iconset>
+     <normaloff>source/image/create-table-icon.png</normaloff>source/image/create-table-icon.png</iconset>
    </property>
    <property name="text">
     <string>Группы НИР</string>
+   </property>
+  </action>
+  <action name="addEntry_action">
+   <property name="icon">
+    <iconset>
+     <normaloff>source/image/add-icon.png</normaloff>source/image/add-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Добавить запись</string>
+   </property>
+  </action>
+  <action name="editEntry_action">
+   <property name="icon">
+    <iconset>
+     <normaloff>source/image/pencil-icon.png</normaloff>source/image/pencil-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Редактировать запись</string>
+   </property>
+  </action>
+  <action name="deleteEntry_action">
+   <property name="icon">
+    <iconset>
+     <normaloff>source/image/remove-icon.png</normaloff>source/image/remove-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Удалить запись</string>
+   </property>
+  </action>
+  <action name="addGroup_action">
+   <property name="icon">
+    <iconset>
+     <normaloff>source/image/add-icon.png</normaloff>source/image/add-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Создать группу НИР</string>
+   </property>
+  </action>
+  <action name="deleteGroup_action">
+   <property name="icon">
+    <iconset>
+     <normaloff>source/image/delete-icon.png</normaloff>source/image/delete-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Удалить группу НИР</string>
+   </property>
+  </action>
+  <action name="addToGroup_action">
+   <property name="icon">
+    <iconset>
+     <normaloff>source/image/pencil-icon.png</normaloff>source/image/pencil-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Добавить запись в группу НИР</string>
+   </property>
+  </action>
+  <action name="deleteFromGroup_action">
+   <property name="icon">
+    <iconset>
+     <normaloff>source/image/remove-icon.png</normaloff>source/image/remove-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Удалить запись из группы НИР</string>
+   </property>
+  </action>
+  <action name="aboutProgram_action">
+   <property name="icon">
+    <iconset>
+     <normaloff>source/image/info-icon.png</normaloff>source/image/info-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>О программе</string>
+   </property>
+  </action>
+  <action name="creatingResearchCard_action">
+   <property name="icon">
+    <iconset>
+     <normaloff>source/image/doc-icon.png</normaloff>source/image/doc-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Создать карточку НИР</string>
    </property>
   </action>
  </widget>
