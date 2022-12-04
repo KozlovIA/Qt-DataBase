@@ -37,7 +37,7 @@ def recNum():
 
 
 def set_tableChoiceItems(table="source"):
-    """Установка имен таблиц в QComboBox выбора таблиц в окне ChoiceTableWindow.ui"""
+    """Открытие таблицы в окне ChoiceTableWindow.ui"""
     if table == "source":
         table_list = ['Таблица НИР', 'Таблица ВУЗов', 'Таблица ГРНТИ']
         ico_file = "source/image/data-integration-icon.png"
@@ -61,7 +61,10 @@ def set_tableChoiceItems(table="source"):
 
     for name in table_list:
         form_OpenTable.choiceTable.addItem(ico, name)
-    form_OpenTable.choiceTable.setCurrentText(table_list[0])
+    if currentTable in table_list:
+        form_OpenTable.choiceTable.setCurrentText(currentTable)
+    else:
+        form_OpenTable.choiceTable.setCurrentText(table_list[0])
     form_OpenTable.OK_bn.clicked.connect(lambda: output_table(table_name=form_OpenTable.choiceTable.currentText()))
 
     window_OpenTable.show()
@@ -86,8 +89,8 @@ def output_table(table_name="Таблица НИР", choice_close="False"):
         form.addGroup_action.setEnabled(True)
         form.EditTable_menu.setEnabled(True)
         form.addToGroup_action.setEnabled(True)
-        form.deleteFromGroup_action.setEnabled(True)
         form.creatingResearchCard_action.setEnabled(True)
+        form.deleteFromGroup_action.setEnabled(False)
     else:
         form.EditTable_menu.setEnabled(False)
         form.addGroup_action.setEnabled(False)
@@ -678,6 +681,7 @@ def create_table(table_name):
     for dat in data:
         file.write(str(dat) + '\n')
     file.close()
+    remove_duplicate_custom_table_entries(table_name)
     output_table(table_name=table_name)
 
 
@@ -737,12 +741,7 @@ def edit_customTable(row="add"):
     if row == "remove":
         selected = form.tableView.currentIndex().row()  # текущая отмеченная строка
         if selected == -1:
-            msg = QMessageBox()
-            msg.setWindowTitle("Внимание!")
-            msg.setWindowIcon(QtGui.QIcon("source/image/warning-icon.png"))
-            msg.setText("Для удаления выберете строку!")
-            msg.setIcon(QMessageBox.Icon.Warning)
-            msg.exec()
+            msgError("Для удаления выберете строку!")
             return
         temp_model = form.tableView.model()
         temp_model.fetchMore(QtCore.QModelIndex())
@@ -750,31 +749,35 @@ def edit_customTable(row="add"):
         removeRow_customTable(list_values)
 
 def addRow_choiceTable():
-    """Добавление записи в кастомную таблицу. Функция выбора таблицы"""
+    """Функция выбора группы НИР для добавления в неё записи"""
     selected = form.tableView.currentIndex().row()  # текущая отмеченная строка
     if selected == -1:
-        msg = QMessageBox()
-        msg.setWindowTitle("Внимание!")
-        msg.setWindowIcon(QtGui.QIcon("source/image/warning-icon.png"))
-        msg.setText("Для добавления выберете строку!")
-        msg.setIcon(QMessageBox.Icon.Warning)
-        msg.exec()
+        msgError("Для добавления выберете строку!")
         return
     temp_model = form.tableView.model()
     temp_model.fetchMore(QtCore.QModelIndex())
     list_values = [temp_model.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
     global window_ChoiceTable, form_ChoiceTable
-    Form, Window = uic.loadUiType("source/addToTableWindow.ui")
+    Form, Window = uic.loadUiType("source/ChoiceTableWindow.ui")
     # Настройка интерфейса
     window_ChoiceTable = Window()
     form_ChoiceTable = Form()
     form_ChoiceTable.setupUi(window_ChoiceTable)
+    window_ChoiceTable.setWindowTitle("Добавить в группу НИР")
+    window_ChoiceTable.setWindowIcon(QtGui.QIcon("source/image/pencil-icon.png"))
 
     table_list = get_custom_table()
-    form_ChoiceTable.tableName.addItems(table_list)
+    if len(table_list) == 0:
+        msgError("Группы НИР не найдены!")
+        return -1
+    
+    ico_file = "source/image/create-table-icon.png"
+    ico = QtGui.QIcon()
+    ico.addFile(ico_file)
+    for name in table_list:
+        form_ChoiceTable.choiceTable.addItem(ico, name)
 
-
-    form_ChoiceTable.Ok_bn.clicked.connect(lambda: addRow_to_customTable(tableName=form_ChoiceTable.tableName.currentText(), data=list_values))
+    form_ChoiceTable.OK_bn.clicked.connect(lambda: addRow_to_customTable(tableName=form_ChoiceTable.choiceTable.currentText(), data=list_values))
     window_ChoiceTable.show()
 
 
@@ -785,6 +788,22 @@ def addRow_to_customTable(tableName, data):
         file = open("data/" + tableName + ".dat", 'a', encoding='utf-8')
         file.write(str(data) + '\n')
         file.close()
+        remove_duplicate_custom_table_entries(tableName)
+
+def remove_duplicate_custom_table_entries(tableName):
+    """Удаление повторяющихся записей из группы НИР"""
+    if os.path.exists("data"):
+        data = []
+        file = open("data/" + tableName + ".dat", 'r', encoding='utf-8')
+        for line in file:
+            data.append(line)
+        file.close()
+        data = set(data)
+        file = open("data/" + tableName + ".dat", 'w', encoding='utf-8')
+        for line in list(data):
+            file.write(line)
+        file.close()
+
 
 def removeRow_customTable(rowForRemove):
     """Удаление строки кастомной таблицы.
@@ -818,16 +837,24 @@ def creating_research_card():
     temp_model.fetchMore(QtCore.QModelIndex())
     list_values = [temp_model.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
 
-    path, extension = QFileDialog.getSaveFileUrl(filter="Документ Microsoft Word (*.docx);;PDF (*.pdf)") # Открывает окно с выбором пути сохранения
+    path, extension = QFileDialog.getSaveFileUrl(filter="Документ Word (*.docx);;PDF (*.pdf)") # Открывает окно с выбором пути сохранения
     path = path.toString()
 
     if path == '': return 0
-
+    path = path[8:len(path)]
     doc_save(path=path, headlines=headlines, list_values=list_values, extension=extension)
 
 
 
 output_table()
+
+# Настройка ширины столбцов
+form.tableView.setColumnWidth(0, 75)
+form.tableView.setColumnWidth(2, 200)
+form.tableView.setColumnWidth(3, 75)
+form.tableView.setColumnWidth(5, 25)
+form.tableView.setColumnWidth(7, 200)
+form.tableView.setColumnWidth(8, 200)
 # Взаимодействие с интерфейсом
 # Передавать параметры в функции через кнопки можно с помощью лямбда функций form.pushButton.clicked.connect(lambda x: test("hello fucking Qt!"))
 

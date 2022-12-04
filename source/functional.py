@@ -201,15 +201,17 @@ def doc_save(path, headlines, list_values, extension="Документ Microsoft
         run = paragraph2.add_run(str(list_values[i]) + "\n")
         run.font.size = Pt(16)
 
-    doc.save(path) 
 
     if extension == "PDF (*.pdf)":
-        doc = DocxTemplate(path)
+        # Сохранение в pdf
+        doc.save("temp.docx") 
+
+        doc = DocxTemplate("temp.docx")
 
         wdFormatPDF = 17
 
-        in_file = os.path.abspath (path)
-        out_file = os.path.abspath(path[0:len(path)-5] + ".pdf")
+        in_file = os.path.abspath("temp.docx")
+        out_file = os.path.abspath(path)
 
         word = comtypes.client.CreateObject('Word.Application')
         doc = word.Documents.Open(in_file)
@@ -217,7 +219,10 @@ def doc_save(path, headlines, list_values, extension="Документ Microsoft
         doc.Close()
         word.Quit()
 
-        os.remove(path)
+        os.remove("temp.docx")
+    else:
+        # Сохранение в word
+        doc.save(path[0:len(path)-5] + ".docx") 
 
 
 if __name__ == "__main__":

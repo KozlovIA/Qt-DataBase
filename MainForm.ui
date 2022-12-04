@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>874</width>
-    <height>762</height>
+    <width>1366</width>
+    <height>786</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -41,11 +41,11 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>871</width>
-      <height>711</height>
+      <width>1361</width>
+      <height>741</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="0,0,0,0">
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0" columnstretch="0,0,0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetNoConstraint</enum>
      </property>
@@ -72,6 +72,11 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="mouseTracking">
         <bool>false</bool>
        </property>
@@ -97,8 +102,28 @@
      </item>
      <item row="2" column="3">
       <widget class="QPushButton" name="filtering_bn">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Фильтрация</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="recNum_lb">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="text">
+        <string>Всего строк: </string>
        </property>
       </widget>
      </item>
@@ -107,21 +132,23 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
        <property name="text">
         <string/>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="recNum_lb">
-       <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
-       </property>
-       <property name="text">
-        <string>Всего строк: </string>
        </property>
       </widget>
      </item>
@@ -133,7 +160,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>874</width>
+     <width>1366</width>
      <height>22</height>
     </rect>
    </property>
