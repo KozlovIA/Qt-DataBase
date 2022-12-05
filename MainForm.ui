@@ -26,6 +26,9 @@
    <iconset>
     <normaloff>source/image/database-icon.png</normaloff>source/image/database-icon.png</iconset>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonIconOnly</enum>
   </property>
@@ -42,7 +45,7 @@
       <x>0</x>
       <y>0</y>
       <width>1361</width>
-      <height>741</height>
+      <height>761</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0" columnstretch="0,0,0,0">
@@ -80,6 +83,15 @@
        <property name="mouseTracking">
         <bool>false</bool>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::DefaultContextMenu</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
        </property>
@@ -107,23 +119,11 @@
          <pointsize>12</pointsize>
         </font>
        </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="text">
         <string>Фильтрация</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="recNum_lb">
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
-       </property>
-       <property name="text">
-        <string>Всего строк: </string>
        </property>
       </widget>
      </item>
@@ -149,6 +149,24 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="3">
+      <widget class="QLabel" name="recNum_lb">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="text">
+        <string>Всего строк: </string>
        </property>
       </widget>
      </item>
@@ -179,7 +197,6 @@
      <string>Справка</string>
     </property>
     <addaction name="help_action"/>
-    <addaction name="aboutProgram_action"/>
    </widget>
    <widget class="QMenu" name="EditTable_menu">
     <property name="enabled">
@@ -206,11 +223,6 @@
    <addaction name="EditTable_menu"/>
    <addaction name="researchGroups_menu"/>
    <addaction name="reference_menu"/>
-  </widget>
-  <widget class="QStatusBar" name="statusbar">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
   </widget>
   <action name="actionnf_kbwf">
    <property name="text">

@@ -85,7 +85,9 @@ def output_table(table_name="Таблица НИР", choice_close="False"):
     table_dict = {'Таблица НИР': 'Vyst_mo', 'Таблица ВУЗов': 'VUZ', 'Таблица ГРНТИ': 'grntirub'}
     #global db
     #db = db_connect()
+    form.filtering_bn.setEnabled(False)
     if table_name == "Таблица НИР":
+        form.filtering_bn.setEnabled(True)
         form.addGroup_action.setEnabled(True)
         form.EditTable_menu.setEnabled(True)
         form.addToGroup_action.setEnabled(True)
@@ -431,6 +433,7 @@ def set_filter_value(info_dict=False, typeExhibit_dict_revers={"Е": "Есть",
 
 def filtration():
     """Фильтрация таблицы НИР"""
+    window_Filtering.hide()
     global form_Filtering
     form.EditTable_menu.setEnabled(False)
     typeExhibit_dict = {"Есть": "Е", "Нет": "Н", "Планируется": "П", "-": "-"}
@@ -628,12 +631,21 @@ def filtration():
 def filtering_window():
     """Открытие окна фильтрации"""
     global window_Filtering, form_Filtering
+    # В случае, если окно уже открывалось, мы его спрятали, но не удаляли, поэтому показываем заново
+    try:
+        if window_Filtering != None:
+            window_Filtering.show()
+            return
+        else:
+            window_Filtering = None
+    except:
+        pass
     Form, Window = uic.loadUiType("source/FilteringWindow.ui")
     # Настройка интерфейса
     window_Filtering = Window()
     form_Filtering = Form()
     form_Filtering.setupUi(window_Filtering)
-    form_Filtering.apply_filtering_bn.clicked.connect(filtration)
+    form_Filtering.apply_filtering_bn.clicked.connect(filtration)   # В этой функции окно прячется, но не закрывается
     form_Filtering.reset_filtering_bn.clicked.connect(set_filter_value)
     set_filter_value()  # установка значений фильтров
     window_Filtering.show()
@@ -845,6 +857,19 @@ def creating_research_card():
     doc_save(path=path, headlines=headlines, list_values=list_values, extension=extension)
 
 
+def help_window():
+    """Открытие окна помощи"""
+    global form_HelpWindow, window_HelpWindow
+    Form, Window = uic.loadUiType("source/HelpWindow.ui")
+
+    window_HelpWindow = Window()
+    form_HelpWindow = Form()
+    form_HelpWindow.setupUi(window_HelpWindow)
+
+    form_HelpWindow.close_bn.clicked.connect(window_HelpWindow.close)
+
+    window_HelpWindow.show()
+
 
 output_table()
 
@@ -855,6 +880,8 @@ form.tableView.setColumnWidth(3, 75)
 form.tableView.setColumnWidth(5, 25)
 form.tableView.setColumnWidth(7, 200)
 form.tableView.setColumnWidth(8, 200)
+
+print(form.tableView.verticalHeader)#.setStyleSheet("selection-background-color: rgb(85, 255, 0);")
 # Взаимодействие с интерфейсом
 # Передавать параметры в функции через кнопки можно с помощью лямбда функций form.pushButton.clicked.connect(lambda x: test("hello fucking Qt!"))
 
@@ -871,9 +898,9 @@ form.addGroup_action.triggered.connect(new_tableName)
 form.deleteGroup_action.triggered.connect(del_customTable_window)
 form.addToGroup_action.triggered.connect(lambda: edit_customTable(row="add"))
 form.deleteFromGroup_action.triggered.connect(lambda: edit_customTable(row="remove"))
-
 form.creatingResearchCard_action.triggered.connect(creating_research_card)
 
+form.help_action.triggered.connect(help_window)
 
 # Запуск приложения
 window.show()
