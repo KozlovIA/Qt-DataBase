@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1366</width>
-    <height>786</height>
+    <height>787</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -152,7 +152,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0" colspan="3">
+     <item row="2" column="0">
       <widget class="QLabel" name="recNum_lb">
        <property name="font">
         <font>
@@ -170,6 +170,30 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="1" colspan="2">
+      <widget class="QLabel" name="filtering_prompt">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -184,7 +208,7 @@
    </property>
    <widget class="QMenu" name="ChoiceTable_menu">
     <property name="title">
-     <string>Данные</string>
+     <string>Открыть</string>
     </property>
     <addaction name="action_sourceTable"/>
     <addaction name="action_researchTable"/>
@@ -220,8 +244,8 @@
     <addaction name="creatingResearchCard_action"/>
    </widget>
    <addaction name="ChoiceTable_menu"/>
-   <addaction name="EditTable_menu"/>
    <addaction name="researchGroups_menu"/>
+   <addaction name="EditTable_menu"/>
    <addaction name="reference_menu"/>
   </widget>
   <action name="actionnf_kbwf">

@@ -1,6 +1,6 @@
-pyinstaller -w --onefile main.py
-copy MainForm.ui dist\
+pyinstaller --windowed --onefile --onedir main.py
+copy MainForm.ui dist\main\
 copy DataBaseExhibitions.db dist
-mkdir dist\source
-xcopy source\ dist\source\ /e
-:: xcopy source\ dist\source\ - Параметр \t - копирование без пустых каталогов /e - копирование с пустыми каталогами
+mkdir dist\main\source
+xcopy source\ dist\main\source\ /e
+:: xcopy source\ dist\main\source\ - Параметр \t - копирование без пустых каталогов /e - копирование с пустыми каталогами

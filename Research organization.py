@@ -86,6 +86,7 @@ def output_table(table_name="Таблица НИР", choice_close="False"):
     #global db
     #db = db_connect()
     form.filtering_bn.setEnabled(False)
+    form.filtering_prompt.setText("")
     if table_name == "Таблица НИР":
         form.filtering_bn.setEnabled(True)
         form.addGroup_action.setEnabled(True)
@@ -248,8 +249,10 @@ def saveSQL_data(Edit, orig_univer_code, orig_regNum):
 
     # Установка курсора на строку
     i = 0
+    model_fetchMore = form.tableView.model()
+    model_fetchMore.fetchMore()
     while True:
-        list_values = [modelFetchMore.index(i, j).data() for j in range(11)]
+        list_values = [model_fetchMore.index(i, j).data() for j in range(11)]
         if list_values == [None, None, None, None, None, None, None, None, None, None, None]: break
         list_values = list(map(str, list_values))
         if (str(univer_code_name[0]) and str(reg_num)) in list_values:
@@ -291,12 +294,7 @@ def add_field_window(Edit=False):
         # Если это окно редактирования, а не добавления, то мы выводим существующую информацию
         selected = form.tableView.currentIndex().row()  # текущая отмеченная строка
         if selected == -1:
-            msg = QMessageBox()
-            msg.setWindowTitle("Внимание!")
-            msg.setWindowIcon(QtGui.QIcon("source/image/warning-icon.png"))
-            msg.setText("Для редактирования выберете строку!")
-            msg.setIcon(QMessageBox.Icon.Warning)
-            msg.exec()
+            msgError("Для редактирования выберете строку!")
             return
         list_values = [modelFetchMore.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
         # для дальнейшего передачи как параметра, сохраняем код ВУЗа и регистрационный номер, чтобы использовать их как метки для редактирования
@@ -371,6 +369,8 @@ def msgbtn(i):
 def set_filter_value(info_dict=False, typeExhibit_dict_revers={"Е": "Есть", "Н": "Нет", "П": "Планируется"}):
     """Добавляет первоначальные значения фильтров в comboboxes
     info_dict - если окно уже есть, то запрос будет создан в зависимости от текущих значений фильтра"""
+    form.dbInfo.setText("Фильтрация")
+    form.filtering_prompt.setText("На основе фильтрации можно создать группу НИР")
     global form_Filtering
     if info_dict==False: 
         info_dict = get_info_for_filtration()   # словарь по {коду ВУЗа, [Аббревиатура, Федеральный округ, Город, Область]}
@@ -881,7 +881,6 @@ form.tableView.setColumnWidth(5, 25)
 form.tableView.setColumnWidth(7, 200)
 form.tableView.setColumnWidth(8, 200)
 
-print(form.tableView.verticalHeader)#.setStyleSheet("selection-background-color: rgb(85, 255, 0);")
 # Взаимодействие с интерфейсом
 # Передавать параметры в функции через кнопки можно с помощью лямбда функций form.pushButton.clicked.connect(lambda x: test("hello fucking Qt!"))
 

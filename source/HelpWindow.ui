@@ -7,13 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>641</width>
-    <height>570</height>
+    <height>657</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>641</width>
-    <height>570</height>
+    <height>590</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>641</width>
+    <height>657</height>
    </size>
   </property>
   <property name="sizeIncrement">
@@ -72,7 +78,7 @@
      <x>10</x>
      <y>60</y>
      <width>621</width>
-     <height>51</height>
+     <height>91</height>
     </rect>
    </property>
    <property name="font">
@@ -82,7 +88,8 @@
     </font>
    </property>
    <property name="text">
-    <string>Приложение для организации научных выставок содержит в себе все необходимые функции необходимые удобной организации научных выставок</string>
+    <string>Приложение для организации научных выставок содержит в себе все функции необходимые для удобного поиска и организации научных выставок.
+С его помощью можно найти экспонат соответствующей тематики в нужном регионе.</string>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -92,7 +99,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>120</y>
+     <y>150</y>
      <width>341</width>
      <height>31</height>
     </rect>
@@ -113,9 +120,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>150</y>
+     <y>180</y>
      <width>621</width>
-     <height>51</height>
+     <height>81</height>
     </rect>
    </property>
    <property name="font">
@@ -129,7 +136,7 @@
     <enum>QFrame::Box</enum>
    </property>
    <property name="text">
-    <string>1) &quot;Данные&quot; - даёт возможность открыть исходные таблицы с данными по научным работам, ВУЗам, а так же кодам ГРНТИ.</string>
+    <string>1) &quot;Открыть&quot; - вкладка главного меню, позволяющая открыть как исходные таблицы с данными по научным работам, ВУЗам и кодам ГРНТИ, так и, созданные пользователем, подгруппы научных работ.</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -142,9 +149,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>200</y>
+     <y>260</y>
      <width>621</width>
-     <height>51</height>
+     <height>71</height>
     </rect>
    </property>
    <property name="font">
@@ -158,7 +165,7 @@
     <enum>QFrame::Box</enum>
    </property>
    <property name="text">
-    <string>2) &quot;Редактировать&quot; - даёт возможность добавлять, удалять и редактировать данные исходной таблицы науных работ, редактирование данных других таблиц недоступно.</string>
+    <string>2) &quot;Редактировать&quot; - вкладка меню, позволяющая добавлять, удалять и редактировать данные исходной таблицы науных работ, редактирование данных других таблиц недоступно пользователю.</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -171,7 +178,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>250</y>
+     <y>330</y>
      <width>621</width>
      <height>121</height>
     </rect>
@@ -200,7 +207,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>370</y>
+     <y>450</y>
      <width>621</width>
      <height>41</height>
     </rect>
@@ -229,9 +236,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>410</y>
+     <y>490</y>
      <width>621</width>
-     <height>51</height>
+     <height>81</height>
     </rect>
    </property>
    <property name="font">
@@ -245,7 +252,7 @@
     <enum>QFrame::Box</enum>
    </property>
    <property name="text">
-    <string>5) &quot;Фильтрация&quot; - не является пунктом главного меню. Дает возможность поиска данных исходной таблицы научных работ.</string>
+    <string>5) &quot;Фильтрация&quot; - не является пунктом главного меню. Дает возможность поиска данных исходной таблицы научных работ. На основе фильтрации можно создать группу НИР.</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -258,7 +265,7 @@
    <property name="geometry">
     <rect>
      <x>200</x>
-     <y>500</y>
+     <y>590</y>
      <width>241</width>
      <height>31</height>
     </rect>
