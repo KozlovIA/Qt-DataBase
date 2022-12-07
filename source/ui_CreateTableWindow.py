@@ -51,7 +51,7 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"\u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435 \u0442\u0430\u0431\u043b\u0438\u0446\u044b", None))
         self.Save_bn.setText(QCoreApplication.translate("Dialog", u"\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c", None))
         self.Cancel_bn.setText(QCoreApplication.translate("Dialog", u"\u041e\u0442\u043c\u0435\u043d\u0430", None))
-        self.label.setText(QCoreApplication.translate("Dialog", u"\u0418\u043c\u044f \u043d\u043e\u0432\u043e\u0439 \u0442\u0430\u0431\u043b\u0438\u0446\u044b", None))
+        self.label.setText(QCoreApplication.translate("Dialog", u"\u0418\u043c\u044f \u043d\u043e\u0432\u043e\u0439 \u0433\u0440\u0443\u043f\u043f\u044b \u041d\u0418\u0420", None))
         self.TableName_le.setText("")
     # retranslateUi
 

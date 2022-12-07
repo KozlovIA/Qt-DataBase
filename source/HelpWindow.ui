@@ -149,7 +149,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>260</y>
+     <y>460</y>
      <width>621</width>
      <height>71</height>
     </rect>
@@ -165,7 +165,7 @@
     <enum>QFrame::Box</enum>
    </property>
    <property name="text">
-    <string>2) &quot;Редактировать&quot; - вкладка меню, позволяющая добавлять, удалять и редактировать данные исходной таблицы науных работ, редактирование данных других таблиц недоступно пользователю.</string>
+    <string>4) &quot;Редактировать&quot; - вкладка главного меню, позволяющая добавлять, удалять и редактировать данные исходной таблицы науных работ, редактирование данных других таблиц недоступно пользователю.</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -178,7 +178,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>330</y>
+     <y>340</y>
      <width>621</width>
      <height>121</height>
     </rect>
@@ -194,7 +194,7 @@
     <enum>QFrame::Box</enum>
    </property>
    <property name="text">
-    <string>3) &quot;Группы НИР&quot; - даёт возможность формировать группы НИР с помощью фильтрации (см. пункт 5). К уже сформированным группам можно добавлять записи, а так же удалять их. Сформированные группы можно удалять. По нажатии кнопки &quot;Создать карточку НИР&quot; будет предложено сохранение карточки по выбранной научной работе в формате Документ Word или PDF.</string>
+    <string>3) &quot;Группы НИР&quot; - вкладка главного меню, позволяющая формировать группы НИР с помощью фильтрации (см. пункт 2). К уже сформированным группам можно добавлять записи, а так же удалять их. Сформированные группы можно удалять. По нажатии кнопки &quot;Создать карточку НИР&quot; будет предложено сохранение карточки по выбранной научной работе в формате Документ Word или PDF.</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -207,7 +207,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>450</y>
+     <y>530</y>
      <width>621</width>
      <height>41</height>
     </rect>
@@ -223,7 +223,7 @@
     <enum>QFrame::Box</enum>
    </property>
    <property name="text">
-    <string>4) &quot;Справка&quot; - открывает текущее окно помощи.</string>
+    <string>5) &quot;Справка&quot; - открывает текущее окно помощи.</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -236,7 +236,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>490</y>
+     <y>260</y>
      <width>621</width>
      <height>81</height>
     </rect>
@@ -252,7 +252,7 @@
     <enum>QFrame::Box</enum>
    </property>
    <property name="text">
-    <string>5) &quot;Фильтрация&quot; - не является пунктом главного меню. Дает возможность поиска данных исходной таблицы научных работ. На основе фильтрации можно создать группу НИР.</string>
+    <string>2) &quot;Фильтрация&quot; - кнопка распологающаяся под таблицей. Дает возможность поиска данных исходной таблицы научных работ. На основе фильтрации можно создать группу НИР (см. пункт 3).</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>

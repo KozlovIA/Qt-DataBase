@@ -65,7 +65,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Имя новой таблицы</string>
+    <string>Имя новой группы НИР</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

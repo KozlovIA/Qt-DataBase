@@ -242,6 +242,7 @@
     <addaction name="addToGroup_action"/>
     <addaction name="deleteFromGroup_action"/>
     <addaction name="creatingResearchCard_action"/>
+    <addaction name="creatingTableCard_action"/>
    </widget>
    <addaction name="ChoiceTable_menu"/>
    <addaction name="researchGroups_menu"/>
@@ -372,6 +373,15 @@
    </property>
    <property name="text">
     <string>Создать карточку НИР</string>
+   </property>
+  </action>
+  <action name="creatingTableCard_action">
+   <property name="icon">
+    <iconset>
+     <normaloff>source/image/table-icon.png</normaloff>source/image/table-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Сохранить группу НИР в файл</string>
    </property>
   </action>
  </widget>

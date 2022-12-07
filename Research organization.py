@@ -19,7 +19,8 @@ window = Window()
 form = Form()
 form.setupUi(window)
 
-
+headlines = ["Аббревиатура", "Название_НИР", "Рег_номер", "ГРНТИ", "Тип", "Наличие_экспоната", "Выставки", 
+                "Экспонат", "Научный_руководитель", "Статус_руководителя", "Код_ВУЗа"]
 
 def recNum():
     """Функция для подсчета числа строк в таблицах"""
@@ -142,8 +143,6 @@ def output_custom_table(table_name):
             data.append(eval(line))
         file.close()
 
-        headlines = ["Код_ВУЗа", "Аббревиатура", "Название_НИР", "Рег_номер", "ГРНТИ", "Тип", "Наличие_экспоната", "Выставки", 
-                "Экспонат", "Научный_руководитель", "Статус_руководителя"]
         table_model = QtGui.QStandardItemModel()
         # set table headers
         table_model.setColumnCount(len(headlines))
@@ -279,6 +278,7 @@ def add_field_window(Edit=False):
     window_AddField = Window()
     form_AddField = Form()
     form_AddField.setupUi(window_AddField)
+    window_AddField.setWindowTitle("Добавление")
     univer_dict, grnti_code = SQLdata_acquisition_EditWindow()[0:2]
     # словари типа экспоната и его наличия, служат для более красивого вывода
     type_dict = {'Е': "Тематический план", "М": "НТП"}
@@ -291,6 +291,7 @@ def add_field_window(Edit=False):
     form_AddField.GRNTI_1_le.setInputMask('00.00.00;_'); form_AddField.GRNTI_2_le.setInputMask('00.00.00;_')
     orig_univerCode = orig_regNum = ''
     if Edit:
+        window_AddField.setWindowTitle("Редактирование")
         # Если это окно редактирования, а не добавления, то мы выводим существующую информацию
         selected = form.tableView.currentIndex().row()  # текущая отмеченная строка
         if selected == -1:
@@ -298,12 +299,12 @@ def add_field_window(Edit=False):
             return
         list_values = [modelFetchMore.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
         # для дальнейшего передачи как параметра, сохраняем код ВУЗа и регистрационный номер, чтобы использовать их как метки для редактирования
-        orig_univerCode = list_values[0]; orig_regNum = str(list_values[3])
-        form_AddField.university_code_cb.setCurrentText(str(list_values[0]) + "\t" + list_values[1])    # Устанавливает значение по текущему тексту, только если такой элемент уже есть в списке QComboBox
-        form_AddField.Subject_te.setText(str(list_values[2]))
-        form_AddField.regNum_le.setText(str(list_values[3]))
+        orig_univerCode = list_values[10]; orig_regNum = str(list_values[2])
+        form_AddField.university_code_cb.setCurrentText(str(list_values[10]) + "\t" + list_values[0])    # Устанавливает значение по текущему тексту, только если такой элемент уже есть в списке QComboBox
+        form_AddField.Subject_te.setText(str(list_values[1]))
+        form_AddField.regNum_le.setText(str(list_values[2]))
         # ГРНТИ
-        GRNTI = str(list_values[4])
+        GRNTI = str(list_values[3])
         if ',' in GRNTI:
             GRNTI = GRNTI.split(',')
         elif ';' in GRNTI:
@@ -314,12 +315,12 @@ def add_field_window(Edit=False):
         else:
             form_AddField.GRNTI_1_le.setText(GRNTI)
         # остальные поля
-        form_AddField.type_cb.setCurrentText(type_dict[str(list_values[5])])
-        form_AddField.TypeExhibit_cb.setCurrentText(typeExhibit_dict[str(list_values[6])])
-        form_AddField.Exhibitions_te.setText(str(list_values[7]))
-        form_AddField.Exhibit_te.setText(str(list_values[8]))
-        form_AddField.BossName_le.setText(str(list_values[9]))
-        form_AddField.BossStatus_le.setText(str(list_values[10]))
+        form_AddField.type_cb.setCurrentText(type_dict[str(list_values[4])])
+        form_AddField.TypeExhibit_cb.setCurrentText(typeExhibit_dict[str(list_values[5])])
+        form_AddField.Exhibitions_te.setText(str(list_values[6]))
+        form_AddField.Exhibit_te.setText(str(list_values[7]))
+        form_AddField.BossName_le.setText(str(list_values[8]))
+        form_AddField.BossStatus_le.setText(str(list_values[9]))
 
     
     form_AddField.CancelButton.clicked.connect(lambda: window_AddField.close() and window.setEnabled(True))    # Не уверен, что подобный вызов 2-х функций корректное занятие, но оно работает
@@ -336,12 +337,7 @@ def delete_row():
     selected = form.tableView.selectedIndexes()  # текущие отмеченные строки
     index_set = set(index.row() for index in selected)
     if len(selected) == 0:
-        msg = QMessageBox()
-        msg.setWindowTitle("Внимание!")
-        msg.setWindowIcon(QtGui.QIcon("source/image/warning-icon.png"))
-        msg.setText("Для удаления выберете строку!")
-        msg.setIcon(QMessageBox.Icon.Warning)
-        msg.exec()
+        msgError("Для удаления выберете строку!")
         return
     # инфа о нажатиях QMessageBox https://coderlessons.com/tutorials/python-technologies/izuchite-pyqt/pyqt-qmessagebox
     msg = QMessageBox()
@@ -403,19 +399,30 @@ def set_filter_value(info_dict=False, typeExhibit_dict_revers={"Е": "Есть",
     form_Filtering.GRNTI_2_cb.addItem('-')
     form_Filtering.university_cb.addItem('-')
     # Добавление в списки, а затем в QComboBoxes значений
-    fed_district = []; city = []; region = []
+    fed_district = []; city = []; region = []; uni_list = []
     for code_uni in list(info_dict.keys()):
-        form_Filtering.university_cb.addItem(info_dict[code_uni][0])
+        uni_list.append(info_dict[code_uni][0])
         fed_district.append(info_dict[code_uni][1])
         city.append(info_dict[code_uni][2])
         region.append(info_dict[code_uni][3])
-    form_Filtering.federalDistrict_cb.addItems(set(fed_district))
-    form_Filtering.city_cb.addItems(set(city))
-    form_Filtering.region_cb.addItems(set(region))
-    form_Filtering.preference_exibit_cb.addItems(list(typeExhibit_dict_revers.values()))
+    uni_list.sort()
+    fed_district = set(fed_district); fed_district = list(fed_district)
+    fed_district.sort()
+    city = set(city); city = list(city)
+    city.sort()
+    region = set(region); region = list(region)
+    region.sort()
+    preference_exibit = list(typeExhibit_dict_revers.values())
+    preference_exibit.sort()
+    form_Filtering.university_cb.addItems(uni_list)
+    form_Filtering.federalDistrict_cb.addItems(fed_district)
+    form_Filtering.city_cb.addItems(city)
+    form_Filtering.region_cb.addItems(region)
+    form_Filtering.preference_exibit_cb.addItems(preference_exibit)
 
     # ГРНТИ как обычно отдельно
     GRNTI_list = get_GRNTI_fromGRNTItable()
+    GRNTI_list.sort()
     form_Filtering.GRNTI_1_cb.addItems(GRNTI_list)
     form_Filtering.GRNTI_2_cb.addItems(GRNTI_list)
 
@@ -549,22 +556,23 @@ def filtration():
 
     
     df_model = pd.DataFrame(
-        columns=["Код_ВУЗа", "Аббревиатура", "Название_НИР", "Рег_номер", "ГРНТИ", "Тип", "Наличие_экспоната", "Выставки", 
-                "Экспонат", "Научный_руководитель", "Статус_руководителя"]
+        columns=headlines
     )
     table_dict = {}
     while query.next():
-        table_dict.update({"Код_ВУЗа": query.value("Код_ВУЗа")})
-        table_dict.update({"Аббревиатура": query.value("Аббревиатура")})
-        table_dict.update({"Название_НИР": query.value("Название_НИР")})
-        table_dict.update({"Рег_номер": query.value("Рег_номер")})
-        table_dict.update({"ГРНТИ": query.value("ГРНТИ")})
-        table_dict.update({"Тип": query.value("Тип")})
-        table_dict.update({"Наличие_экспоната": query.value("Наличие_экспоната")})
-        table_dict.update({"Выставки": query.value("Выставки")})
-        table_dict.update({"Экспонат": query.value("Экспонат")})
-        table_dict.update({"Научный_руководитель": query.value("Научный_руководитель")})
-        table_dict.update({"Статус_руководителя": query.value("Статус_руководителя")})
+        for head in headlines:
+            table_dict.update({head: query.value(head)})
+            # table_dict.update({"Код_ВУЗа": query.value("Код_ВУЗа")})
+            # table_dict.update({"Аббревиатура": query.value("Аббревиатура")})
+            # table_dict.update({"Название_НИР": query.value("Название_НИР")})
+            # table_dict.update({"Рег_номер": query.value("Рег_номер")})
+            # table_dict.update({"ГРНТИ": query.value("ГРНТИ")})
+            # table_dict.update({"Тип": query.value("Тип")})
+            # table_dict.update({"Наличие_экспоната": query.value("Наличие_экспоната")})
+            # table_dict.update({"Выставки": query.value("Выставки")})
+            # table_dict.update({"Экспонат": query.value("Экспонат")})
+            # table_dict.update({"Научный_руководитель": query.value("Научный_руководитель")})
+            # table_dict.update({"Статус_руководителя": query.value("Статус_руководителя")})
         temp_df = pd.DataFrame.from_dict(table_dict, orient='index').T
         df_model = pd.concat([df_model, temp_df])
     # for the table model
@@ -592,8 +600,8 @@ def filtration():
     modelFetchMore_withFiltering = form.tableView.model()
     modelFetchMore_withFiltering.fetchMore(QtCore.QModelIndex())
     while True:
-        code_univer = modelFetchMore_withFiltering.index(k, 0).data()     # Получение кодов ВУЗов из таблицы
-        availability = modelFetchMore_withFiltering.index(k, 6).data()     # Получение текущих кодов ГРНТИ из таблицы
+        code_univer = modelFetchMore_withFiltering.index(k, 10).data()     # Получение кодов ВУЗов из таблицы
+        availability = modelFetchMore_withFiltering.index(k, 5).data()     # Получение текущих кодов ГРНТИ из таблицы
         if typeExhibit_dict != typeExhibit_dict_:
             try:
                 typeExhibit_dict.update({availability: typeExhibit_dict_[availability]})
@@ -755,6 +763,19 @@ def edit_customTable(row="add"):
         if selected == -1:
             msgError("Для удаления выберете строку!")
             return
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.setText(f"Вы действительно хотите удалить запись?")
+        msg.setWindowTitle("Удаление")
+        msg.setWindowIcon(QtGui.QIcon("source/image/delete-icon.png"))
+        msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
+        global reply; reply="Cancel"
+        msg.buttonClicked.connect(msgbtn)
+        msg.exec()
+        if reply == "Cancel":
+            del reply
+            return
+        del reply
         temp_model = form.tableView.model()
         temp_model.fetchMore(QtCore.QModelIndex())
         list_values = [temp_model.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
@@ -796,6 +817,7 @@ def addRow_choiceTable():
 def addRow_to_customTable(tableName, data):
     """Функция добавления записи в кастомную таблицу"""
     window_ChoiceTable.close()
+    data = list(map(str, data))
     if os.path.exists("data"):
         file = open("data/" + tableName + ".dat", 'a', encoding='utf-8')
         file.write(str(data) + '\n')
@@ -839,8 +861,7 @@ def removeRow_customTable(rowForRemove):
     
 def creating_research_card():
     """Функция создания карточки НИР. Открывает окно для выбора пути сохранения."""
-    headlines = ["Код ВУЗа", "Аббревиатура", "Название НИР", "Регистрационный номер", "ГРНТИ", "Тип", "Наличие экспоната", "Выставки", 
-                "Экспонат", "Научный руководитель", "Статус руководителя"]
+
     selected = form.tableView.currentIndex().row()  # текущая отмеченная строка
     if selected == -1:
         msgError("Для формирования карточки НИР выберете строку!")
@@ -854,7 +875,59 @@ def creating_research_card():
 
     if path == '': return 0
     path = path[8:len(path)]
-    doc_save(path=path, headlines=headlines, list_values=list_values, extension=extension)
+    res = doc_save(path=path, headlines=headlines, list_values=list_values, extension=extension)
+    if res == -1:
+        msgError("Файл открыт в другой программе!")
+
+
+
+def Group_toDoc_window():
+    """Окно для сохранения групп НИР"""
+    table_list = get_custom_table()
+    ico_file = "source/image/create-table-icon.png"
+    if len(table_list) == 0:
+        msgError("Группы НИР не найдены!")
+        return
+
+    ico = QtGui.QIcon()
+    ico.addFile(ico_file)
+
+    global window_DelTable, form_DelTable
+    Form, Window = uic.loadUiType("source/ChoiceTableWindow.ui")
+    # Настройка интерфейса
+    window_DelTable = Window()
+    form_DelTable = Form()
+    form_DelTable.setupUi(window_DelTable)
+    window_DelTable.setWindowTitle("Сохранить группу НИР")
+    window_DelTable.setWindowIcon(QtGui.QIcon("source/image/table-icon.png"))
+
+    for name in table_list:
+        form_DelTable.choiceTable.addItem(ico, name)
+    form_DelTable.choiceTable.setCurrentText(table_list[0])
+    form_DelTable.OK_bn.clicked.connect(lambda: research_Group_toDoc(tableSave=form_DelTable.choiceTable.currentText()))
+
+    window_DelTable.show()
+
+
+
+def research_Group_toDoc(tableSave):
+    """Функция сохранения группы НИР. Открывает окно для выбора пути сохранения."""
+    window_DelTable.close()
+    file = open("data/" + str(tableSave) + ".dat", 'r', encoding='utf-8')
+    data = []
+    for line in file:
+        data.append(eval(line))
+    file.close()
+
+
+    path, extension = QFileDialog.getSaveFileUrl(filter="Документ Word (*.docx);;PDF (*.pdf)") # Открывает окно с выбором пути сохранения
+    path = path.toString()
+
+    if path == '': return 0
+    path = path[8:len(path)]
+    res = saveTable_toDoc(path=path, table_name=tableSave, headlines=headlines, data=data, extension=extension)
+    if res == -1:
+        msgError("Файл открыт в другой программе!")
 
 
 def help_window():
@@ -874,12 +947,12 @@ def help_window():
 output_table()
 
 # Настройка ширины столбцов
-form.tableView.setColumnWidth(0, 75)
-form.tableView.setColumnWidth(2, 200)
-form.tableView.setColumnWidth(3, 75)
-form.tableView.setColumnWidth(5, 25)
+form.tableView.setColumnWidth(0, 100)
+form.tableView.setColumnWidth(1, 200)
+form.tableView.setColumnWidth(2, 75)
+form.tableView.setColumnWidth(4, 25)
+form.tableView.setColumnWidth(6, 200)
 form.tableView.setColumnWidth(7, 200)
-form.tableView.setColumnWidth(8, 200)
 
 # Взаимодействие с интерфейсом
 # Передавать параметры в функции через кнопки можно с помощью лямбда функций form.pushButton.clicked.connect(lambda x: test("hello fucking Qt!"))
@@ -898,6 +971,7 @@ form.deleteGroup_action.triggered.connect(del_customTable_window)
 form.addToGroup_action.triggered.connect(lambda: edit_customTable(row="add"))
 form.deleteFromGroup_action.triggered.connect(lambda: edit_customTable(row="remove"))
 form.creatingResearchCard_action.triggered.connect(creating_research_card)
+form.creatingTableCard_action.triggered.connect(Group_toDoc_window)
 
 form.help_action.triggered.connect(help_window)
 
