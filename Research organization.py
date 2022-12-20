@@ -675,7 +675,10 @@ def new_tableName():
 def get_table_name():
     """Функция для получения введенного имени для создания новой таблицы"""
     global table_name
-    table_name=form_AddTable.TableName_le.text()
+    table_name = form_AddTable.TableName_le.text()
+    if table_name in get_custom_table():
+        msgError("Группа с таким именем уже существует")
+        return
     window_AddTable.close()
     if table_name != "":
         create_table(table_name=table_name)
@@ -859,9 +862,11 @@ def removeRow_customTable(rowForRemove):
         file.close()
         output_table(tableName)
     
-def creating_research_card():
-    """Функция создания карточки НИР. Открывает окно для выбора пути сохранения."""
 
+def card_preview_window():
+    """Окно предпоказа карточки НИР"""
+
+    
     selected = form.tableView.currentIndex().row()  # текущая отмеченная строка
     if selected == -1:
         msgError("Для формирования карточки НИР выберете строку!")
@@ -869,6 +874,38 @@ def creating_research_card():
     temp_model = form.tableView.model()
     temp_model.fetchMore(QtCore.QModelIndex())
     list_values = [temp_model.index(selected, i).data() for i in range(11)]     # Получение данных из таблицы
+
+    global window_cardPreview, form_cardPreview
+    Form, Window = uic.loadUiType("source/CardWindow.ui")
+    # Настройка интерфейса
+    window_cardPreview = Window()
+    form_cardPreview = Form()
+    form_cardPreview.setupUi(window_cardPreview)
+    
+    form_cardPreview.SaveButton.clicked.connect(lambda: creating_research_card(list_values=list_values))
+    form_cardPreview.CancelButton.clicked.connect(window_cardPreview.close)
+
+
+    # headlines = ["Аббревиатура", "Название_НИР", "Рег_номер", "ГРНТИ", "Тип", "Наличие_экспоната", "Выставки", 
+    #             "Экспонат", "Научный_руководитель", "Статус_руководителя", "Код_ВУЗа"]
+    form_cardPreview.Abbreviation_Out_lb.setText(list_values[headlines.index("Аббревиатура")])
+    form_cardPreview.Subject_Out_lb.setText(list_values[headlines.index("Название_НИР")])
+    form_cardPreview.type_Out_lb.setText(list_values[headlines.index("Тип")])
+    form_cardPreview.GRNTI_Out_lb.setText(list_values[headlines.index("ГРНТИ")])
+    form_cardPreview.TypeExhibit_Out_lb.setText(list_values[headlines.index("Наличие_экспоната")])
+    form_cardPreview.Exhibitions_Out_lb.setText(list_values[headlines.index("Выставки")])
+    form_cardPreview.Exhibit_Out_lb.setText(list_values[headlines.index("Экспонат")])
+    form_cardPreview.BossName_Out_lb.setText(list_values[headlines.index("Научный_руководитель")])
+    form_cardPreview.BossStatus_Out_lb.setText(list_values[headlines.index("Статус_руководителя")])
+    form_cardPreview.codeVUZ_Out_lb.setText(str(list_values[headlines.index("Код_ВУЗа")]))
+
+    window_cardPreview.show()
+
+
+
+def creating_research_card(list_values):
+    """Функция создания карточки НИР. Открывает окно для выбора пути сохранения."""
+    window_cardPreview.close()
 
     path, extension = QFileDialog.getSaveFileUrl(filter="Документ Word (*.docx);;PDF (*.pdf)") # Открывает окно с выбором пути сохранения
     path = path.toString()
@@ -970,7 +1007,7 @@ form.addGroup_action.triggered.connect(new_tableName)
 form.deleteGroup_action.triggered.connect(del_customTable_window)
 form.addToGroup_action.triggered.connect(lambda: edit_customTable(row="add"))
 form.deleteFromGroup_action.triggered.connect(lambda: edit_customTable(row="remove"))
-form.creatingResearchCard_action.triggered.connect(creating_research_card)
+form.creatingResearchCard_action.triggered.connect(card_preview_window)
 form.creatingTableCard_action.triggered.connect(Group_toDoc_window)
 
 form.help_action.triggered.connect(help_window)
